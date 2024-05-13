@@ -2,7 +2,9 @@
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
-        <img src="@/assets/LOGO_GL.png" alt="Logo" width="50" height="50" class="d-inline-block align-text-top" />
+        <RouterLink to="/">
+          <img src="@/assets/LOGO_GL.png" alt="Logo" width="50" height="50" class="d-inline-block align-text-top" />
+        </RouterLink>
       </a>
       <button
         class="navbar-toggler"
@@ -20,9 +22,11 @@
       <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item" v-for="navItem in navItems" :key="navItem.id">
-            <button type="button" class="btn btn-warning m-1">
-              <a class="nav-link" href="#">{{ navItem.itemName }}</a>
-            </button>
+            <RouterLink :to="{ name: navItem.name}">
+              <button type="button" class="btn btn-warning m-1">
+                <a class="nav-link" href="#">{{ navItem.itemName }}</a>
+              </button>
+            </RouterLink>
           </li>
         </ul>
       </div>
@@ -40,13 +44,14 @@ import { ref } from 'vue'
 let item_id = 1
 
 const navItems = ref([
-  { id: item_id++, itemName: '상품 검색' },
-  { id: item_id++, itemName: '상품 비교' },
-  { id: item_id++, itemName: '상품 커뮤니티' },
-  { id: item_id++, itemName: '내 주변 은행 찾기' },
-  { id: item_id++, itemName: '내 정보' },
-  { id: item_id++, itemName: '환율 계산기' },
+  { id: item_id++, itemName: '상품 검색', name: 'products' },
+  { id: item_id++, itemName: '상품 비교', name: 'compare' },
+  { id: item_id++, itemName: '상품 커뮤니티', name: 'community' },
+  { id: item_id++, itemName: '내 주변 은행 찾기', name: 'maps' },
+  { id: item_id++, itemName: '내 정보', name: 'user' },
+  { id: item_id++, itemName: '환율 계산기', name: 'exchange' },
 ])
+
 </script>
 
 <style scoped></style>
