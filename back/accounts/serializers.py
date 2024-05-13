@@ -34,11 +34,25 @@ class CustomRegisterSerializer(RegisterSerializer):
         adapter.save_user(request, user, self)  # 사용자 저장
         self.custom_signup(request, user)  # 사용자 추가 가입 과정 처리
         return user  # 생성된 사용자 반환
-    
-class ProfileSerializer(serializers):
+
+# 프로필에 노출될 serializer    
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('userid', 'name', 'date_of_birth', 'address', 
                   'budget', 'salary', 'deposit_able', 'saving_able', 
                   'deposit_period', 'saving_period',)
-        read_only_fields = ('id','userid', 'name')
+        read_only_fields = ('id','userid', 'name',)
+    
+# 전체 프로필 정보를 수정, 조회, 삭제할 serializer
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+        read_only_fields = ('id', 'userid', 'name',)
+    
+    profile_img = serializers.ImageField(use_url=True)
+    # 예금 set
+    # 적금 set
+    # 대출 set
+    
