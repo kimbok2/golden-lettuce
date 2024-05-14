@@ -50,6 +50,7 @@ const navItems = ref([
   { id: item_id++, itemName: '내 주변 은행 찾기', name: 'maps' },
   { id: item_id++, itemName: '내 정보', name: 'user' },
   { id: item_id++, itemName: '환율 계산기', name: 'exchange' },
+  { id: item_id++, itemName: '프로필', name: 'profile' },
 ])
 
 </script>

@@ -4,6 +4,7 @@ import ExchangeView from '@/views/ExchangeView.vue'
 import HomeView from '@/views/HomeView.vue'
 import MapsView from '@/views/MapsView.vue'
 import MyAccountView from '@/views/MyAccountView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 import ProductCompareView from '@/views/ProductCompareView.vue'
 import ProductListView from '@/views/ProductListView.vue'
 
@@ -45,6 +46,11 @@ const router = createRouter({
       path: '/exchange/',
       name: 'exchange',
       component: ExchangeView
+    },
+    {
+      path: '/profile/',
+      name: 'profile',
+      component: ProfileView
     },
   ]
 })
