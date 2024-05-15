@@ -1,3 +1,20 @@
+<<<<<<< HEAD
+import { createRouter, createWebHistory } from 'vue-router'
+import CommunityView from '@/views/Community/CommunityView.vue'
+import CommunityCreateView from '@/views/Community/CommunityCreateView.vue'
+import CommunityDetailView from '@/views/Community/CommunityDetailView.vue'
+import CommunityHomeView from '@/views/Community/CommunityHomeView.vue'
+import CommunityUpdateView from '@/views/Community/CommunityUpdateView.vue'
+import ExchangeView from '@/views/ExchangeView.vue'
+import HomeView from '@/views/HomeView.vue'
+import MapsView from '@/views/MapsView.vue'
+import MyAccountView from '@/views/MyAccountView.vue'
+import ProfileView from '@/views/ProfileView.vue'
+import ProductCompareView from '@/views/ProductCompareView.vue'
+import ProductListView from '@/views/ProductListView.vue'
+import LoginView from '@/views/LoginView.vue'
+import SignUpView from '@/views/SignUpView.vue'
+=======
 import { createRouter, createWebHistory } from "vue-router";
 import CommunityView from "@/views/Community/CommunityView.vue";
 import CommunityCreateView from "@/views/Community/CommunityCreateView.vue";
@@ -14,6 +31,7 @@ import ProductCompareView from "@/views/ProductCompareView.vue";
 import ProductListView from "@/views/ProductListView.vue";
 import LoginView from "@/views/LoginView.vue";
 import SignUpView from "@/views/SignUpView.vue";
+>>>>>>> c6285f064ecf31f67ce62a7de0f0ac721d832832
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +55,12 @@ const router = createRouter({
       path: "/community/",
       component: CommunityView,
       children: [
+<<<<<<< HEAD
+        { path: '', name: 'community', component: CommunityHomeView },
+        { path: 'create', name: 'community-create', component: CommunityCreateView },
+        { path: ':id', name: 'community-detail', component: CommunityDetailView },
+        { path: ':id/update', name: 'community-update', component: CommunityUpdateView },
+=======
         { path: "", name: "community", component: CommunityHomeView },
         {
           path: "create",
@@ -48,6 +72,7 @@ const router = createRouter({
           name: "community-detail",
           component: CommunityDetailView,
         },
+>>>>>>> c6285f064ecf31f67ce62a7de0f0ac721d832832
       ],
     },
     {

@@ -2,9 +2,22 @@
   <div>
     <h1>CommunityCreateView</h1>
     <form @submit.prevent="createArticle">
+      <!-- 카테고리 선택 -->
+      
+      <label for="category">카테고리 : </label>
+      <select v-model="category" id="category">
+        <option value="free">자유게시판</option>
+        <option value="faq">FAQ</option>
+        <option value="notice">공지사항</option>
+      </select>
+      <br />
+
+      <!-- 제목 -->
       <label for="title">제목 : </label>
       <input type="text" v-model.trim="title" id="title" />
       <br />
+
+      <!-- 내용 -->
       <label for="content">내용 : </label>
       <input type="text" v-model.trim="content" id="content" />
       <br />
@@ -20,15 +33,16 @@ import { useRouter } from 'vue-router'
 import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
 
+// 제목과 내용 : input 태그에 v-model로 양방향 바인딩
 const title = ref(null)
 const content = ref(null)
+const category = ref('free')
 
 const store = useCommunityStore()
 const userStore = useUserStore()
 const router = useRouter()
 
 const token = userStore.token
-console.log(userStore.token)
 
 const createArticle = function () {
   axios({
@@ -37,12 +51,14 @@ const createArticle = function () {
     data: {
       title: title.value,
       content: content.value,
+      category: category.value,
     },
     headers: {
       Authorization: `Token ${token}`,
     },
   })
     .then((response) => {
+      console.log('게시글 작성 성공')
       router.push({ name: 'community' })
     })
     .catch((error) => {
