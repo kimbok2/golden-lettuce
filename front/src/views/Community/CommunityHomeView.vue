@@ -6,10 +6,7 @@
       <template v-for="article in store.articles" :key="article.pk">
         <RouterLink :to="{ name: 'community-detail', params: {id: article.id}}">
           <li class="card">
-            <p>제목 : {{ article.title }}</p>
-            <p>작성자 : {{ article.user.username }}</p>
-            <p>내용 : {{ article.content }}</p>
-            <p>카테고리 : {{ article.category }}</p>
+            <p>제목 : {{ article.title }} | 작성자 : {{ article.user.username }} | 카테고리 : {{ article.category }} | 댓글 수 : {{ article.comment_count }}</p>
           </li>
         </RouterLink>
       </template>
@@ -29,6 +26,7 @@ import CommunityCreateView from '@/views/Community/CommunityCreateView.vue'
 import CommunityDetailView from '@/views/Community/CommunityDetailView.vue'
 
 const store = useCommunityStore()
+const selectedCategory = ref(null)
 
 onMounted(() => {
   store.getArticleList()

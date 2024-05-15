@@ -5,4 +5,5 @@ urlpatterns = [
     # 게시글
     path('', views.article_list),
     path('<int:article_pk>/', views.article_detail)
+    # path('<int:article_pk>/comment/', views.article_comment)
 ]

@@ -3,6 +3,7 @@ import CommunityView from '@/views/Community/CommunityView.vue'
 import CommunityCreateView from '@/views/Community/CommunityCreateView.vue'
 import CommunityDetailView from '@/views/Community/CommunityDetailView.vue'
 import CommunityHomeView from '@/views/Community/CommunityHomeView.vue'
+import CommunityUpdateView from '@/views/Community/CommunityUpdateView.vue'
 import ExchangeView from '@/views/ExchangeView.vue'
 import HomeView from '@/views/HomeView.vue'
 import MapsView from '@/views/MapsView.vue'
@@ -38,6 +39,7 @@ const router = createRouter({
         { path: '', name: 'community', component: CommunityHomeView },
         { path: 'create', name: 'community-create', component: CommunityCreateView },
         { path: ':id', name: 'community-detail', component: CommunityDetailView },
+        { path: ':id/update', name: 'community-update', component: CommunityUpdateView },
       ],
     },
     {

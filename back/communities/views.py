@@ -1,9 +1,10 @@
 from django.shortcuts import render
+from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from .models import Article, Comment
-from .serializers import ArticleListSerializer, ArticleSerializer
+from .serializers import ArticleListSerializer, ArticleSerializer, CommentSerializer
 
 # Create your views here.
 
@@ -11,7 +12,7 @@ from .serializers import ArticleListSerializer, ArticleSerializer
 def article_list(request):
     # GET 요청을 받으면 게시글 목록 반환
     if request.method == 'GET':
-        articles = Article.objects.all()
+        articles = Article.objects.annotate(comment_count=Count('comments'))
         serializer = ArticleListSerializer(articles, many=True)
         return Response(serializer.data)
     # POST 요청을 받으면 게시글 작성
@@ -42,3 +43,4 @@ def article_detail(request, article_pk):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
