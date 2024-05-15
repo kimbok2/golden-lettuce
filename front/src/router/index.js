@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import CommunityView from '@/views/CommunityView.vue'
+import CommunityView from '@/views/Community/CommunityView.vue'
+import CommunityCreateView from '@/views/Community/CommunityCreateView.vue'
+import CommunityDetailView from '@/views/Community/CommunityDetailView.vue'
+import CommunityHomeView from '@/views/Community/CommunityHomeView.vue'
 import ExchangeView from '@/views/ExchangeView.vue'
 import HomeView from '@/views/HomeView.vue'
 import MapsView from '@/views/MapsView.vue'
@@ -10,61 +13,64 @@ import ProductListView from '@/views/ProductListView.vue'
 import LoginView from '@/views/LoginView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
     },
     {
       path: '/compare/',
       name: 'compare',
-      component: ProductCompareView
+      component: ProductCompareView,
     },
     {
       path: '/products/',
       name: 'products',
-      component: ProductListView
+      component: ProductListView,
     },
     {
       path: '/community/',
-      name: 'community',
-      component: CommunityView
+      component: CommunityView,
+      children: [
+        { path: '', name: 'community', component: CommunityHomeView },
+        { path: 'create', name: 'community-create', component: CommunityCreateView },
+        { path: ':id', name: 'community-detail', component: CommunityDetailView },
+      ],
     },
     {
       path: '/maps/',
       name: 'maps',
-      component: MapsView
+      component: MapsView,
     },
     {
       path: '/user/',
       name: 'user',
-      component: MyAccountView
+      component: MyAccountView,
     },
     {
       path: '/exchange/',
       name: 'exchange',
-      component: ExchangeView
+      component: ExchangeView,
     },
     {
       path: '/profile/',
       name: 'profile',
-      component: ProfileView
+      component: ProfileView,
     },
     {
       path: '/login/',
       name: 'login',
-      component: LoginView
+      component: LoginView,
     },
     {
       path: '/signup/',
       name: 'signup',
-      component: SignUpView
+      component: SignUpView,
     },
-  ]
+  ],
 })
 
 export default router
