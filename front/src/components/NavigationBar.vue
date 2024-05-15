@@ -51,6 +51,8 @@ const navItems = ref([
   { id: item_id++, itemName: '내 정보', name: 'user' },
   { id: item_id++, itemName: '환율 계산기', name: 'exchange' },
   { id: item_id++, itemName: '프로필', name: 'profile' },
+  { id: item_id++, itemName: '로그인', name: 'login' },
+  { id: item_id++, itemName: '회원가입', name: 'signup' },
 ])
 
 </script>

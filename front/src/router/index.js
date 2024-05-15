@@ -7,6 +7,8 @@ import MyAccountView from '@/views/MyAccountView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ProductCompareView from '@/views/ProductCompareView.vue'
 import ProductListView from '@/views/ProductListView.vue'
+import LoginView from '@/views/LoginView.vue'
+import SignUpView from '@/views/SignUpView.vue'
 
 
 const router = createRouter({
@@ -51,6 +53,16 @@ const router = createRouter({
       path: '/profile/',
       name: 'profile',
       component: ProfileView
+    },
+    {
+      path: '/login/',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/signup/',
+      name: 'signup',
+      component: SignUpView
     },
   ]
 })
