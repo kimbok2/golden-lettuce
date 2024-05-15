@@ -6,4 +6,5 @@ urlpatterns = [
     path('<str:userid>/', views.profile),
     # 회원정보 수정
     path('<str:userid>/info/', views.userinfo),
+    # path('user/', views.UserDelete),
 ]
