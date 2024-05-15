@@ -7,7 +7,7 @@ import { useRouter } from "vue-router";
 export const useUserStore = defineStore(
   "user",
   () => {
-    const articles = ref([]);
+    const name = ref(null);
     const API_URL = "http://127.0.0.1:8000";
     const token = ref(null);
     const isLogin = computed(() => {
@@ -18,22 +18,6 @@ export const useUserStore = defineStore(
       }
     });
     const router = useRouter();
-
-    const getArticles = function () {
-      axios({
-        method: "get",
-        url: `${API_URL}/api/v1/articles/`,
-        headers: {
-          Authorization: `Token ${token.value}`,
-        },
-      })
-        .then((response) => {
-          articles.value = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
 
     const signUp = function (payload) {
       // 1. 사용자 입력 데이터를 받아
@@ -78,7 +62,7 @@ export const useUserStore = defineStore(
         },
       })
         .then((response) => {
-          // console.log('로그인 성공!')
+          name.value = username;
           // console.log(response)
           // console.log(response.data.key)
           // 3. 로그인 성공 후 응답 받은 토큰을 저장
@@ -100,6 +84,7 @@ export const useUserStore = defineStore(
         },
       })
         .then((response) => {
+          name.value = null;
           token.value = null; // 토큰 값 삭제
           router.push({ name: "login" }); // 로그인 페이지로 리다이렉션
         })
@@ -107,9 +92,8 @@ export const useUserStore = defineStore(
     };
 
     return {
-      articles,
       API_URL,
-      getArticles,
+      name,
       signUp,
       logIn,
       token,
