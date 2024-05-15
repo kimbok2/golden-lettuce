@@ -1,10 +1,17 @@
 <template>
-    <div>
-      <h1>MyAccountView</h1>
-    </div>
-  </template>
-  
-  <script setup></script>
-  
-  <style scoped></style>
-  
+  <div>
+    <h1>MyAccountView</h1>
+    <button @click="logOut">로그아웃</button>
+  </div>
+</template>
+
+<script setup>
+import { useUserStore } from "@/stores/user";
+
+const store = useUserStore();
+const logOut = function () {
+  store.logOut();
+};
+</script>
+
+<style scoped></style>

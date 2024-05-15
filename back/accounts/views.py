@@ -51,6 +51,11 @@ def userinfo(request, userid):
 #         user.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['GET'])
+def test(request):
+    print(3)
+    return Response(status=status.HTTP_200_OK)
+
 # 최우수 팀은 프로필 정보 수정도 구현
 
 def signup(request):

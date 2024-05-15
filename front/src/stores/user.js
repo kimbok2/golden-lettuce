@@ -5,7 +5,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 
 export const useUserStore = defineStore(
-  "counter",
+  "user",
   () => {
     const articles = ref([]);
     const API_URL = "http://127.0.0.1:8000";
@@ -90,7 +90,32 @@ export const useUserStore = defineStore(
         });
     };
 
-    return { articles, API_URL, getArticles, signUp, logIn, token, isLogin };
+    const logOut = function () {
+      console.log(token.value);
+      axios({
+        method: "post",
+        url: `${API_URL}/accounts/logout/`,
+        headers: {
+          Authorization: `Token ${token.value}`,
+        },
+      })
+        .then((response) => {
+          token.value = null; // 토큰 값 삭제
+          router.push({ name: "login" }); // 로그인 페이지로 리다이렉션
+        })
+        .catch((err) => console.log(err));
+    };
+
+    return {
+      articles,
+      API_URL,
+      getArticles,
+      signUp,
+      logIn,
+      token,
+      isLogin,
+      logOut,
+    };
   },
   { persist: true }
 );
