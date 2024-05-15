@@ -41,9 +41,19 @@ def userinfo(request, userid):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
+    
+# 회원삭제
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def UserDelete(request):
+#     if request.method == 'POST':
+#         user = request.user
+#         user.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
 # 최우수 팀은 프로필 정보 수정도 구현
 
 def signup(request):
     return render(request, 'accounts/signup.html')
+    
     
