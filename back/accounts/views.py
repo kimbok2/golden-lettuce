@@ -9,22 +9,28 @@ from .serializers import *
 
 # Create your views here.
 # 유저 프로필(GET O, POST? PUT? DELETE?)
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
-def profile(request, userid):
+def profile(request, username):
+    print(request.user.username, username)
     # userid가 같은 경우에만
-    if request.user.userid == userid:
+    if request.user.username == username:
+        user = get_object_or_404(get_user_model(), username=username)
         if request.method == 'GET':
-            user = get_object_or_404(get_user_model(), userid=userid)
             serializer = ProfileSerializer(user)
             return Response(serializer.data)
+        elif request.method == 'PUT':
+            serializer = ProfileSerializer(instance=user, data=request.data, partial=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 유저 정보 조회, 수정, 삭제(생성은 가입 과정에서 생성)
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-def userinfo(request, userid):
-    if request.user.userid == userid:
-        user = get_object_or_404(get_user_model(), userid=userid)
+def userinfo(request, username):
+    if request.user.username == username:
+        user = get_object_or_404(get_user_model(), username=username)
         # 회원정보 조회(프로필이랑 겹침)
         if request.method == 'GET':
             serializer = UserInfoSerializer(user)
@@ -53,7 +59,7 @@ def userinfo(request, userid):
 
 @api_view(['GET'])
 def test(request):
-    print(3)
+    print(30)
     return Response(status=status.HTTP_200_OK)
 
 # 최우수 팀은 프로필 정보 수정도 구현
