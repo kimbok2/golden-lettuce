@@ -26,3 +26,25 @@ class DepositDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = DepositProduct
         fields = '__all__'
+
+# 적금 옵션 시리얼라이저
+class SavingOptionSerializer(serializers.ModelSerializer):
+    # 적금 상품은 읽기 전용으로
+    class Meta:
+        model = SavingOption
+        fields = '__all__'
+        read_only_fields = ('saving_product', )
+
+# 적금 전체 조회 시리얼라이저
+class SavingListSerializer(serializers.ModelSerializer):
+    savingoption_set = SavingOptionSerializer(read_only=True, many=True)
+    class Meta:
+        model = SavingProduct
+        fields = '__all__'
+
+
+# 적금 단일 저장용 시리얼라이저
+class SavingDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SavingProduct
+        fields = '__all__'
