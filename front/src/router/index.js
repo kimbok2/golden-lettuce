@@ -84,6 +84,13 @@ const router = createRouter({
       component: SignUpView,
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { left: 0, top: 0 };
+    }
+  }
 })
 
 // 로그인 없이 접근 가능한 name 정의
@@ -119,5 +126,6 @@ router.beforeEach((to, from) => {
     next(false)
   }
 })
+
 
 export default router

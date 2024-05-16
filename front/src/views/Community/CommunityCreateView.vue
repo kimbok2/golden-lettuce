@@ -1,8 +1,26 @@
 <template>
-  <div>
-    <h1>CommunityCreateView</h1>
+  <div class="text-start card p-3 rounded-0">
     <form @submit.prevent="createArticle">
       <!-- 카테고리 선택 -->
+
+      <!-- 제목 바 -->
+      <div>
+        <h1>{{ article.title }}</h1>
+        <img
+          src="@/assets/userdefault.png"
+          alt="Logo"
+          width="50"
+          height="50"
+          class="d-inline-block align-text-top border rounded-circle"
+        />
+        <span class="fw-bolder">{{ article.user.username }}</span>
+        <!-- 게시글 작성일, 게시글 수정일 표시 -->
+        <div class="text-end">
+          <span>작성 : {{ formattedDate(article.created_at) + ' ' + formattedTime(article.created_at) }}</span>
+          <span> | </span>
+          <span>수정 : {{ formattedDate(article.updated_at) + ' ' + formattedTime(article.updated_at) }}</span>
+        </div>
+      </div>
       
       <label for="category">카테고리 : </label>
       <select v-model="category" id="category">
