@@ -28,7 +28,7 @@ class SavingProduct(models.Model):
     kor_co_nm = models.CharField(max_length = 100) # 금융회사명
     dcls_month = models.CharField(max_length = 20) # 공시제출월
     dcls_strt_day = models.CharField(max_length=20) # 공시시작일
-    dcls_end_day = models.CharField(max_length=20) # 공시종료일
+    dcls_end_day = models.CharField(max_length=20, null=True, blank=True) # 공시종료일
     fin_co_subm_day = models.CharField(max_length=30) # 금융회사제출일
     join_deny = models.CharField(max_length=5) # 가입 제한
     join_member = models.TextField(blank=True, null=True) # 가입 대상
