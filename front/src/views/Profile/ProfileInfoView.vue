@@ -36,7 +36,6 @@ const router = useRouter();
 const user = ref(null);
 
 onMounted(() => {
-  console.log(store.name);
   axios({
     method: "get",
     url: `${store.API_URL}/accounts/profile/${store.name}/`,
