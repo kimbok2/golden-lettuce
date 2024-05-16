@@ -24,11 +24,17 @@ class ArticleListSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     
     user = ArticleUsernameSerializer(read_only=True)
+    replies = serializers.SerializerMethodField()
     
     class Meta:
         model = Comment
         fields = '__all__'
         read_only_fields = ('article', )
+        
+    def get_replies(self, obj):
+        if obj.replies.exists():
+            return CommentSerializer(obj.replies.all(), many=True).data
+        return []
         
 # 게시글 작성할 때 호출할 Serializer
 class ArticleSerializer(serializers.ModelSerializer):
