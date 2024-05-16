@@ -1,7 +1,7 @@
 <template>
   <div>
-    <RouterLink :to="{ name: 'community' }">
-      <h1>CommunityView</h1>
+    <RouterLink :to="{ name: 'community' }" class="text-decoration-none">
+      <h1 class="text-decoration-none">커뮤니티</h1>
     </RouterLink>
     <RouterView />
   </div>

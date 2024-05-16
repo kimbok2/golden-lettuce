@@ -1,63 +1,42 @@
 <template>
-  <div class="text-start">
-    <h1>CommunityDetailView</h1>
-    <button class="btn btn-primary" @click="goBack">뒤로가기</button>
-    <!-- 제목 바 -->
-    <p>
-      <span>제목 : {{ article.title }}</span>
-      <span> | </span>
-      <span>작성자 : {{ article.user.username }}</span>
-      <span> | </span>
-      <span>작성일 : {{ article.created_at }}</span>
-      <span> | </span>
-      <span>최종 수정일 : {{ article.updated_at }}</span>
+  <div class="text-start card p-3 rounded-0">
+    <p class="text-end">
+      <button class="btn btn-secondary" @click="goBack">> {{ article.category }}</button>
     </p>
-    <!-- 카테고리 바 -->
-    <p>카테고리 : {{ article.category }}</p>
-    <!-- 내용 박스 -->
-    <p>내용 : {{ article.content }}</p>
-    <hr />
-    <!-- 댓글 박스 -->
+    <!-- 제목 바 -->
     <div>
-      <h3>댓글</h3>
-      <!-- 댓글이 있으면 출력 -->
-      <template v-if="article.comments.length">
-        <p>댓글 수 : {{ comment_count }}</p>
-        <hr />
-        <!-- 댓글 리스트  -->
-        <ol>
-          <template v-for="comment in article.comment_set">
-            <li>
-              <p>내용 : {{ comment.content }} | 작성자 : {{ comment.user }}</p>
-            </li>
-            <hr />
-          </template>
-        </ol>
-      </template>
-      <!-- 댓글이 없으면 출력 -->
-      <template v-else>
-        <p>작성된 댓글이 없습니다.</p>
-      </template>
-      <!-- 댓글 작성 창 -->
-      <form @submit.prevent class="border  rounded-3">
-        <!-- 라벨. 접속한 유저의 아이디 출력 -->
-        <p>
-          <label for="">{{ userId }}</label>
-        </p>
-        <input class="w-100 border border-0" type="text" id="" />
-        <p class="text-end m-0">
-          <input type="submit" value="등록" class="btn btn-primary" />
-        </p>
-      </form>
+      <h1>{{ article.title }}</h1>
+      <img
+        src="@/assets/userdefault.png"
+        alt="Logo"
+        width="50"
+        height="50"
+        class="d-inline-block align-text-top border rounded-circle"
+      />
+      <span class="fw-bolder">{{ article.user.username }}</span>
+      <!-- 게시글 작성일, 게시글 수정일 표시 -->
+      <div class="text-end">
+        <span>작성 : {{ formattedDate(article.created_at) + ' ' + formattedTime(article.created_at) }}</span>
+        <span> | </span>
+        <span>수정 : {{ formattedDate(article.updated_at) + ' ' + formattedTime(article.updated_at) }}</span>
+      </div>
+    </div>
+    <hr />
+    <!-- 내용 박스 -->
+    <div class="article-content-box">
+      <p>{{ article.content }}</p>
     </div>
     <!-- 게시글 수정 / 삭제 버튼 -->
     <p class="text-end">
       <RouterLink :to="{ name: 'community-update', params: { id: article.id } }">
         <button class="btn btn-primary" @click="updateArticle">게시글 수정</button>
       </RouterLink>
-      <span> / </span>
+      <span> | </span>
       <button class="btn btn-primary" @click="deleteArticle">게시글 삭제</button>
     </p>
+    <hr />
+    <!-- 댓글 박스 -->
+    <Comment />
   </div>
 </template>
 
@@ -67,6 +46,7 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
 import axios from 'axios'
+import Comment from '@/components/Comment.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -77,14 +57,16 @@ const articleId = route.params.id
 const article = ref(store.article)
 const userId = ref(userStore.name)
 
-const comment_count = computed(() => {
-  // article에 달린 댓글 (comments)가 없으면 0을 반환,
-  // 댓글이 있는 경우 댓글의 수를 세서 반환함
-  return article.value.comments ? article.value.comments.length : 0
-})
-
 const goBack = function () {
   router.back()
+}
+
+const formattedDate = function (date) {
+  return date.substring(0, 10)
+}
+
+const formattedTime = function (date) {
+  return date.substring(11, 19)
 }
 
 const deleteArticle = function () {
@@ -102,8 +84,6 @@ const deleteArticle = function () {
   }
 }
 
-const createComment = function () {}
-
 onMounted(() => {
   store.getArticle(articleId)
 })
@@ -116,4 +96,8 @@ watch(
   }
 )
 </script>
-<style scoped></style>
+<style scoped>
+.article-content-box {
+  min-height: 100px;
+}
+</style>
