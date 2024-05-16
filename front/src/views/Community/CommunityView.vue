@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1>CommunityView</h1>
+    <RouterLink :to="{ name: 'community' }">
+      <h1>CommunityView</h1>
+    </RouterLink>
     <RouterView />
   </div>
 </template>

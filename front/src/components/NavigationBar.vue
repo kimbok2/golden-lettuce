@@ -20,15 +20,13 @@
 
       <!-- 네비게이션 버튼 목록 -->
       <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item" v-for="navItem in navItems" :key="navItem.id">
-            <RouterLink :to="{ name: navItem.name}">
-              <button type="button" class="btn btn-warning m-1">
-                <a class="nav-link" href="#">{{ navItem.itemName }}</a>
-              </button>
-            </RouterLink>
-          </li>
-        </ul>
+        <template class="nav-item" v-for="navItem in navItems" :key="navItem.id">
+          <RouterLink :to="{ name: navItem.name }">
+            <button type="button" class="btn  m-1" :class="{ 'btn-warning': navItem.isMain, 'btn-secondary': !navItem.isMain }">
+              <a class="nav-link" href="#">{{ navItem.itemName }}</a>
+            </button>
+          </RouterLink>
+        </template>
       </div>
     </div>
   </nav>
@@ -44,17 +42,16 @@ import { ref } from 'vue'
 let item_id = 1
 
 const navItems = ref([
-  { id: item_id++, itemName: '상품 검색', name: 'products' },
-  { id: item_id++, itemName: '상품 비교', name: 'compare' },
-  { id: item_id++, itemName: '상품 커뮤니티', name: 'community' },
-  { id: item_id++, itemName: '내 주변 은행 찾기', name: 'maps' },
-  { id: item_id++, itemName: '내 정보', name: 'user' },
-  { id: item_id++, itemName: '환율 계산기', name: 'exchange' },
-  { id: item_id++, itemName: '프로필', name: 'profile' },
-  { id: item_id++, itemName: '로그인', name: 'login' },
-  { id: item_id++, itemName: '회원가입', name: 'signup' },
+  { id: item_id++, itemName: '상품 검색', name: 'products', isMain : true },
+  { id: item_id++, itemName: '상품 비교', name: 'compare', isMain : true },
+  { id: item_id++, itemName: '상품 커뮤니티', name: 'community', isMain : true },
+  { id: item_id++, itemName: '내 주변 은행 찾기', name: 'maps', isMain : true },
+  { id: item_id++, itemName: '환율 계산기', name: 'exchange', isMain : true },
+  { id: item_id++, itemName: '내 정보', name: 'user', isMain : true },
+  { id: item_id++, itemName: '프로필', name: 'profile', isMain : false },
+  { id: item_id++, itemName: '로그인', name: 'login', isMain : false },
+  { id: item_id++, itemName: '회원가입', name: 'signup', isMain : false },
 ])
-
 </script>
 
 <style scoped></style>
