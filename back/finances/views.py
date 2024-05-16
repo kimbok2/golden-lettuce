@@ -65,7 +65,7 @@ def save_deposit(request):
 
 @api_view(['GET'])
 def get_deposit_list(request):
-    # 상품 목록 반환
+    # 상품 목록 반환하기
     products = DepositProduct.objects.all()
     serializer = DepositListSerializer(products, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
