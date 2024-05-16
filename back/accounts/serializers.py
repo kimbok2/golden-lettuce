@@ -4,15 +4,12 @@ from .models import User
 from dj_rest_auth.registration.serializers import RegisterSerializer
 
 class CustomRegisterSerializer(RegisterSerializer):
-    # 추가할 필드들을 정의
-    # 사용자 아이디 필드
-    username = serializers.CharField(
-        # required=False,     # 필수 입력 항목이 아님
+    # 필요한 필드들을 추가
+    # 별명 필드
+    nickname = serializers.CharField(
         allow_blank=True,   # 빈 문자열 허용
         max_length=50      # 최대 길이는 50자
     )
-    # 사용자 이름 필드
-    name = serializers.CharField(max_length=50)  # 최대 길이는 50자
     # 사용자 생년월일 필드
     date_of_birth = serializers.DateField(required=True)  # 필수 입력 항목
 
@@ -22,7 +19,7 @@ class CustomRegisterSerializer(RegisterSerializer):
             'username': self.validated_data.get('username', ''),  # 사용자 아이디
             'password1': self.validated_data.get('password1', ''),  # 비밀번호
             'password2': self.validated_data.get('password2', ''),  # 비밀번호 확인
-            'name': self.validated_data.get('name', ''),  # 사용자 이름
+            'nickname': self.validated_data.get('nickname', ''),  # 사용자 이름
             'date_of_birth': self.validated_data.get('date_of_birth', ''),  # 생년월일
         }
 
@@ -41,7 +38,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'date_of_birth', 'address', 
                   'budget', 'salary', 'deposit_able', 'saving_able', 
-                  'deposit_period', 'saving_period',)
+                  'deposit_period', 'saving_period','credit_score',)
         read_only_fields = ('id', 'username',)
     
 # 전체 프로필 정보를 수정, 조회, 삭제할 serializer

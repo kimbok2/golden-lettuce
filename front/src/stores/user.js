@@ -24,19 +24,21 @@ export const useUserStore = defineStore(
       // const username = payload.username
       // const password1 = payload.password1
       // const password2 = payload.password2
-      const { username, password1, password2 } = payload;
+      const { username, password1, password2, date_of_birth, nickname } =
+        payload;
 
+      console.log(date_of_birth);
+      console.log(nickname);
       // 2. axios로 django에 요청을 보냄
       axios({
         method: "post",
         url: `${API_URL}/accounts/signup/`,
         data: {
-          // username: username,
-          // password1: password1,
-          // password2: password2
           username,
           password1,
           password2,
+          date_of_birth: date_of_birth,
+          nickname: nickname,
         },
       })
         .then((response) => {
