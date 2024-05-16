@@ -119,6 +119,12 @@ const freeAccessNames = [
   "signup",
 ];
 
+// 로그인시 접근 불가능한 name 정의
+const loginBlockAccessNames = [
+  'login',
+  'signup',
+]
+
 router.beforeEach((to, from) => {
   const userStore = useUserStore();
   const isLogin = userStore.isLogin;
@@ -128,6 +134,12 @@ router.beforeEach((to, from) => {
     alert("로그인이 필요합니다.");
     router.push({ name: "login" });
   }
+
 });
+  if (loginBlockAccessNames.includes(to.name) && isLogin) {
+    alert('이미 로그인된 사용자입니다.')
+    next(false)
+  }
+})
 
 export default router;
