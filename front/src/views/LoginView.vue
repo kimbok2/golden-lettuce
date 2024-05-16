@@ -47,9 +47,11 @@
           />
         </div>
       </div>
-      <button type="submit" class="btn btn-primary btn-block mt-3">
-        Login
-      </button>
+
+      <div class="d-flex justify-content-center mt-3">
+        <button type="submit" class="btn btn-primary mx-1">로그인</button>
+        <button @click="goSignup" class="btn btn-primary mx-1">회원가입</button>
+      </div>
     </form>
   </div>
 </template>
@@ -57,6 +59,7 @@
 <script setup>
 import { ref } from "vue";
 import { useUserStore } from "@/stores/user";
+import router from "@/router";
 
 const username = ref(null);
 const password = ref(null);
@@ -68,6 +71,10 @@ const logIn = function () {
     password: password.value,
   };
   store.logIn(payload);
+};
+
+const goSignup = function () {
+  router.push({ name: "signup" });
 };
 </script>
 

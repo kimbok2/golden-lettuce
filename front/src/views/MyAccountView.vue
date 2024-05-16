@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>MyAccountView</h1>
-    <button @click="logOut">로그아웃</button>
+    <button @click="logOut" class="btn btn-primary mx-1">로그아웃</button>
   </div>
 </template>
 

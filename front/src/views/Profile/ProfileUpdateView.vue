@@ -8,6 +8,10 @@
         <input type="date" v-model.trim="dateOfBirth" id="dateOfBirth" />
       </div>
       <div>
+        <label for="address"> 주소 : </label>
+        <input type="text" v-model.trim="address" id="address" />
+      </div>
+      <div>
         <label for="budget"> 보유자산 : </label>
         <input type="number" v-model.trim="budget" id="budget" />
       </div>
@@ -32,10 +36,16 @@
         <input type="number" v-model.trim="savingPeriod" id="savingPeriod" />
       </div>
       <div>
+        <label for="creditScore"> 신용점수 : </label>
+        <input type="number" v-model.trim="creditScore" id="creditScore" />
+      </div>
+      <div>
         <label for="profileimage"> 이미지(구현대기) : </label>
         <input type="file" accept="image/*" id="profileimage" />
       </div>
-      <input type="submit" value="프로필 정보 저장" />
+      <button type="submit" class="btn btn-primary mx-1">
+        프로필 정보 저장
+      </button>
     </form>
   </div>
 </template>
@@ -53,7 +63,8 @@ const depositAble = ref(null);
 const savingAble = ref(null);
 const depositPeriod = ref(null);
 const savingPeriod = ref(null);
-
+const address = ref(null);
+const creditScore = ref(null);
 const store = useUserStore();
 const router = useRouter();
 const user = ref(null);
@@ -75,6 +86,8 @@ onMounted(() => {
       savingAble.value = response.data.saving_able;
       depositPeriod.value = response.data.deposit_period;
       savingPeriod.value = response.data.saving_period;
+      address.value = response.data.address;
+      creditScore.value = response.data.credit_score;
     })
     .catch((err) => {
       console.log(err);
@@ -90,12 +103,14 @@ const updateProfile = function () {
     },
     data: {
       date_of_birth: dateOfBirth.value,
+      address: address.value,
       budget: budget.value,
       salary: salary.value,
       deposit_able: depositAble.value,
       saving_able: savingAble.value,
       deposit_period: depositPeriod.value,
       saving_period: savingPeriod.value,
+      credit_score: creditScore.value,
     },
   })
     .then((response) => {
