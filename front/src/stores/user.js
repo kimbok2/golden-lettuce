@@ -8,6 +8,8 @@ export const useUserStore = defineStore(
   "user",
   () => {
     const name = ref(null);
+    // 유저의 모든 정보를 담을 변수
+    const userInfo = ref(null);
     const API_URL = "http://127.0.0.1:8000";
     const token = ref(null);
     const isLogin = computed(() => {
@@ -93,6 +95,22 @@ export const useUserStore = defineStore(
         .catch((err) => console.log(err));
     };
 
+    const getUserInfo = function () {
+      axios({
+        method: "get",
+        url: `${API_URL}/accounts/profile/${name.value}/`,
+        headers: {
+          Authorization: `Token ${token.value}`,
+        },
+      })
+        .then((response) => {
+          userInfo.value = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
     return {
       API_URL,
       name,
@@ -101,6 +119,8 @@ export const useUserStore = defineStore(
       token,
       isLogin,
       logOut,
+      userInfo,
+      getUserInfo,
     };
   },
   { persist: true }

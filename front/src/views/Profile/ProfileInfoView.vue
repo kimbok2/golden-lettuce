@@ -31,24 +31,13 @@ import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 import { RouterLink, RouterView } from "vue-router";
 
-const store = useUserStore();
 const router = useRouter();
 const user = ref(null);
+const store = useUserStore();
 
 onMounted(() => {
-  axios({
-    method: "get",
-    url: `${store.API_URL}/accounts/profile/${store.name}/`,
-    headers: {
-      Authorization: `Token ${store.token}`,
-    },
-  })
-    .then((response) => {
-      user.value = response.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  store.getUserInfo();
+  user.value = store.userInfo;
 });
 
 const goUpdate = function () {
