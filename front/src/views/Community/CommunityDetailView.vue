@@ -1,5 +1,5 @@
 <template>
-  <div class="text-start card p-3 rounded-0">
+  <div v-if="article" class="text-start p-3 rounded-0">
     <p class="text-end">
       <button class="btn btn-secondary" @click="goBack">> {{ article.category }}</button>
     </p>
@@ -38,6 +38,7 @@
     <!-- 댓글 박스 -->
     <Comment />
   </div>
+  <div v-else>Loading...</div>
 </template>
 
 <script setup>
@@ -53,9 +54,9 @@ const router = useRouter()
 const store = useCommunityStore()
 const userStore = useUserStore()
 
-const articleId = route.params.id
-const article = ref(store.article)
-const userId = ref(userStore.name)
+const articleId = ref(null)
+const article = ref(null)
+const username = ref(null)
 
 const goBack = function () {
   router.back()
@@ -73,7 +74,7 @@ const deleteArticle = function () {
   if (confirm('게시글을 삭제하시겠습니까?')) {
     axios({
       method: 'delete',
-      url: `${store.API_URL}/communities/${articleId}/`,
+      url: `${store.API_URL}/communities/${articleId.value}/`,
     })
       .then((response) => {
         router.push({ name: 'community' })
@@ -85,7 +86,9 @@ const deleteArticle = function () {
 }
 
 onMounted(() => {
-  store.getArticle(articleId)
+  articleId.value = route.params.id
+  article.value = store.getArticle(articleId.value)
+  username.value = userStore.name
 })
 
 // store.article의 변화를 감지하며, 변화가 있는 경우 반응형 변수 article의 값을 바뀐 새 article(newArticle)의 값으로 바꿔줌
