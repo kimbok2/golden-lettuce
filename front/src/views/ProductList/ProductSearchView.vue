@@ -114,20 +114,29 @@
       <ul class="text-start ps-0 text-center">
         <li class="card rounded-0">
           <div class="row m-0">
-            <div class="col-2"><b>공시기준월</b></div>
+            <div class="col-1">
+              <b>공시<br />기준월</b>
+            </div>
             <div class="col-2"><b>담당 은행</b></div>
-            <div class="col-4"><b>상품명</b></div>
-            <div class="col-4"><b>가입 방법</b></div>
+            <div class="col-3"><b>상품명</b></div>
+            <div class="col-1"><b>1개월</b></div>
+            <div class="col-1"><b>3개월</b></div>
+            <div class="col-1"><b>6개월</b></div>
+            <div class="col-1"><b>12개월</b></div>
+            <div class="col-1"><b>24개월</b></div>
+            <div class="col-1"><b>36개월</b></div>
           </div>
         </li>
         <div v-if="products">
           <div v-for="product in products" :key="product.id">
             <li class="card border border-0 border-bottom rounded-0">
               <div class="row m-0">
-                <div class="col-2">{{ product.dcls_month }}</div>
+                <div class="col-1">
+                  {{ product.dcls_month }}
+                </div>
                 <div class="col-2">{{ product.kor_co_nm }}</div>
 
-                <div class="col-4">
+                <div class="col-3">
                   <RouterLink
                     :to="{
                       name: 'products-detail',
@@ -137,7 +146,34 @@
                     >{{ product.fin_prdt_nm }}</RouterLink
                   >
                 </div>
-                <div class="col-4">{{ product.join_deny }}</div>
+                <div class="col-6">
+                  <div class="row m-0" v-if="selectedType2 === 'deposit'">
+                    <div
+                      class="col-2"
+                      v-for="term in ['1', '3', '6', '12', '24', '36']"
+                      :key="term"
+                    >
+                      <div v-if="getRate(product.depositoption_set, term)">
+                        {{ getRate(product.depositoption_set, term) }}%
+                        <hr class="small-hr" />
+                        {{ getRate2(product.depositoption_set, term) }}%
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row m-0" v-else-if="selectedType2 === 'saving'">
+                    <div
+                      class="col-2"
+                      v-for="term in ['1', '3', '6', '12', '24', '36']"
+                      :key="term"
+                    >
+                      <div v-if="getRate(product.savingoption_set, term)">
+                        {{ getRate(product.savingoption_set, term) }}%
+                        <hr class="small-hr" />
+                        {{ getRate2(product.savingoption_set, term) }}%
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </li>
           </div>
@@ -158,6 +194,7 @@ const store = useUserStore();
 const router = useRouter();
 const products = ref(null);
 const selectedType = ref(null);
+const selectedType2 = ref(null);
 const selectedPeriods = ref([]);
 // 옵션 선택 시 해당 옵션을 토대로 예.적금 리스트를 반환하는 함수
 const selectSort = function () {
@@ -169,6 +206,7 @@ const selectSort = function () {
     URL.value = `${store.API_URL}/finances/get_${selectedType.value}_products/${periods}/`;
   }
   if (selectedType.value) {
+    selectedType2.value = selectedType.value;
     axios({
       method: "get",
       url: URL.value,
@@ -217,8 +255,13 @@ const savedata = function () {
     });
 };
 
-const getMax = function (item) {
-  return 1;
+const getRate = (options, term) => {
+  const option = options.find((opt) => opt.save_trm === term);
+  return option ? option.intr_rate : null;
+};
+const getRate2 = (options, term) => {
+  const option = options.find((opt) => opt.save_trm === term);
+  return option ? option.intr_rate2 : null;
 };
 </script>
 
@@ -233,5 +276,11 @@ const getMax = function (item) {
 }
 .custom-link:hover {
   color: gray; /* 호버 시 색상 변경 (원하는 색상으로 변경 가능) */
+}
+.row {
+  align-items: center; /* 수직 정렬 */
+}
+.small-hr {
+  margin: 4px 0; /* 상하 마진을 4px로 설정 */
 }
 </style>
