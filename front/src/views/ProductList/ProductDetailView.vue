@@ -3,8 +3,12 @@
     <h1>ProductDetailView</h1>
     <hr />
     <div v-if="product">
-      <h4>{{ product.fin_prdt_nm }}</h4>
+      <h4>
+        {{ product.fin_prdt_nm
+        }}<button class="btn btn-primary">가입하기</button>
+      </h4>
       <hr />
+
       <h5>담당 회사 : {{ product.kor_co_nm }}</h5>
       <p>
         공시제출월 : {{ product.dcls_month.substring(0, 4) }}년
@@ -17,7 +21,11 @@
       <p>가입 방법 : {{ product.join_way }}</p>
       <p>
         최고 한도 :
-        {{ product.max_limit ? product.max_limit : "최고 한도 없음" }}
+        {{
+          product.max_limit
+            ? formatNumber(product.max_limit) + " 원"
+            : "최고 한도 없음"
+        }}
       </p>
       <p>우대 조건 : {{ product.spcl_cnd }}</p>
       <p>만기 후 이자율 : {{ product.mtrt_int }}</p>
@@ -87,6 +95,10 @@ onMounted(() => {
       console.log(err);
     });
 });
+const formatNumber = (value) => {
+  if (typeof value !== "number") return "최고 한도 없음";
+  return new Intl.NumberFormat().format(value);
+};
 </script>
 
 <style scoped></style>

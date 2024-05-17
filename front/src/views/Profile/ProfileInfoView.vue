@@ -26,7 +26,7 @@
 
 <script setup>
 import axios from "axios";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 import { RouterLink, RouterView } from "vue-router";
@@ -34,6 +34,14 @@ import { RouterLink, RouterView } from "vue-router";
 const router = useRouter();
 const user = ref(null);
 const store = useUserStore();
+
+// store.userInfo의 변화를 감지하며, 변화가 있는 경우 반응형 변수 userInfo의 값을 바뀐 새 user(newUser)의 값으로 바꿔줌
+watch(
+  () => store.userInfo,
+  (newUser) => {
+    user.value = newUser;
+  }
+);
 
 onMounted(() => {
   store.getUserInfo();
