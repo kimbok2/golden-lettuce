@@ -118,11 +118,51 @@ def get_deposit_list(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
+def get_deposit_products(request, period):
+    period = period.split(',')
+    products = DepositProduct.objects.filter(depositoption__save_trm__in = period).order_by('-depositoption__intr_rate').distinct()
+    # 중복 제거를 위한 set 사용
+    seen = set()
+    unique_products = []
+    for product in products:
+        if product.id not in seen:
+            unique_products.append(product)
+            seen.add(product.id)
+    serializer = DepositListSerializer(unique_products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_deposit_detail(request, id):
+    product = DepositProduct.objects.get(pk=id)
+    serializer = DepositDetailSerializer(product)
+    return Response(serializer.data)
+
+@api_view(['GET'])
 def get_saving_list(request):
     # 상품 목록 반환하기
     products = SavingProduct.objects.all()
     serializer = SavingListSerializer(products, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_saving_products(request, period):
+    period = period.split(',')
+    products = SavingProduct.objects.filter(savingoption__save_trm__in = period).order_by('-savingoption__intr_rate').distinct()
+    # 중복 제거를 위한 set 사용
+    seen = set()
+    unique_products = []
+    for product in products:
+        if product.id not in seen:
+            unique_products.append(product)
+            seen.add(product.id)
+    serializer = SavingListSerializer(unique_products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_saving_detail(request, id):
+    product = SavingProduct.objects.get(pk=id)
+    serializer = SavingDetailSerializer(product)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def get_deposit_option(request):

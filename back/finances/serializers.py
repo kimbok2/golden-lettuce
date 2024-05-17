@@ -23,6 +23,7 @@ class DepositListSerializer(serializers.ModelSerializer):
 
 
 class DepositDetailSerializer(serializers.ModelSerializer):
+    depositoption_set = DepositOptionSerializer(read_only=True, many=True)
     class Meta:
         model = DepositProduct
         fields = '__all__'
@@ -45,6 +46,7 @@ class SavingListSerializer(serializers.ModelSerializer):
 
 # 적금 단일 저장용 시리얼라이저
 class SavingDetailSerializer(serializers.ModelSerializer):
+    savingoption_set = SavingOptionSerializer(read_only=True, many=True)
     class Meta:
         model = SavingProduct
         fields = '__all__'
