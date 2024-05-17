@@ -239,11 +239,8 @@ const createReply = function (commentId) {
   replyContent.value = ''
 }
 
-watch(
-  () => store.article,
-  (newArticle) => {
-    article.value = newArticle
-  },
+watch(() => store.article, (newArticle) => {
+    article.value = newArticle},
   { deep: true }
 )
 

@@ -1,26 +1,37 @@
 <template>
-  <div>
-    <h1>MapView</h1>
-    <div class="text-start">
+  <div class="text-start">
+    <!-- 지도 검색창 -->
+    <div class="map-search-box border">
       <input type="text" />
       <input type="submit" />
     </div>
-    <div style="min-height: 50px; min-width: 50px">
-      <ul v-if="markerList">
+    <!-- 지도 그림 및 목록을 출력할 태그 -->
+    <div class="d-flex">
+      <div id="map" ref="mapContainer" style="width: 600px; height: 600px"></div>
+
+      <!-- 은행 반복 -->
+      <ul v-if="markerList" class="list-group overflow-y-scroll border rounded-0" style="height: 600px; width: 400px">
         <template v-for="data in markerList">
-          <li v-if="!data.place_name.includes('ATM')">
-            {{ data.place_name }}
+          <li v-if="!data.place_name.includes('ATM')" class="list-group-item p-0" style="min-height: 150px">
+            <div
+              class="d-flex justify-content-between align-items-center bg-primary-subtle px-3"
+              style="min-height: 50px"
+            >
+              <span class="fw-bold">{{ data.place_name }}</span>
+              <span v-show="data.phone" class="text-body-tertiary">{{ data.phone }}</span>
+            </div>
+            <hr />
           </li>
         </template>
       </ul>
     </div>
-    <div id="map" ref="mapContainer" style="width: 500px; height: 300px"></div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useScriptTag } from '@vueuse/core'
+import { useUserStore } from '@/stores/user'
 
 const API_KEY_MAP = import.meta.env.VITE_API_KEY_MAP
 const mapScriptSrc = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${API_KEY_MAP}&libraries=services`
@@ -35,14 +46,18 @@ const markerList = ref([])
 // 지도 검색을 위한 변수 설정
 const mapCenter = ref({ y: 36.3549777, x: 127.2983403 })
 const mapLevel = ref(5)
+
+// 지도 검색 인자에 전달할 키워드
+const searchKeyWordCity = ref(null)
 const searchKeyWord = ref(null)
+const searchKeyWordDefault = ref('은행')
 
 // mapCenter가 변경됐을 때를 보는 감시하는 함수
 watch(
   mapCenter,
   (newMapCenter) => {
     searchCurrentMap()
-    console.log(mapObject.value)
+    console.log('mapCenter : ', mapCenter.value)
   },
   { deep: true }
 )
@@ -52,6 +67,7 @@ watch(
   mapLevel,
   (newMapLevel) => {
     searchCurrentMap()
+    console.log('mapLevel : ', mapLevel.value)
   },
   { deep: true }
 )
@@ -67,7 +83,6 @@ const loadScript = function () {
     document.head.appendChild(script)
     // 로드 완료 메세지
     // console.log('loadScript 함수 실행 완료')
-    // infowindow
     resolve()
   })
 }
@@ -82,8 +97,7 @@ const initMap = () => {
   mapObject.value = new kakao.maps.Map(mapContainer.value, mapOptions)
   console.log('initMap 함수 실행 완료')
 
-  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 })
-
+  infowindow = new kakao.maps.InfoWindow({ zIndex: 1, border: 'none' })
 
   if (mapObject.value) {
   }
@@ -99,11 +113,12 @@ const initMap = () => {
       y: latlng.getLat(),
       x: latlng.getLng(),
     }
+  })
 
-    let message = '변경된 지도 중심좌표는 ' + latlng.getLat() + ' 이고, '
-    message += '경도는 ' + latlng.getLng() + ' 입니다'
-
-    console.log(message)
+  // 지도가 확대 또는 축소되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
+  kakao.maps.event.addListener(mapObject.value, 'zoom_changed', function () {
+    // 지도의 현재 레벨을 얻어옵니다
+    mapLevel.value = mapObject.value.getLevel()
   })
 
   // defaultMarker 함수 실행
@@ -114,27 +129,25 @@ const initMap = () => {
 // 지도 script가 (kakao.maps) 로드돼있으면 initMap, 아니면 loadScript
 onMounted(() => {
   if (window.kakao?.maps) {
-    console.log('지도 Script가 이미 load되어 있음 -> initMap 함수 실행')
+    console.log('onMount : 지도 Script가 이미 load되어 있음 -> initMap 함수 실행')
     initMap()
   } else {
-    console.log('지도 Script가 load되어있지 않음 -> loadScript 함수 실행')
+    console.log('onMount : 지도 Script가 load되어있지 않음 -> loadScript 함수 실행')
     loadScript()
   }
 })
 
+// 현재 위치 및 검색어를 받아서 지도를 불러올 함수
 const searchCurrentMap = () => {
-  // 마커 정보를 설정할 함수
   // 장소 검색 객체를 생성합니다
   const ps = new kakao.maps.services.Places(mapObject.value)
 
-  // 카테고리로 은행을 검색합니다
-  ps.categorySearch('BK9', placesSearchCB, { useMapBounds: true })
+  ps.keywordSearch(searchKeyWordDefault.value, placesSearchCB, { useMapBounds: true })
 }
 
 // 카테고리 검색 완료 시 호출되는 콜백함수 입니다
 function placesSearchCB(data, status, pagination) {
   markerList.value = data
-  console.log(markerList.value)
   console.log(`status: ${status}`)
   if (status === kakao.maps.services.Status.OK) {
     for (let i = 0; i < data.length; i++) {
@@ -156,13 +169,36 @@ function displayMarker(place) {
 
   // 마커에 클릭이벤트를 등록합니다
   kakao.maps.event.addListener(marker, 'click', function () {
+    mapCenter.value = {
+      y: place.y,
+      x: place.x,
+    }
+    console.log(mapCenter.value)
+    initMap()
     // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
     // 인포윈도우 표시
     console.log(place.place_name)
     infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>')
     infowindow.open(mapObject.value, marker)
   })
+
+  // 마커에 마우스오버 이벤트를 등록합니다
+  kakao.maps.event.addListener(marker, 'mouseover', function () {
+    // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
+    infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>')
+    infowindow.open(mapObject.value, marker)
+  })
+
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+hr {
+  margin-top: 0;
+}
+
+.map-search-box {
+  width: 1000px;
+  height: 100px;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>MapsView</h1>
+    <h1>내 주변 은행 찾기</h1>
     <Map />
   </div>
 </template>
