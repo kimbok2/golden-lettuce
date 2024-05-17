@@ -12,11 +12,14 @@ import ProfileView from "@/views/Profile/ProfileView.vue";
 import ProfileInfoView from "@/views/Profile/ProfileInfoView.vue";
 import ProfileUpdateView from "@/views/Profile/ProfileUpdateView.vue";
 import ProductCompareView from "@/views/ProductCompareView.vue";
-import ProductListView from "@/views/ProductListView.vue";
+import ProductListView from "@/views/ProductList/ProductListView.vue";
 import LoginView from "@/views/LoginView.vue";
 import SignUpView from "@/views/SignUpView.vue";
 // 비밀번호 변경
 import ProfilePasswordChangeView from "@/views/Profile/ProfilePasswordChangeView.vue";
+// 상품 조회
+import ProductSearchView from "@/views/ProductList/ProductSearchView.vue";
+import ProductDetailView from "@/views/ProductList/ProductDetailView.vue";
 
 import { useUserStore } from "@/stores/user";
 
@@ -35,8 +38,15 @@ const router = createRouter({
     },
     {
       path: "/products/",
-      name: "products",
       component: ProductListView,
+      children: [
+        { path: "", name: "products", component: ProductSearchView },
+        {
+          path: ":type/:id",
+          name: "products-detail",
+          component: ProductDetailView,
+        },
+      ],
     },
     {
       path: "/community/",
@@ -110,8 +120,8 @@ const router = createRouter({
     } else {
       return { left: 0, top: 0 };
     }
-  }
-})
+  },
+});
 
 // 로그인 없이 접근 가능한 name 정의
 const freeAccessNames = [
@@ -144,4 +154,4 @@ router.beforeEach((to, from) => {
   }
 });
 
-export default router
+export default router;
