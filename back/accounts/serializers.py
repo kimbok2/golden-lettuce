@@ -2,6 +2,8 @@ from rest_framework import serializers
 from allauth.account.adapter import get_adapter
 from .models import User
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from finances.serializers import DepositDetailSerializer, SavingDetailSerializer
+
 
 class CustomRegisterSerializer(RegisterSerializer):
     # 필요한 필드들을 추가
@@ -34,11 +36,15 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 # 프로필에 노출될 serializer    
 class ProfileSerializer(serializers.ModelSerializer):
+    join_deposit = DepositDetailSerializer(many=True)
+    join_saving = SavingDetailSerializer(many=True)
+    profile_img = serializers.ImageField(use_url=True)
     class Meta:
         model = User
         fields = ('id', 'username', 'date_of_birth', 'address', 
                   'budget', 'salary', 'deposit_able', 'saving_able', 
-                  'deposit_period', 'saving_period','credit_score',)
+                  'deposit_period', 'saving_period','credit_score',
+                  'join_deposit', 'join_saving', 'profile_img',)
         read_only_fields = ('id', 'username',)
     
 # 전체 프로필 정보를 수정, 조회, 삭제할 serializer

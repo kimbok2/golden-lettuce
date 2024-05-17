@@ -4,9 +4,12 @@
     <hr />
     <div v-if="product">
       <h4>
-        {{ product.fin_prdt_nm
-        }}<button class="btn btn-primary">가입하기</button>
+        {{ product.fin_prdt_nm }}
       </h4>
+      <p>
+        <span>가입자 수 : {{ product.join_user_count }}명</span>
+        <button @click="join_product" class="btn btn-primary">가입하기</button>
+      </p>
       <hr />
 
       <h5>담당 회사 : {{ product.kor_co_nm }}</h5>
@@ -32,7 +35,7 @@
       <p>유의사항 : {{ product.etc_note }}</p>
       <div>
         <h5>옵션 정보</h5>
-        <div v-if="product.depositoption_set">
+        <div>
           <ul class="text-start ps-0">
             <li class="card rounded-0">
               <div class="row m-0">
@@ -42,8 +45,24 @@
                 <div class="col-3 text-center">저축금리 유형</div>
               </div>
             </li>
-            <div>
+            <div v-if="route.params.type === 'deposit'">
               <div v-for="option in product.depositoption_set">
+                <li class="card border border-0 border-bottom rounded-0">
+                  <div class="row m-0">
+                    <div class="col-3 text-center">{{ option.save_trm }}</div>
+                    <div class="col-3 text-center">
+                      {{ option.intr_rate }}
+                    </div>
+                    <div class="col-3 text-center">{{ option.intr_rate2 }}</div>
+                    <div class="col-3 text-center">
+                      {{ option.intr_rate_type_nm }}
+                    </div>
+                  </div>
+                </li>
+              </div>
+            </div>
+            <div v-else-if="route.params.type === 'saving'">
+              <div v-for="option in product.savingoption_set">
                 <li class="card border border-0 border-bottom rounded-0">
                   <div class="row m-0">
                     <div class="col-3 text-center">{{ option.save_trm }}</div>
@@ -98,6 +117,24 @@ onMounted(() => {
 const formatNumber = (value) => {
   if (typeof value !== "number") return "최고 한도 없음";
   return new Intl.NumberFormat().format(value);
+};
+
+const join_product = function () {
+  productType.value = route.params.type;
+  productId.value = route.params.id;
+  axios({
+    method: "post",
+    url: `${store.API_URL}/finances/join_${productType.value}/${productId.value}/`,
+    headers: {
+      Authorization: `Token ${store.token}`,
+    },
+  })
+    .then((res) => {
+      console.log("가입");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 </script>
 

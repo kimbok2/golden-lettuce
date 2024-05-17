@@ -40,8 +40,13 @@
         <input type="number" v-model.trim="creditScore" id="creditScore" />
       </div>
       <div>
-        <label for="profileimage"> 이미지(구현대기) : </label>
-        <input type="file" accept="image/*" id="profileimage" />
+        <label for="profileimage"> 이미지 : </label>
+        <input
+          type="file"
+          accept="image/*"
+          id="profileimage"
+          @change="onFileChange"
+        />
       </div>
       <button type="submit" class="btn btn-primary mx-1">
         프로필 정보 저장
@@ -65,6 +70,7 @@ const depositPeriod = ref(null);
 const savingPeriod = ref(null);
 const address = ref(null);
 const creditScore = ref(null);
+const profileImage = ref(null); // 이미지 파일을 저장할 ref
 const store = useUserStore();
 const router = useRouter();
 const user = ref(null);
@@ -94,24 +100,29 @@ onMounted(() => {
     });
 });
 
+const onFileChange = (event) => {
+  profileImage.value = event.target.files[0]; // 선택된 파일을 profileImage에 저장
+};
+
 const updateProfile = function () {
+  const formData = new FormData();
+  formData.append("date_of_birth", dateOfBirth.value);
+  formData.append("address", address.value);
+  formData.append("budget", budget.value);
+  formData.append("salary", salary.value);
+  formData.append("deposit_able", depositAble.value);
+  formData.append("saving_able", savingAble.value);
+  formData.append("deposit_period", depositPeriod.value);
+  formData.append("saving_period", savingPeriod.value);
+  formData.append("credit_score", creditScore.value);
   axios({
     method: "put",
     url: `${store.API_URL}/accounts/profile/${store.name}/`,
     headers: {
       Authorization: `Token ${store.token}`,
+      "Content-Type": "multipart/form-data",
     },
-    data: {
-      date_of_birth: dateOfBirth.value,
-      address: address.value,
-      budget: budget.value,
-      salary: salary.value,
-      deposit_able: depositAble.value,
-      saving_able: savingAble.value,
-      deposit_period: depositPeriod.value,
-      saving_period: savingPeriod.value,
-      credit_score: creditScore.value,
-    },
+    data: formData,
   })
     .then((response) => {
       console.log(response);
