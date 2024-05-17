@@ -4,25 +4,23 @@
 
     <main style="margin-top: 100px;">
       <!-- 창 크기 고정형 -->
-      <!-- <div class="d-flex flex-column main-sheet justify-content-center align-items-center">
+      <div class="d-flex flex-column main-sheet justify-content-center align-items-center">
         <div class="text-center" style="min-height: 1000px; width:1000px">
           <RouterView />
         </div>
-      </div> -->
+      </div>
       <!-- 반응형 -->
-      <div class="container main-sheet">
+      <!-- <div class="container main-sheet">
         <div class="row text-center" style="min-height: 1000px">
           <div class="col-3 side-col">
-            <!-- <h1>Left Column</h1> -->
           </div>
           <div class="col-6 main-col border">
             <RouterView />
           </div>
           <div class="col-3 side-col">
-            <!-- <h1>Right Column</h1> -->
           </div>
         </div>
-      </div>
+      </div> -->
     </main>
 
     <Footer />
