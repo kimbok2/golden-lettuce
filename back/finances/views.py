@@ -15,12 +15,33 @@ BASE_URL = 'http://finlife.fss.or.kr/finlifeapi/'
 API_KEY='b5c8f98021e7c5f65ecd69ba1a050e5e'
 
 @api_view(['GET'])
+def save_bank(request):
+    url = BASE_URL + f'companySearch.json?auth={API_KEY}&topFinGrpNo=020000&pageNo=1'
+    response = requests.get(url).json()
+    baseList = response.get('result').get('baseList')
+    for bank in baseList:
+        save_data = {
+            'fin_co_no' : bank.get('fin_co_no', ''),
+            'dcls_month' : bank.get('dcls_month', ''),
+            'kor_co_nm' : bank.get('kor_co_nm', ''),
+            'dcls_chrg_man' : bank.get('dcls_chrg_man', ''),
+            'homp_url' : bank.get('homp_url', ''),
+            'cal_tel' : bank.get('cal_tel', ''),
+        }
+        bankserializer = BankSerializer(data=save_data)
+        # 저장
+        if bankserializer.is_valid(raise_exception=True):
+            bankserializer.save()
+    return JsonResponse({'message':'save!'})
+
+@api_view(['GET'])
 def save_deposit(request):
     url = BASE_URL + f'depositProductsSearch.json?auth={API_KEY}&topFinGrpNo=020000&pageNo=1'
     response = requests.get(url).json()
     baseList = response.get('result').get('baseList')
     optionList = response.get('result').get('optionList')
     for product in baseList:
+        bank = Bank.objects.get(fin_co_no=product.get('fin_co_no'))
         save_data = {
             'fin_prdt_cd' : product.get('fin_prdt_cd'),
             'fin_prdt_nm' : product.get('fin_prdt_nm', ''),
@@ -41,7 +62,7 @@ def save_deposit(request):
         productserializer = DepositDetailSerializer(data=save_data)
         # 유효할 경우 저장
         if productserializer.is_valid(raise_exception=True):
-            productserializer.save()
+            productserializer.save(bank=bank)
             
     
     for option in optionList:
@@ -68,6 +89,7 @@ def save_saving(request):
     baseList = response.get('result').get('baseList')
     optionList = response.get('result').get('optionList')
     for product in baseList:
+        bank = Bank.objects.get(fin_co_no=product.get('fin_co_no'))
         save_data = {
             'fin_prdt_cd' : product.get('fin_prdt_cd'),
             'fin_prdt_nm' : product.get('fin_prdt_nm', ''),
@@ -88,8 +110,7 @@ def save_saving(request):
         productserializer = SavingDetailSerializer(data=save_data)
         # 유효할 경우 저장
         if productserializer.is_valid(raise_exception=True):
-            productserializer.save()
-            
+            productserializer.save(bank=bank)
     
     for option in optionList:
         product = SavingProduct.objects.get(fin_prdt_cd = option.get('fin_prdt_cd'),
@@ -156,6 +177,12 @@ def get_saving_products(request, period):
             unique_products.append(product)
             seen.add(product.id)
     serializer = SavingListSerializer(unique_products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_bank_detail(request, id):
+    bank = Bank.objects.get(pk=id)
+    serializer = BankSerializer(bank)
     return Response(serializer.data)
 
 @api_view(['GET'])

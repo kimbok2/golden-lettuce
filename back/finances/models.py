@@ -2,8 +2,19 @@ from django.db import models
 from django.conf import settings
 
 # Create your models here.
+# 은행 모델
+class Bank(models.Model):
+    fin_co_no = models.CharField(max_length=100) # 금융회사코드
+    kor_co_nm = models.CharField(max_length = 100) # 금융회사명
+    dcls_month = models.CharField(max_length = 20) # 공시제출월
+    dcls_chrg_man = models.TextField(null=True, blank=True) # 공시 담당자
+    homp_url = models.URLField(null=True, blank=True) # 홈페이지 주소
+    cal_tel = models.CharField(max_length=20) # 콜센터 전화번호
+
+
 # 예금상품 모델
 class DepositProduct(models.Model):
+    bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
     fin_prdt_cd = models.CharField(max_length=100) # 금융상품코드
     fin_prdt_nm = models.CharField(max_length=100) # 금융상품명
     fin_co_no = models.CharField(max_length=100) # 금융회사코드
@@ -22,6 +33,7 @@ class DepositProduct(models.Model):
 
 # 적금 상품 모델
 class SavingProduct(models.Model):
+    bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
     fin_prdt_cd = models.CharField(max_length=100) # 금융상품코드
     fin_prdt_nm = models.CharField(max_length=100) # 금융상품명
     fin_co_no = models.CharField(max_length=100) # 금융회사코드

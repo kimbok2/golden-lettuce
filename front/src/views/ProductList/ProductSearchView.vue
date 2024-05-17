@@ -9,7 +9,7 @@
     <hr />
 
     <div class="container">
-      <h3>제품 검색 조건 바</h3>
+      <h3>상품 검색 조건 바</h3>
       <form @submit.prevent="selectSort">
         <span>상품 종류 : </span>
         <div class="form-check form-check-inline">
@@ -111,22 +111,23 @@
     </div>
     <hr />
     <div>
-      <ul class="text-start ps-0">
+      <ul class="text-start ps-0 text-center">
         <li class="card rounded-0">
           <div class="row m-0">
-            <div class="col-1">상품번호</div>
-            <div class="col-5">상품명</div>
-            <div class="col-3">담당 은행</div>
-            <div class="col-1">가입 방법</div>
-            <div class="col-2">공시기준월</div>
+            <div class="col-2"><b>공시기준월</b></div>
+            <div class="col-2"><b>담당 은행</b></div>
+            <div class="col-4"><b>상품명</b></div>
+            <div class="col-4"><b>가입 방법</b></div>
           </div>
         </li>
         <div v-if="products">
-          <div v-for="product in products">
+          <div v-for="product in products" :key="product.id">
             <li class="card border border-0 border-bottom rounded-0">
               <div class="row m-0">
-                <div class="col-1">{{ product.id }}</div>
-                <div class="col-5">
+                <div class="col-2">{{ product.dcls_month }}</div>
+                <div class="col-2">{{ product.kor_co_nm }}</div>
+
+                <div class="col-4">
                   <RouterLink
                     :to="{
                       name: 'products-detail',
@@ -136,9 +137,7 @@
                     >{{ product.fin_prdt_nm }}</RouterLink
                   >
                 </div>
-                <div class="col-3">{{ product.kor_co_nm }}</div>
-                <div class="col-1">{{ product.join_deny }}</div>
-                <div class="col-2 text-center">{{ product.dcls_month }}</div>
+                <div class="col-4">{{ product.join_deny }}</div>
               </div>
             </li>
           </div>
@@ -190,27 +189,44 @@ const selectSort = function () {
 const savedata = function () {
   axios({
     method: "get",
-    url: `${store.API_URL}/finances/save_deposit/`,
+    url: `${store.API_URL}/finances/save_bank/`,
   })
-    .then((response) => {
+    .then((resp) => {
       axios({
         method: "get",
-        url: `${store.API_URL}/finances/save_saving/`,
+        url: `${store.API_URL}/finances/save_deposit/`,
       })
-        .then((res) => {
-          alert("저장 완료!");
+        .then((response) => {
+          axios({
+            method: "get",
+            url: `${store.API_URL}/finances/save_saving/`,
+          })
+            .then((res) => {
+              alert("저장 완료!");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((err) => {
+          console.log(err);
         });
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((errors) => {
+      console.log(errors);
     });
+};
+
+const getMax = function (item) {
+  return 1;
 };
 </script>
 
 <style scoped>
+.nowrap {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .custom-link {
   color: inherit; /* 부모 요소의 색상 상속 */
   text-decoration: none; /* 밑줄 제거 */
