@@ -10,7 +10,8 @@ urlpatterns = [
     path('get_bank/<int:id>/', views.get_bank_detail),
     path('get_deposit/<int:id>/', views.get_deposit_detail),
     path('get_saving/<int:id>/', views.get_saving_detail),
-    path('get_deposit_option_all/', views.get_deposit_option),
     path('get_deposit_products/<str:period>/', views.get_deposit_products),
     path('get_saving_products/<str:period>/', views.get_saving_products),
+    path('join_deposit/<int:deposit_id>/', views.join_deposit),
+    path('join_saving/<int:saving_id>/', views.join_saving),
 ]

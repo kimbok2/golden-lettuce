@@ -30,6 +30,7 @@ class DepositProduct(models.Model):
     max_limit = models.IntegerField(blank=True, null=True) # 최대 한도
     mtrt_int = models.TextField(blank=True, null=True) # 만기 후 약정 이율
     spcl_cnd = models.TextField(blank=True, null=True) # 우대 조건
+    join_user = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name = 'join_deposit') # 가입 유저
 
 # 적금 상품 모델
 class SavingProduct(models.Model):
@@ -49,6 +50,7 @@ class SavingProduct(models.Model):
     max_limit = models.IntegerField(blank=True, null=True) # 최대 한도
     mtrt_int = models.TextField(blank=True, null=True) # 만기 후 약정 이율
     spcl_cnd = models.TextField(blank=True, null=True) # 우대 조건
+    join_user = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name = 'join_saving') # 가입 유저
 
 # 예금 상품 옵션
 class DepositOption(models.Model):

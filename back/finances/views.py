@@ -59,7 +59,7 @@ def save_deposit(request):
             'mtrt_int' : product.get('mtrt_int', ''),
             'spcl_cnd' : product.get('spcl_cnd', ''),
         }
-        productserializer = DepositDetailSerializer(data=save_data)
+        productserializer = DepositSerializer(data=save_data)
         # 유효할 경우 저장
         if productserializer.is_valid(raise_exception=True):
             productserializer.save(bank=bank)
@@ -107,7 +107,7 @@ def save_saving(request):
             'mtrt_int' : product.get('mtrt_int', ''),
             'spcl_cnd' : product.get('spcl_cnd', ''),
         }
-        productserializer = SavingDetailSerializer(data=save_data)
+        productserializer = SavingSerializer(data=save_data)
         # 유효할 경우 저장
         if productserializer.is_valid(raise_exception=True):
             productserializer.save(bank=bank)
@@ -153,12 +153,6 @@ def get_deposit_products(request, period):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_deposit_detail(request, id):
-    product = DepositProduct.objects.get(pk=id)
-    serializer = DepositDetailSerializer(product)
-    return Response(serializer.data)
-
-@api_view(['GET'])
 def get_saving_list(request):
     # 상품 목록 반환하기
     products = SavingProduct.objects.all()
@@ -186,13 +180,33 @@ def get_bank_detail(request, id):
     return Response(serializer.data)
 
 @api_view(['GET'])
+def get_deposit_detail(request, id):
+    product = DepositProduct.objects.get(pk=id)
+    serializer = DepositDetailSerializer(product)
+    return Response(serializer.data)
+
+@api_view(['GET'])
 def get_saving_detail(request, id):
     product = SavingProduct.objects.get(pk=id)
     serializer = SavingDetailSerializer(product)
     return Response(serializer.data)
 
-@api_view(['GET'])
-def get_deposit_option(request):
-    options = DepositOption.objects.all()
-    serializer = DepositOptionSerializer(options, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+# 예금 상품 가입
+@api_view(['POST'])
+def join_deposit(request, deposit_id):
+    deposit = DepositProduct.objects.get(id=deposit_id)
+    if request.user in deposit.join_user.all():
+        pass
+    else:
+        deposit.join_user.add(request.user)
+        return Response(status=status.HTTP_200_OK)
+    
+# 예금 상품 가입
+@api_view(['POST'])
+def join_saving(request, saving_id):
+    saving = SavingProduct.objects.get(id=saving_id)
+    if request.user in saving.join_user.all():
+        pass
+    else:
+        saving.join_user.add(request.user)
+        return Response(status=status.HTTP_200_OK)
