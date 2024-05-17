@@ -11,14 +11,20 @@
 
       <!-- 은행 반복 -->
       <ul v-if="markerList" class="list-group overflow-y-scroll border rounded-0" style="height: 600px; width: 400px">
-        <template v-for="data in markerList">
-          <li v-if="!data.place_name.includes('ATM')" class="list-group-item p-0" style="min-height: 150px">
+        <template v-for="data in markerList" :key="data.id">
+          <li v-if="!data.place_name.includes('ATM')" class="list-group-item p-0" style="min-height: 175px">
             <div
-              class="d-flex justify-content-between align-items-center bg-primary-subtle px-3"
+              class="bg-primary-subtle py-1 px-3"
               style="min-height: 50px"
             >
-              <span class="fw-bold">{{ data.place_name }}</span>
-              <span v-show="data.phone" class="text-body-tertiary">{{ data.phone }}</span>
+              <!-- 은행 이름 -->
+              <p class="fw-bold m-0">{{ data.place_name }}</p>
+              <!-- 은행까지의 거리 -->
+              <div class="d-flex justify-content-between align-items-center ">
+                <span class="text-primary"> {{ data?.distance }} km</span>
+                <!-- 은행 전화번호 -->
+                <span v-show="data.phone" class="text-body-tertiary">{{ data.phone }}</span>
+              </div>
             </div>
             <hr />
           </li>
@@ -147,15 +153,21 @@ const searchCurrentMap = () => {
 
 // 카테고리 검색 완료 시 호출되는 콜백함수 입니다
 function placesSearchCB(data, status, pagination) {
-  markerList.value = data
   console.log(`status: ${status}`)
   if (status === kakao.maps.services.Status.OK) {
     for (let i = 0; i < data.length; i++) {
       // 조건문으로 ATM 제거
       if (!data[i].place_name.includes('ATM')) {
+        const distance = getDistance(mapCenter.value.y, mapCenter.value.x, data[i].y, data[i].x)
+        data[i]['distance'] = parseFloat(distance.toFixed(2)).toString()
+        console.log(distance)
         displayMarker(data[i])
       }
     }
+
+    markerList.value = data.sort((a, b) => {
+      return a.distance - b.distance
+    })
   }
 }
 
@@ -188,7 +200,23 @@ function displayMarker(place) {
     infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>')
     infowindow.open(mapObject.value, marker)
   })
+}
+// 위도와 경도 사이의 거리를 구하는 함수
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371 // 지구의 반경 (단위: km)
+  const dLat = deg2rad(lat2 - lat1) // 위도 차이 (라디안)
+  const dLon = deg2rad(lon2 - lon1) // 경도 차이 (라디안)
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const distance = R * c // 거리 (단위: km)
+  return distance
+}
 
+// 각도 -> 라디안 변환 함수
+function deg2rad(deg) {
+  return deg * (Math.PI / 180)
 }
 </script>
 
