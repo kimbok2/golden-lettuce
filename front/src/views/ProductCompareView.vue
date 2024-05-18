@@ -1,26 +1,50 @@
 <template>
   <div>
     <h1>ProductCompareView</h1>
+    <h3>
+      예금 희망 기간 :
+      {{
+        user?.deposit_period
+          ? user?.deposit_period + "개월"
+          : "희망 기간을 입력해주세요."
+      }}
+    </h3>
+    <button @click="goProfile" class="btn btn-primary mx-1">
+      입력하러 가기
+    </button>
     <div>
       <div class="container">
-        <div class="row mb-3 border bg-light">
-          <div class="col-3 font-weight-bold border py-2">Product Name</div>
-          <div class="col-3 font-weight-bold border py-2">Join Deny</div>
-          <div class="col-3 font-weight-bold border py-2">Company Name</div>
-          <div class="col-3 font-weight-bold border py-2">
-            Comparison Result
-          </div>
+        <div class="row border bg-light">
+          <div class="col-2 font-weight-bold border">상품명</div>
+          <div class="col-2 font-weight-bold border">담당 은행</div>
+          <div class="col-2 font-weight-bold border">최고 한도</div>
+          <div class="col-2 font-weight-bold border">저축 금리</div>
+          <div class="col-2 font-weight-bold border">최고 우대 금리</div>
+          <div class="col-2 font-weight-bold border">저축 금리 유형</div>
         </div>
+
         <div
-          v-for="(deposit, index) in user.join_deposit"
+          v-for="(deposit, index) in user?.join_deposit"
           :key="index"
-          class="row mb-3"
+          class="row"
         >
-          <div class="col-3 border py-2">{{ deposit.fin_prdt_nm }}</div>
-          <div class="col-3 border py-2">{{ deposit.join_deny }}</div>
-          <div class="col-3 border py-2">{{ deposit.kor_co_nm }}</div>
-          <div class="col-3 border py-2">
-            {{ compareFields(deposit) ? "Match" : "No Match" }}
+          <div class="col-2 border">{{ deposit.fin_prdt_nm }}</div>
+          <div class="col-2 border">{{ deposit.kor_co_nm }}</div>
+          <div class="col-2 border">
+            {{
+              deposit.max_limit
+                ? formatNumber(deposit.max_limit) + " 원"
+                : "최고 한도 없음"
+            }}
+          </div>
+          <div :class="['col-2 border', getRateClass(deposit, 'intr_rate')]">
+            {{ getInterestRate(deposit, "intr_rate") }}
+          </div>
+          <div :class="['col-2 border', getRateClass(deposit, 'intr_rate')]">
+            {{ getInterestRate(deposit, "intr_rate2") }}
+          </div>
+          <div class="col-2 border">
+            {{ getInterestRate(deposit, "intr_rate_type_nm") }}
           </div>
         </div>
       </div>
@@ -31,6 +55,7 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref, watch } from "vue";
+import router from "@/router";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 
@@ -53,30 +78,44 @@ const compareFields = (deposit) => {
   }
   return false;
 };
-// 필드 정의
-const fields = ref(["상품명", "가입 기간", "기본 금리", "우대 금리"]);
 
-// 레코드 데이터
-const data = ref([
-  {
-    상품명: "예금",
-    "가입 기간": "3개월",
-    "기본 금리": "2.3%",
-    "우대 금리": "2.6%",
-  },
-  {
-    상품명: "적금",
-    "가입 기간": "6개월",
-    "기본 금리": "3.1%",
-    "우대 금리": "3.6%",
-  },
-  {
-    상품명: "대출",
-    "가입 기간": "12개월",
-    "기본 금리": "2.6%",
-    "우대 금리": "2.7%",
-  },
-]);
+const goProfile = function () {
+  router.push({ name: "profile" });
+};
+
+const formatNumber = (value) => {
+  if (typeof value !== "number") return "최고 한도 없음";
+  return new Intl.NumberFormat().format(value);
+};
+const getInterestRate = (deposit, field) => {
+  const option = deposit.depositoption_set.find(
+    (option) => option.save_trm == user.value.deposit_period
+  );
+  return option ? option[field] : "";
+};
+
+const getRateClass = (deposit, field) => {
+  const rates = user.value.join_deposit
+    .map((d) => {
+      const option = d.depositoption_set.find(
+        (option) => option.save_trm == user.value.deposit_period
+      );
+      return option ? parseFloat(option[field]) : null;
+    })
+    .filter((rate) => rate !== null);
+
+  const maxRate = Math.max(...rates);
+  const minRate = Math.min(...rates);
+  const rate = parseFloat(getInterestRate(deposit, field));
+
+  if (rate === maxRate) {
+    return "text-success"; // Green for the highest rate
+  } else if (rate === minRate) {
+    return "text-danger"; // Red for the lowest rate
+  } else {
+    return "";
+  }
+};
 </script>
 
 <style scoped>
@@ -103,5 +142,14 @@ const data = ref([
 .py-2 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+}
+
+.text-success {
+  color: green;
+  font-weight: bolder;
+}
+
+.text-danger {
+  color: red;
 }
 </style>
