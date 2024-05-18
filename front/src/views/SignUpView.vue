@@ -124,14 +124,20 @@ const nickname = ref(null);
 const store = useUserStore();
 
 const signUp = function () {
-  const payload = {
-    username: username.value,
-    password1: password1.value,
-    password2: password2.value,
-    date_of_birth: dateOfBirth.value,
-    nickname: nickname.value,
-  };
-  store.signUp(payload);
+  if (password1.value.length < 8) {
+    alert("비밀번호는 최소 8글자 이상 입력해주세요.");
+  } else if (password1.value === password2.value) {
+    const payload = {
+      username: username.value,
+      password1: password1.value,
+      password2: password2.value,
+      date_of_birth: dateOfBirth.value,
+      nickname: nickname.value,
+    };
+    store.signUp(payload);
+  } else {
+    alert("비밀번호가 다릅니다.");
+  }
 };
 </script>
 
