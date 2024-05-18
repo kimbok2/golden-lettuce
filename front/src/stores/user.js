@@ -12,7 +12,7 @@ export const useUserStore = defineStore(
     const userInfo = ref(null);
     const API_URL = "http://127.0.0.1:8000";
     const token = ref(null);
-    const userSearchMapInfo = ref([])
+    const userSearchMapInfo = ref([]);
     const isLogin = computed(() => {
       if (token.value === null) {
         return false;
@@ -24,9 +24,6 @@ export const useUserStore = defineStore(
 
     const signUp = function (payload) {
       // 1. 사용자 입력 데이터를 받아
-      // const username = payload.username
-      // const password1 = payload.password1
-      // const password2 = payload.password2
       const { username, password1, password2, date_of_birth, nickname } =
         payload;
 
@@ -51,6 +48,9 @@ export const useUserStore = defineStore(
         })
         .catch((error) => {
           console.log(error);
+          if (error.response.data.username) {
+            alert(error.response.data.username[0]);
+          }
         });
     };
 
@@ -75,6 +75,7 @@ export const useUserStore = defineStore(
           router.push({ name: "home" });
         })
         .catch((error) => {
+          alert("아이디 혹은 비밀번호를 잘못 입력하셨습니다.");
           console.log(error);
         });
     };
@@ -122,7 +123,7 @@ export const useUserStore = defineStore(
       logOut,
       userInfo,
       getUserInfo,
-      userSearchMapInfo
+      userSearchMapInfo,
     };
   },
   { persist: true }
