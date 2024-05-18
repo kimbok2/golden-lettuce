@@ -12,6 +12,10 @@
     <button @click="goProfile" class="btn btn-primary mx-1">
       입력하러 가기
     </button>
+    <p>
+      희망 기간 선택 : select만들어 입력 받기, 기본 값은 user_period로 내일 아침
+      구현
+    </p>
     <div>
       <div class="container">
         <div class="row border bg-light">
@@ -61,6 +65,7 @@ import { useRouter } from "vue-router";
 
 const user = ref(null);
 const store = useUserStore();
+const period = ref(null);
 
 onMounted(() => {
   store.getUserInfo();
