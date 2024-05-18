@@ -106,15 +106,17 @@ const onFileChange = (event) => {
 
 const updateProfile = function () {
   const formData = new FormData();
-  formData.append("date_of_birth", dateOfBirth.value);
-  formData.append("address", address.value);
-  formData.append("budget", budget.value);
-  formData.append("salary", salary.value);
-  formData.append("deposit_able", depositAble.value);
-  formData.append("saving_able", savingAble.value);
-  formData.append("deposit_period", depositPeriod.value);
-  formData.append("saving_period", savingPeriod.value);
-  formData.append("credit_score", creditScore.value);
+  if (dateOfBirth.value) formData.append("date_of_birth", dateOfBirth.value);
+  if (address.value) formData.append("address", address.value);
+  if (budget.value) formData.append("budget", budget.value);
+  if (salary.value) formData.append("salary", salary.value);
+  if (depositAble.value) formData.append("deposit_able", depositAble.value);
+  if (savingAble.value) formData.append("saving_able", savingAble.value);
+  if (depositPeriod.value)
+    formData.append("deposit_period", depositPeriod.value);
+  if (savingPeriod.value) formData.append("saving_period", savingPeriod.value);
+  if (creditScore.value) formData.append("credit_score", creditScore.value);
+  if (profileImage.value) formData.append("profile_image", profileImage.value);
   axios({
     method: "put",
     url: `${store.API_URL}/accounts/profile/${store.name}/`,
