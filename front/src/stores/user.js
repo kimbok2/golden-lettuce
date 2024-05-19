@@ -81,20 +81,25 @@ export const useUserStore = defineStore(
     };
 
     const logOut = function () {
+
       console.log(token.value);
-      axios({
-        method: "post",
-        url: `${API_URL}/accounts/logout/`,
-        headers: {
-          Authorization: `Token ${token.value}`,
-        },
-      })
-        .then((response) => {
-          name.value = null;
-          token.value = null; // 토큰 값 삭제
-          router.push({ name: "login" }); // 로그인 페이지로 리다이렉션
+
+      if (confirm('로그아웃 하시겠습니까?')) {
+        axios({
+          method: "post",
+          url: `${API_URL}/accounts/logout/`,
+          headers: {
+            Authorization: `Token ${token.value}`,
+          },
         })
-        .catch((err) => console.log(err));
+          .then((response) => {
+            name.value = null;
+            token.value = null; // 토큰 값 삭제
+            router.push({ name: "login" }); // 로그인 페이지로 리다이렉션
+          })
+          .catch((err) => console.log(err));
+      }
+      
     };
 
     const getUserInfo = function () {

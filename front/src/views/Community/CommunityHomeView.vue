@@ -4,7 +4,7 @@
     <ul class="text-center ps-0 list-group">
       <li class="list-group border rounded-0 fw-bolder">
         <div class="row my-3">
-          <div class="col-2 text-start">카테고리</div>
+          <div class="col-2">카테고리</div>
           <div class="col-6">제목</div>
           <div class="col-1">작성자</div>
           <div class="col-2">작성일</div>
@@ -14,8 +14,8 @@
       <template v-for="article in store.articles" :key="article.pk">
         <li class="list-group border border-0 rounded-0">
           <div class="row my-3">
-            <div class="col-1">{{ article.category }}</div>
-            <div class="col-7 text-start" @click="toDetail({ name: 'community-detail', params: { id: article.id } })">
+            <div class="col-2">{{ article.category }}</div>
+            <div class="col-6 text-start" @click="toDetail({ name: 'community-detail', params: { id: article.id } })">
               <span> {{ article.title }}</span>
               <span class="fw-bold text-danger"> [{{ article.comment_count }}]</span>
             </div>
