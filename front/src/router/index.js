@@ -4,7 +4,7 @@ import CommunityCreateView from "@/views/Community/CommunityCreateView.vue";
 import CommunityDetailView from "@/views/Community/CommunityDetailView.vue";
 import CommunityHomeView from "@/views/Community/CommunityHomeView.vue";
 import CommunityUpdateView from "@/views/Community/CommunityUpdateView.vue";
-import ExchangeView from "@/views/ExchangeView.vue";
+import ExchangeView from "@/views/Exchange/ExchangeView.vue";
 import HomeView from "@/views/HomeView.vue";
 import MapsView from "@/views/Maps/MapsView.vue";
 import MyAccountView from "@/views/MyAccountView.vue";
