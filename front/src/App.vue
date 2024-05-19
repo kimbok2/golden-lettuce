@@ -2,10 +2,10 @@
   <div>
     <NavigationBar />
 
-    <main style="margin-top: 200px;">
+    <main style="margin-top: 175px;">
       <!-- 창 크기 고정형 -->
       <div class="d-flex flex-column main-sheet justify-content-center align-items-center">
-        <div class="text-center" style="min-height: 1000px; width:1000px">
+        <div class="text-center" style="min-height: 800px; width:1000px">
           <RouterView />
         </div>
       </div>

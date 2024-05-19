@@ -9,11 +9,36 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import environ
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
+
+# 환경변수 설정 파일 경로 지정
+env = environ.Env(
+    # 설정 변수를 설정합니다. (default 값이나 casting 정의)
+    DEBUG=(bool, False)
+)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# .env 파일 경로 설정
+env_file = BASE_DIR / '.env'
+
+# .env 파일을 읽어들입니다.
+if env_file.exists():
+    environ.Env.read_env(env_file)
+else:
+    raise ImproperlyConfigured('.env 파일을 찾을 수 없습니다.')
+
+# 환경 변수 읽기
+try:
+    API_KEY_EXCHANGE = env('API_KEY_EXCHANGE')
+except Exception as exc:
+    error_msg = 'Set the API_KEY_EXCHANGE environment variable'
+    raise ImproperlyConfigured(error_msg) from exc
 
 
 # Quick-start development settings - unsuitable for production
