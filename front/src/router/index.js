@@ -11,7 +11,6 @@ import MyAccountView from "@/views/MyAccountView.vue";
 import ProfileView from "@/views/Profile/ProfileView.vue";
 import ProfileInfoView from "@/views/Profile/ProfileInfoView.vue";
 import ProfileUpdateView from "@/views/Profile/ProfileUpdateView.vue";
-import ProductCompareView from "@/views/ProductCompareView.vue";
 import ProductListView from "@/views/ProductList/ProductListView.vue";
 import LoginView from "@/views/LoginView.vue";
 import SignUpView from "@/views/SignUpView.vue";
@@ -20,7 +19,10 @@ import ProfilePasswordChangeView from "@/views/Profile/ProfilePasswordChangeView
 // 상품 조회
 import ProductSearchView from "@/views/ProductList/ProductSearchView.vue";
 import ProductDetailView from "@/views/ProductList/ProductDetailView.vue";
-
+// 상품 비교
+import ProductCompareView from "@/views/ProductCompare/ProductCompareView.vue";
+import DepositCompareView from "@/views/ProductCompare/DepositCompareView.vue";
+import SavingCompareView from "@/views/ProductCompare/SavingCompareView.vue";
 import { useUserStore } from "@/stores/user";
 
 const router = createRouter({
@@ -33,8 +35,15 @@ const router = createRouter({
     },
     {
       path: "/compare/",
-      name: "compare",
       component: ProductCompareView,
+      children: [
+        { path: "", name: "compare", component: DepositCompareView },
+        {
+          path: "saving",
+          name: "compare-saving",
+          component: SavingCompareView,
+        },
+      ],
     },
     {
       path: "/products/",

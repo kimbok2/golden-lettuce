@@ -1,17 +1,19 @@
 <template>
   <div>
-    <h1>ProductCompareView</h1>
     <h3>
       예금 희망 기간 :
-      {{
-        user?.deposit_period
-          ? user?.deposit_period + "개월"
-          : "희망 기간을 입력해주세요."
-      }}
+      {{ depositPeriod ? depositPeriod + "개월" : "희망 기간을 입력해주세요." }}
     </h3>
-    <button @click="goProfile" class="btn btn-primary mx-1">
-      입력하러 가기
-    </button>
+    <label for="term">희망 기간 선택 : </label>
+    <select id="term" v-model="depositPeriod">
+      <option value="1">1개월</option>
+      <option value="3">3개월</option>
+      <option value="6">6개월</option>
+      <option value="12">12개월</option>
+      <option value="24">24개월</option>
+      <option value="36">36개월</option>
+    </select>
+
     <p>
       희망 기간 선택 : select만들어 입력 받기, 기본 값은 user_period로 내일 아침
       구현
@@ -44,7 +46,7 @@
           <div :class="['col-2 border', getRateClass(deposit, 'intr_rate')]">
             {{ getInterestRate(deposit, "intr_rate") }}
           </div>
-          <div :class="['col-2 border', getRateClass(deposit, 'intr_rate')]">
+          <div :class="['col-2 border', getRateClass(deposit, 'intr_rate2')]">
             {{ getInterestRate(deposit, "intr_rate2") }}
           </div>
           <div class="col-2 border">
@@ -58,43 +60,28 @@
 
 <script setup>
 import axios from "axios";
-import { onMounted, ref, watch } from "vue";
-import router from "@/router";
+import { onMounted, ref } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 
 const user = ref(null);
 const store = useUserStore();
-const period = ref(null);
+const depositPeriod = ref(null);
 
 onMounted(() => {
   store.getUserInfo();
   user.value = store.userInfo;
+  depositPeriod.value = user.value.deposit_period;
 });
-const compareFields = (deposit) => {
-  // Add your comparison logic here
-  // Example: Compare if fin_prdt_nm contains 'Savings' and join_deny is 'No' and kor_co_nm is 'ABC Bank'
-  if (
-    deposit.fin_prdt_nm.includes("예금") &&
-    deposit.join_deny === "No" &&
-    deposit.kor_co_nm.includes("Bank")
-  ) {
-    return true;
-  }
-  return false;
-};
-
-const goProfile = function () {
-  router.push({ name: "profile" });
-};
 
 const formatNumber = (value) => {
   if (typeof value !== "number") return "최고 한도 없음";
   return new Intl.NumberFormat().format(value);
 };
+
 const getInterestRate = (deposit, field) => {
   const option = deposit.depositoption_set.find(
-    (option) => option.save_trm == user.value.deposit_period
+    (option) => option.save_trm == depositPeriod.value
   );
   return option ? option[field] : "";
 };
@@ -103,11 +90,13 @@ const getRateClass = (deposit, field) => {
   const rates = user.value.join_deposit
     .map((d) => {
       const option = d.depositoption_set.find(
-        (option) => option.save_trm == user.value.deposit_period
+        (option) => option.save_trm == depositPeriod.value
       );
       return option ? parseFloat(option[field]) : null;
     })
-    .filter((rate) => rate !== null);
+    .filter((rate) => rate !== null && !isNaN(rate));
+
+  if (rates.length === 0) return "";
 
   const maxRate = Math.max(...rates);
   const minRate = Math.min(...rates);
@@ -138,6 +127,10 @@ const getRateClass = (deposit, field) => {
 
 .border {
   border: 1px solid #ccc;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .bg-light {
