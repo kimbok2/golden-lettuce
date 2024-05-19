@@ -132,6 +132,13 @@ def save_saving(request):
     return JsonResponse({'message':'save!'})
 
 @api_view(['GET'])
+def get_bank_list(request):
+    # 상품 목록 반환하기
+    banks = Bank.objects.all()
+    serializer = DepositListSerializer(banks, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
 def get_deposit_list(request):
     # 상품 목록 반환하기
     products = DepositProduct.objects.all()
@@ -139,9 +146,22 @@ def get_deposit_list(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-def get_deposit_products(request, period):
+def get_saving_list(request):
+    # 상품 목록 반환하기
+    products = SavingProduct.objects.all()
+    serializer = SavingListSerializer(products, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_deposit_products(request, period, option, banks):
     period = period.split(',')
-    products = DepositProduct.objects.filter(depositoption__save_trm__in = period).order_by('-depositoption__intr_rate').distinct()
+    banks = banks.split(',')
+    order = ''
+    if option[-1] == '-':
+        order = '-'
+        option = option[:-1]
+    products = DepositProduct.objects.filter(depositoption__save_trm__in = period,
+                                             kor_co_nm__in = banks).order_by(f'{order}depositoption__{option}').distinct()
     # 중복 제거를 위한 set 사용
     seen = set()
     unique_products = []
@@ -153,16 +173,15 @@ def get_deposit_products(request, period):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_saving_list(request):
-    # 상품 목록 반환하기
-    products = SavingProduct.objects.all()
-    serializer = SavingListSerializer(products, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-@api_view(['GET'])
-def get_saving_products(request, period):
+def get_saving_products(request, period, option, banks):
     period = period.split(',')
-    products = SavingProduct.objects.filter(savingoption__save_trm__in = period).order_by('-savingoption__intr_rate').distinct()
+    banks = banks.split(',')
+    order = ''
+    if option[-1] == '-':
+        order = '-'
+        option = option[:-1]
+    products = SavingProduct.objects.filter(savingoption__save_trm__in = period,
+                                            kor_co_nm__in = banks).order_by(f'{order}savingoption__{option}').distinct()
     # 중복 제거를 위한 set 사용
     seen = set()
     unique_products = []
