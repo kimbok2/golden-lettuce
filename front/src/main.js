@@ -4,11 +4,15 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
+// Font
+// import '@/assets/fonts.css';
+
 // Pinia Plugin Persisted State
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 // Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap-reboot.css';
 import * as bootstrap from 'bootstrap'
 
 const app = createApp(App)

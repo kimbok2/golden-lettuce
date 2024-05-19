@@ -22,24 +22,22 @@
         </li>
       </template>
     </ul>
-    <p>{{ searchKeyWordProp }}</p>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useMapStore } from '@/stores/map'
 
 const API_KEY_MAP = import.meta.env.VITE_API_KEY_MAP
 const mapScriptSrc = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${API_KEY_MAP}&libraries=services`
 
+// mapStore 선언
+const mapStore = useMapStore()
+
+// 지도 컨테이너
 const mapContainer = ref(null)
-
-// Map.vue에서 검색어를 Prop으로 받아옴
-
-defineProps({
-  searchKeyWordProp: String,
-})
 
 // 지도 객체 선언
 const mapObject = ref(null)
@@ -52,6 +50,7 @@ const mapLevel = ref(5)
 
 // 지도 검색 인자에 전달할 키워드
 const searchKeyWordDefault = ref('은행')
+const searchKeyWordInput = computed(() => mapStore.searchKeyWord)
 
 // mapCenter가 변경됐을 때를 보는 감시하는 함수
 watch(
@@ -70,6 +69,16 @@ watch(
   (newMapLevel) => {
     searchCurrentMap()
     console.log('mapLevel : ', mapLevel.value)
+  },
+  { deep: true }
+)
+
+// 사용자의 검색어가 변경되었을 때를 감시하는 함수 - 검색어로 지도 조회
+watch(
+  searchKeyWordInput,
+  (newKeyWord) => {
+    searchKeyWordMap()
+    console.log('searchKeyWord : ', newKeyWord)
   },
   { deep: true }
 )
@@ -96,7 +105,7 @@ const initMap = () => {
   mapObject.value = new kakao.maps.Map(mapContainer.value, mapOptions)
   console.log('initMap 함수 실행 완료')
 
-  infowindow = new kakao.maps.InfoWindow({ zIndex: 1})
+  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 })
 
   // 지도 객체가 Load되면 할 동작
   mapLevel.value = mapObject.value.getLevel()
@@ -140,13 +149,33 @@ const searchCurrentMap = () => {
   const ps = new kakao.maps.services.Places(mapObject.value)
 
   // 검색 키워드 출력
-  console.log('검색 키워드 :', searchKeyWordDefault.value)
+  // console.log('검색 키워드 :', searchKeyWordDefault.value)
   ps.keywordSearch(searchKeyWordDefault.value, placesSearchCB, { useMapBounds: true })
+}
+
+// 사용자가 입력한 검색어에 따라서 지도를 불러올 함수
+const searchKeyWordMap = () => {
+  // 주소 - 좌표 반환 객체 생성
+
+  const geocoder = new kakao.maps.services.Geocoder()
+
+  geocoder.addressSearch(searchKeyWordInput.value, function (result, status) {
+    if (status === kakao.maps.services.Status.OK) {
+      // 검색 성공시 지도 중심 좌표를 변경 후 해당 좌표로 지도 검색
+      mapCenter.value = {
+        y: result[0].y,
+        x: result[0].x,
+      }
+      initMap()
+    } else {
+      alert('주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.')
+    }
+  })
 }
 
 // 카테고리 검색 완료 시 호출되는 콜백함수 입니다
 function placesSearchCB(data, status, pagination) {
-  console.log(`키워드 검색 완료 : ${status}`)
+  console.log(`placesSearchCB 함수 호출 : ${status}`)
   if (status === kakao.maps.services.Status.OK) {
     bankSearchList.value = []
     for (let i = 0; i < data.length; i++) {
@@ -182,7 +211,7 @@ function displayMarker(place) {
       y: place.y,
       x: place.x,
     }
-    console.log(mapCenter.value)
+    // console.log(mapCenter.value)
     initMap()
     // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
     // 인포윈도우 표시

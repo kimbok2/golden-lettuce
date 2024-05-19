@@ -93,6 +93,8 @@ ACCOUNT_ADAPTER = 'accounts.models.CustomAccountAdapter'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
+    'http://localhost:5175',
+    'http://127.0.0.1:5175',
 ]
 
 ROOT_URLCONF = 'goldenlettuce_back.urls'
