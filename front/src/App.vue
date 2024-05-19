@@ -2,7 +2,7 @@
   <div>
     <NavigationBar />
 
-    <main style="margin-top: 100px;">
+    <main style="margin-top: 200px;">
       <!-- 창 크기 고정형 -->
       <div class="d-flex flex-column main-sheet justify-content-center align-items-center">
         <div class="text-center" style="min-height: 1000px; width:1000px">
@@ -39,4 +39,5 @@ import Footer from '@/components/Footer.vue'
   width: 100%;
   max-width: 100% !important;
 }
+
 </style>

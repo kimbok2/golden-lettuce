@@ -9,6 +9,7 @@
           type="text"
           v-model="searchKeyWordInput"
           placeholder="주소를 입력해주세요."
+          maxlength="20"
         />
         <button class="btn btn-secondary ms-2" type="submit">지도 검색</button>
         {{ userAddress }}
@@ -26,16 +27,18 @@
       </div>
     </div>
     <!-- 지도 그림 및 목록을 출력할 태그 -->
-    <MapList/>
+    <MapList />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useMapStore } from '@/stores/map'
 import MapList from '@/components/Maps/MapList.vue'
 
 const userStore = useUserStore()
+const mapStore = useMapStore()
 // 사용자 주소를 받아옴
 const userAddress = userStore.userInfo.address
 
@@ -47,8 +50,15 @@ const searchKeyWord = ref('은행')
 let searchHistoryId = 0
 const searchHistoryList = ref([])
 
-// 검색어 입력시 및 지도 검색시 검색어를 중복 검사 후
+// 검색어 입력시 및 지도 검색시 검색어를 중복 검사 후 목록에 추가
+// 목록 중복과 관계 없이 반드시 검색어는 변경시켜줌
 const updateMapSearchKeyWord = function () {
+  // 입력 필드가 비어있는지 확인
+  if (!searchKeyWordInput.value) {
+    alert('검색어를 입력해주세요.')
+    return
+  }
+
   // 중복 검색어 체크
   const isDuplicate = searchHistoryList.value.some((item) => item.searchKeyWord === searchKeyWordInput.value)
 
@@ -59,10 +69,26 @@ const updateMapSearchKeyWord = function () {
       searchKeyWord: searchKeyWordInput.value,
     })
     console.log(`${searchKeyWordInput.value} - 검색어 추가`)
+  } else {
+    // 검색어 순서를 변경시켜주기 위해 인덱스를 찾고
+    // 삭제 후 재등록해줌
+    const index = searchHistoryList.value.findIndex((item) => item.searchKeyWord === searchKeyWordInput.value)
+
+    if (index !== -1) {
+      // 인덱스 조회 완료시 기존 항목 삭제
+      searchHistoryList.value.splice(index, 1)
+    }
+    searchHistoryList.value.push({
+      id: searchHistoryId++,
+      searchKeyWord: searchKeyWordInput.value,
+    })
   }
   // 완료 동작 출력 - 조건문과 관계 없이 현재 검색어는 바꿔줌
+
   searchKeyWord.value = `${searchKeyWordInput.value} 은행`
-  // searchKeyWordInput.value = ''
+  mapStore.updateSearchKeyWord(searchKeyWordInput.value)
+  console.log('검색어 - ', searchKeyWord.value)
+  searchKeyWordInput.value = ''
 }
 
 // 버튼 검색어 목록에서 선택한 검색어를 삭제
@@ -78,6 +104,7 @@ const deleteSearchKeyWord = function (searchHistoryItem) {
 // 버튼 검색어 목록에서 선택한 검색어를 검색
 const setSearchKeyWord = function (searchHistoryItem) {
   searchKeyWordInput.value = searchHistoryItem.searchKeyWord
+  updateMapSearchKeyWord()
 }
 
 onMounted(() => {
@@ -88,7 +115,7 @@ onMounted(() => {
 <style scoped>
 .map-search-box {
   width: 1000px;
-  height: 100px;
+  min-height: 100px;
 
   border: 1px solid #dee2e6;
 }
