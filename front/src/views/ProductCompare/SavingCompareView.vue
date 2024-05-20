@@ -20,36 +20,47 @@
     </p>
     <div>
       <div class="container">
-        <div class="row border bg-light">
-          <div class="col-2 font-weight-bold border">상품명</div>
-          <div class="col-2 font-weight-bold border">담당 은행</div>
-          <div class="col-2 font-weight-bold border">최고 한도</div>
-          <div class="col-2 font-weight-bold border">저축 금리</div>
-          <div class="col-2 font-weight-bold border">최고 우대 금리</div>
-          <div class="col-2 font-weight-bold border">저축 금리 유형</div>
+        <div class="row bg-light">
+          <div class="col-2 font-weight-bold border-col">상품명</div>
+          <div class="col-2 font-weight-bold border-col">담당 은행</div>
+          <div class="col-2 font-weight-bold border-col">최고 한도</div>
+          <div class="col-2 font-weight-bold border-col">저축 금리</div>
+          <div class="col-2 font-weight-bold border-col">최고 우대 금리</div>
+          <div class="col-2 font-weight-bold border-col">저축 금리 유형</div>
         </div>
 
         <div
-          v-for="(saving, index) in user?.join_saving"
+          v-for="(saving, index) in user?.compare_saving"
           :key="index"
           class="row"
         >
-          <div class="col-2 border">{{ saving.fin_prdt_nm }}</div>
-          <div class="col-2 border">{{ saving.kor_co_nm }}</div>
-          <div class="col-2 border">
+          <div class="col-2 border-col">
+            <RouterLink
+              :to="{
+                name: 'products-detail',
+                params: { id: saving.id, type: 'saving' },
+              }"
+              class="custom-link"
+              >{{ saving.fin_prdt_nm }}</RouterLink
+            >
+          </div>
+          <div class="col-2 border-col">{{ saving.kor_co_nm }}</div>
+          <div class="col-2 border-col">
             {{
               saving.max_limit
                 ? formatNumber(saving.max_limit) + " 원"
                 : "최고 한도 없음"
             }}
           </div>
-          <div :class="['col-2 border', getRateClass(saving, 'intr_rate')]">
+          <div :class="['col-2 border-col', getRateClass(saving, 'intr_rate')]">
             {{ getInterestRate(saving, "intr_rate") }}
           </div>
-          <div :class="['col-2 border', getRateClass(saving, 'intr_rate2')]">
+          <div
+            :class="['col-2 border-col', getRateClass(saving, 'intr_rate2')]"
+          >
             {{ getInterestRate(saving, "intr_rate2") }}
           </div>
-          <div class="col-2 border">
+          <div class="col-2 border-col">
             {{ getInterestRate(saving, "intr_rate_type_nm") }}
           </div>
         </div>
@@ -86,7 +97,7 @@ const getInterestRate = (saving, field) => {
 };
 
 const getRateClass = (saving, field) => {
-  const rates = user.value.join_saving
+  const rates = user.value.compare_saving
     .map((d) => {
       const option = d.savingoption_set.find(
         (option) => option.save_trm == savingPeriod.value
@@ -124,8 +135,8 @@ const getRateClass = (saving, field) => {
   margin-bottom: 1rem;
 }
 
-.border {
-  border: 1px solid #ccc;
+.border-col {
+  border: 1px solid #1b1b1b;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -147,5 +158,12 @@ const getRateClass = (saving, field) => {
 
 .text-danger {
   color: red;
+}
+.custom-link {
+  color: inherit; /* 부모 요소의 색상 상속 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+.custom-link:hover {
+  color: gray; /* 호버 시 색상 변경 (원하는 색상으로 변경 가능) */
 }
 </style>

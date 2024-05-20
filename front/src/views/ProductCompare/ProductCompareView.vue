@@ -9,59 +9,35 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { onMounted, ref, watch } from "vue";
-import router from "@/router";
+import { ref, watch, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 const user = ref(null);
 const store = useUserStore();
+const route = useRoute();
 const depositPeriod = ref(null);
-const savingPeriod = ref(null);
 
-onMounted(() => {
-  store.getUserInfo();
+const fetchUserInfo = async () => {
+  await store.getUserInfo();
   user.value = store.userInfo;
   depositPeriod.value = user.value.deposit_period;
+};
+
+onMounted(async () => {
+  await fetchUserInfo();
 });
 
-const goProfile = function () {
-  router.push({ name: "profile" });
-};
+watch(
+  () => route.path,
+  async () => {
+    await fetchUserInfo();
+  }
+);
 
 const formatNumber = (value) => {
   if (typeof value !== "number") return "최고 한도 없음";
   return new Intl.NumberFormat().format(value);
-};
-const getInterestRate = (deposit, field) => {
-  const option = deposit.depositoption_set.find(
-    (option) => option.save_trm == depositPeriod.value
-  );
-  return option ? option[field] : "";
-};
-
-const getRateClass = (deposit, field) => {
-  const rates = user.value.join_deposit
-    .map((d) => {
-      const option = d.depositoption_set.find(
-        (option) => option.save_trm == depositPeriod.value
-      );
-      return option ? parseFloat(option[field]) : null;
-    })
-    .filter((rate) => rate !== null);
-
-  const maxRate = Math.max(...rates);
-  const minRate = Math.min(...rates);
-  const rate = parseFloat(getInterestRate(deposit, field));
-
-  if (rate === maxRate) {
-    return "text-success"; // Green for the highest rate
-  } else if (rate === minRate) {
-    return "text-danger"; // Red for the lowest rate
-  } else {
-    return "";
-  }
 };
 </script>
 

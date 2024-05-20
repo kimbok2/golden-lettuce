@@ -67,7 +67,7 @@ class DepositSerializer(serializers.ModelSerializer):
     class Meta:
         model = DepositProduct
         fields = '__all__'
-        read_only_fields = ('bank', 'join_user',)
+        read_only_fields = ('bank', 'join_user', 'compare_user',)
 
 # 적금 단일 저장용 시리얼라이저
 class SavingSerializer(serializers.ModelSerializer):
@@ -75,11 +75,12 @@ class SavingSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavingProduct
         fields = '__all__'
-        read_only_fields = ('bank', 'join_user',)
+        read_only_fields = ('bank', 'join_user','compare_user',)
 
 # 예금 단일 조회 시리얼라이저
 class DepositDetailSerializer(serializers.ModelSerializer):
     join_user_count = serializers.IntegerField(source='join_user.count', read_only=True)
+    compare_user_count = serializers.IntegerField(source='compare_user.count', read_only=True)
     depositoption_set = DepositOptionSerializer(read_only=True, many=True)
     class Meta:
         model = DepositProduct
@@ -89,6 +90,7 @@ class DepositDetailSerializer(serializers.ModelSerializer):
 # 적금 단일 조회 시리얼라이저
 class SavingDetailSerializer(serializers.ModelSerializer):
     join_user_count = serializers.IntegerField(source='join_user.count', read_only=True)
+    compare_user_count = serializers.IntegerField(source='compare_user.count', read_only=True)
     savingoption_set = SavingOptionSerializer(read_only=True, many=True)
     class Meta:
         model = SavingProduct

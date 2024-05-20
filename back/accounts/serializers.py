@@ -38,13 +38,16 @@ class CustomRegisterSerializer(RegisterSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     join_deposit = DepositDetailSerializer(many=True)
     join_saving = SavingDetailSerializer(many=True)
+    compare_deposit = DepositDetailSerializer(many=True)
+    compare_saving = SavingDetailSerializer(many=True)
     profile_img = serializers.ImageField(use_url=True)
     class Meta:
         model = User
         fields = ('id', 'username', 'date_of_birth', 'address', 
                   'budget', 'salary', 'deposit_able', 'saving_able', 
                   'deposit_period', 'saving_period','credit_score',
-                  'join_deposit', 'join_saving', 'profile_img',)
+                  'join_deposit', 'join_saving', 'compare_deposit',
+                  'compare_saving', 'profile_img',)
         read_only_fields = ('id', 'username',)
     
 # 전체 프로필 정보를 수정, 조회, 삭제할 serializer
