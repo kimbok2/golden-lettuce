@@ -269,3 +269,36 @@ def compare_saving(request, saving_id):
         if request.user in saving.compare_user.all():
             saving.compare_user.remove(request.user)
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+# 추천 알고리즘 1 (평균, 평균, 평균)
+# 평균이 모두 비슷함 -> 다른 알고리즘 필요
+@api_view(['GET'])
+def recommend_deposit(request):
+    
+    
+    deposits = get_list_or_404(DepositProduct)
+    for deposit in deposits:
+        users = deposit.join_user.all()
+        total = 0
+        for user in users:
+            total += user.date_of_birth.year
+        print(total//len(users))
+        
+    
+    return Response(status=status.HTTP_200_OK)
+        
+    # users = get_list_or_404(get_user_model())
+    
+    # total = 0
+    # for user in users:
+    #     total += user.date_of_birth.year
+        
+    # print(total//len(users))
+    
+    # print(users)
+    # print(user.date_of_birth.year)
+    # 모든 예금 상품에 대해
+    # 상품 가입자의 평균 출생연도, 평균 자산, 평균 월급이 이용자와 가장 비슷한 상품을 추천
+    # user = get_object_or_404(get_user_model(), username=request.user.username)
+    
+    
