@@ -1,11 +1,38 @@
 <template>
   <div>
-    <h1 class="text-center mb-4">ProfileUpdateView</h1>
+    <h1 class="text-center mb-4">내 프로필 수정</h1>
+    <div class="text-center my-3">
+      <img
+        :src="apiUrl + profileImageUrl"
+        alt="이미지없음"
+        class="img-thumbnail rounded-circle"
+        style="width: 120px; height: 120px; object-fit: cover"
+      />
+    </div>
     <form
       @submit.prevent="updateProfile"
       class="mx-auto"
       style="max-width: 600px"
     >
+      <div class="form-group row align-items-center mb-3">
+        <label
+          for="profileimage"
+          class="col-sm-4 col-form-label text-right font-weight-bold"
+          >프로필 이미지</label
+        >
+        <div class="col-sm-1 d-flex justify-content-center">
+          <div class="border-right" style="height: 2rem"></div>
+        </div>
+        <div class="col-sm-7">
+          <input
+            type="file"
+            accept="image/*"
+            id="profileimage"
+            @change="onFileChange"
+            class="form-control"
+          />
+        </div>
+      </div>
       <div class="form-group row align-items-center mb-3">
         <label
           for="dateOfBirth"
@@ -191,26 +218,6 @@
         </div>
       </div>
 
-      <div class="form-group row align-items-center mb-3">
-        <label
-          for="profileimage"
-          class="col-sm-4 col-form-label text-right font-weight-bold"
-          >이미지</label
-        >
-        <div class="col-sm-1 d-flex justify-content-center">
-          <div class="border-right" style="height: 2rem"></div>
-        </div>
-        <div class="col-sm-7">
-          <input
-            type="file"
-            accept="image/*"
-            id="profileimage"
-            @change="onFileChange"
-            class="form-control"
-          />
-        </div>
-      </div>
-
       <button type="submit" class="btn btn-primary btn-block mt-3">
         프로필 정보 저장
       </button>
@@ -233,7 +240,9 @@ const depositPeriod = ref(null);
 const savingPeriod = ref(null);
 const address = ref(null);
 const creditScore = ref(null);
-const profileImage = ref(null);
+const apiUrl = "http://127.0.0.1:8000";
+const profileImage = ref(null); // 파일 객체를 저장할 ref
+const profileImageUrl = ref(null); // 이미지 URL을 저장할 ref
 const store = useUserStore();
 const router = useRouter();
 
@@ -255,6 +264,7 @@ onMounted(() => {
       savingPeriod.value = response.data.saving_period;
       address.value = response.data.address;
       creditScore.value = response.data.credit_score;
+      profileImageUrl.value = response.data.profile_img;
     })
     .catch((err) => {
       console.log(err);
@@ -262,10 +272,14 @@ onMounted(() => {
 });
 
 const onFileChange = (event) => {
-  profileImage.value = event.target.files[0];
+  const file = event.target.files[0];
+  if (file) {
+    profileImage.value = file;
+    profileImageUrl.value = URL.createObjectURL(file);
+  }
 };
 
-const updateProfile = function () {
+const updateProfile = async () => {
   const formData = new FormData();
   if (dateOfBirth.value) formData.append("date_of_birth", dateOfBirth.value);
   if (address.value) formData.append("address", address.value);
@@ -278,27 +292,34 @@ const updateProfile = function () {
   if (savingPeriod.value) formData.append("saving_period", savingPeriod.value);
   if (creditScore.value) formData.append("credit_score", creditScore.value);
   if (profileImage.value) formData.append("profile_image", profileImage.value);
-  axios({
-    method: "put",
-    url: `${store.API_URL}/accounts/profile/${store.name}/`,
-    headers: {
-      Authorization: `Token ${store.token}`,
-      "Content-Type": "multipart/form-data",
-    },
-    data: formData,
-  })
-    .then((response) => {
-      console.log(response);
-      router.push({ name: "profile" });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+
+  try {
+    const response = await axios.put(
+      `${store.API_URL}/accounts/profile/${store.name}/`,
+      formData,
+      {
+        headers: {
+          Authorization: `Token ${store.token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    console.log(response);
+    router.push({ name: "profile" });
+  } catch (err) {
+    console.log(err);
+  }
 };
 </script>
 
 <style scoped>
 .container {
   max-width: 600px;
+}
+.img-thumbnail {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 </style>

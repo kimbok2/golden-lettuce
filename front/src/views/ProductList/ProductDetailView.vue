@@ -1,109 +1,118 @@
 <template>
-  <div>
-    <h1>ProductDetailView</h1>
-    <hr />
-    <div v-if="product">
-      <h4>{{ product.fin_prdt_nm }}</h4>
+  <div class="container mt-4">
+    <div v-if="product" class="card">
+      <div class="card-body">
+        <h4 class="card-title">{{ product.fin_prdt_nm }}</h4>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="badge bg-secondary"
+            >가입자 수: {{ product.join_user_count }}명</span
+          >
+          <div>
+            <button
+              v-if="!isUserJoined"
+              @click="joinProduct('post')"
+              class="btn btn-primary mx-2"
+            >
+              가입하기
+            </button>
+            <button
+              v-else
+              @click="joinProduct('delete')"
+              class="btn btn-danger mx-2"
+            >
+              해지하기
+            </button>
+            <button
+              v-if="!isUserCompared"
+              @click="compareProduct('post')"
+              class="btn btn-outline-primary mx-2"
+            >
+              비교 등록
+            </button>
+            <button
+              v-else
+              @click="compareProduct('delete')"
+              class="btn btn-outline-danger mx-2"
+            >
+              비교 해제
+            </button>
+          </div>
+        </div>
+        <hr />
+        <div class="product-details">
+          <div class="detail-item">
+            <h5 class="detail-title">담당 회사:</h5>
+            <p class="detail-content">{{ product.kor_co_nm }}</p>
+          </div>
+          <div class="detail-item">
+            <h5 class="detail-title">공시제출월:</h5>
+            <p class="detail-content">
+              {{ product.dcls_month.substring(0, 4) }}년
+              {{ product.dcls_month.substring(5) }}월
+            </p>
+          </div>
+          <div class="detail-item">
+            <h5 class="detail-title">공시시작일:</h5>
+            <p class="detail-content">{{ product.dcls_strt_day }}</p>
+          </div>
+          <div class="detail-item">
+            <h5 class="detail-title">공시종료일:</h5>
+            <p class="detail-content">
+              {{ product.dcls_end_day ? product.dcls_end_day : "없음" }}
+            </p>
+          </div>
+          <div class="detail-item">
+            <h5 class="detail-title">가입 방법:</h5>
+            <p class="detail-content">{{ product.join_way }}</p>
+          </div>
+          <div class="detail-item">
+            <h5 class="detail-title">최고 한도:</h5>
+            <p class="detail-content">
+              {{
+                product.max_limit
+                  ? formatNumber(product.max_limit) + " 원"
+                  : "최고 한도 없음"
+              }}
+            </p>
+          </div>
+          <div class="detail-item">
+            <h5 class="detail-title">우대 조건:</h5>
+            <p class="detail-content">{{ product.spcl_cnd }}</p>
+          </div>
+          <div class="detail-item">
+            <h5 class="detail-title">만기 후 이자율:</h5>
+            <p class="detail-content">{{ product.mtrt_int }}</p>
+          </div>
+          <div class="detail-item">
+            <h5 class="detail-title">유의사항:</h5>
+            <p class="detail-content">{{ product.etc_note }}</p>
+          </div>
+        </div>
 
-      <span>가입자 수 : {{ product.join_user_count }}명</span>
-      <p>{{ product.join_user }}</p>
-      <button
-        v-if="!isUserJoined"
-        @click="joinProduct('post')"
-        class="btn btn-primary mx-2"
-      >
-        가입하기
-      </button>
-      <button v-else @click="joinProduct('delete')" class="btn btn-danger mx-2">
-        해지하기
-      </button>
-      <button
-        v-if="!isUserCompared"
-        @click="compareProduct('post')"
-        class="btn btn-primary mx-2"
-      >
-        비교 등록
-      </button>
-      <button
-        v-else
-        @click="compareProduct('delete')"
-        class="btn btn-danger mx-2"
-      >
-        비교 해제
-      </button>
-
-      <hr />
-      <h5>담당 회사 : {{ product.kor_co_nm }}</h5>
-      <p>
-        공시제출월 : {{ product.dcls_month.substring(0, 4) }}년
-        {{ product.dcls_month.substring(5) }}월
-      </p>
-      <p>공시시작일 : {{ product.dcls_strt_day }}</p>
-      <p>
-        공시종료일 : {{ product.dcls_end_day ? product.dcls_end_day : "없음" }}
-      </p>
-      <p>가입 방법 : {{ product.join_way }}</p>
-      <p>
-        최고 한도 :
-        {{
-          product.max_limit
-            ? formatNumber(product.max_limit) + " 원"
-            : "최고 한도 없음"
-        }}
-      </p>
-      <p>우대 조건 : {{ product.spcl_cnd }}</p>
-      <p>만기 후 이자율 : {{ product.mtrt_int }}</p>
-      <p>유의사항 : {{ product.etc_note }}</p>
-      <div>
-        <h5>옵션 정보</h5>
-        <div>
-          <ul class="text-start ps-0">
-            <li class="card rounded-0">
-              <div class="row m-0">
-                <div class="col-1 text-center">번호</div>
-                <div class="col-3 text-center">저축기간</div>
-                <div class="col-3 text-center">저축 금리</div>
-                <div class="col-3 text-center">최고 우대 금리</div>
-                <div class="col-2 text-center">저축금리 유형</div>
-              </div>
-            </li>
-            <div v-if="route.params.type === 'deposit'">
-              <div
-                v-for="(option, index) in product.depositoption_set"
-                :key="option.id"
-              >
-                <li class="card border border-0 border-bottom rounded-0">
-                  <div class="row m-0">
-                    <div class="col-1 text-center">{{ index + 1 }}</div>
-                    <div class="col-3 text-center">{{ option.save_trm }}</div>
-                    <div class="col-3 text-center">{{ option.intr_rate }}</div>
-                    <div class="col-3 text-center">{{ option.intr_rate2 }}</div>
-                    <div class="col-2 text-center">
-                      {{ option.intr_rate_type_nm }}
-                    </div>
-                  </div>
-                </li>
-              </div>
-            </div>
-            <div v-else-if="route.params.type === 'saving'">
-              <div
-                v-for="(option, index) in product.savingoption_set"
-                :key="option.id"
-              >
-                <li class="card border border-0 border-bottom rounded-0">
-                  <div class="row m-0">
-                    <div class="col-1 text-center">{{ index + 1 }}</div>
-                    <div class="col-3 text-center">{{ option.save_trm }}</div>
-                    <div class="col-3 text-center">{{ option.intr_rate }}</div>
-                    <div class="col-3 text-center">{{ option.intr_rate2 }}</div>
-                    <div class="col-2 text-center">
-                      {{ option.intr_rate_type_nm }}
-                    </div>
-                  </div>
-                </li>
-              </div>
-            </div>
-          </ul>
+        <div class="mt-4">
+          <h5 class="card-subtitle mb-3">옵션 정보</h5>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col" class="text-center">번호</th>
+                  <th scope="col" class="text-center">저축기간</th>
+                  <th scope="col" class="text-center">저축 금리</th>
+                  <th scope="col" class="text-center">최고 우대 금리</th>
+                  <th scope="col" class="text-center">저축금리 유형</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(option, index) in productOptions" :key="option.id">
+                  <th scope="row" class="text-center">{{ index + 1 }}</th>
+                  <td class="text-center">{{ option.save_trm }}</td>
+                  <td class="text-center">{{ option.intr_rate }}</td>
+                  <td class="text-center">{{ option.intr_rate2 }}</td>
+                  <td class="text-center">{{ option.intr_rate_type_nm }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -191,6 +200,59 @@ const isUserCompared = computed(() => {
     product.value && product.value.compare_user.includes(store.userInfo.id)
   );
 });
+
+const productOptions = computed(() => {
+  if (route.params.type === "deposit") {
+    return product.value ? product.value.depositoption_set : [];
+  } else if (route.params.type === "saving") {
+    return product.value ? product.value.savingoption_set : [];
+  }
+  return [];
+});
 </script>
 
-<style scoped></style>
+<style scoped>
+.card {
+  border: 1px solid #e2e2e2;
+  border-radius: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card-subtitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.product-details {
+  margin-top: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e2e2;
+  padding: 0.5rem 0;
+}
+
+.detail-title {
+  flex: 1;
+  font-weight: bold;
+}
+
+.detail-content {
+  flex: 2;
+}
+
+.table {
+  margin-top: 1rem;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+}
+</style>

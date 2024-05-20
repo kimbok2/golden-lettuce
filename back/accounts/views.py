@@ -20,6 +20,7 @@ def profile(request, username):
             serializer = ProfileSerializer(user)
             return Response(serializer.data)
         elif request.method == 'PUT':
+            print(request.data)
             serializer = ProfileSerializer(instance=user, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
@@ -57,14 +58,3 @@ def userinfo(request, username):
 #         user.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET'])
-def test(request):
-    print(30)
-    return Response(status=status.HTTP_200_OK)
-
-# 최우수 팀은 프로필 정보 수정도 구현
-
-def signup(request):
-    return render(request, 'accounts/signup.html')
-    
-    
