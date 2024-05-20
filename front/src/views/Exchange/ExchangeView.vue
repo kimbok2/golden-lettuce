@@ -16,7 +16,7 @@
     </div>
     <div class="exchange-container">
       <div class="exchange-box">
-        <ExchangeGraph />
+        <ExchangeGraphItem />
       </div>
     </div>
   </div>
@@ -25,6 +25,7 @@
 <script setup>
 import ExchangeList from '@/components/Exchange/ExchangeList.vue'
 import ExchangeGraph from '@/components/Exchange/ExchangeGraph.vue'
+import ExchangeGraphItem from '@/components/Exchange/ExchangeGraphItem.vue'
 import { useExchangeStore } from '@/stores/exchange'
 import { onMounted } from 'vue'
 
@@ -34,7 +35,9 @@ const getRate = function () {
   exchangeStore.get_exchange_rate()
 }
 
-onMounted(() => {})
+onMounted(() => {
+  exchangeStore.selectedCurrent = null
+})
 </script>
 
 <style scoped>

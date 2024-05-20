@@ -128,13 +128,21 @@ export const useExchangeStore = defineStore(
 
     const inputAmount = ref(null)
 
+    // 현재 선택된 통화의 번호
     const selectedCurrent = ref(14)
+    // 현재 선택된 통화 이름
+    const selectedCurrentName = computed(() => {
+      console.log(currencies[selectedCurrent.value-1]['cur_nm'])
+      return currencies[selectedCurrent.value-1]['cur_nm']
+    })
+    const selectedChartCurrent = ref(null)
     const selectedHandle = ref(0)
+
+    const chartData = ref([])
 
     const selectedRate = computed(() => {
       const index = exchangeRates.value.findIndex((rate) => rate.current_id === selectedCurrent.value)
       if (index !== -1) {
-
         return exchangeRates.value[index]['latest_exchange_deal_bas_r']
       } else {
         return 0
@@ -156,7 +164,35 @@ export const useExchangeStore = defineStore(
         })
     }
 
-    return { currencies, inputAmount, selectedCurrent, selectedRate, exchangeRates, selectedHandle, get_exchange_rate }
+    const getChartData = function () {
+      axios({
+        method: 'get',
+        url: `${API_URL}/exchanges/get_graph_data/${selectedChartCurrent.value}/`,
+      })
+        .then((response) => {
+          console.log(response.data)
+          chartData.value = response.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      return chartData.value
+    }
+
+    return {
+      currencies,
+      inputAmount,
+      selectedCurrent,
+      selectedCurrentName,
+      selectedRate,
+      exchangeRates,
+      selectedHandle,
+      selectedChartCurrent,
+      chartData,
+      get_exchange_rate,
+      getChartData,
+    }
   },
   { persist: true }
 )
