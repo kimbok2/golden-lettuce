@@ -14,4 +14,6 @@ urlpatterns = [
     path('get_saving_products/<str:period>/<str:option>/<str:banks>/', views.get_saving_products),
     path('join_deposit/<int:deposit_id>/', views.join_deposit),
     path('join_saving/<int:saving_id>/', views.join_saving),
+    path('compare_deposit/<int:deposit_id>/', views.compare_deposit),
+    path('compare_saving/<int:saving_id>/', views.compare_saving),
 ]

@@ -20,36 +20,49 @@
     </p>
     <div>
       <div class="container">
-        <div class="row border bg-light">
-          <div class="col-2 font-weight-bold border">상품명</div>
-          <div class="col-2 font-weight-bold border">담당 은행</div>
-          <div class="col-2 font-weight-bold border">최고 한도</div>
-          <div class="col-2 font-weight-bold border">저축 금리</div>
-          <div class="col-2 font-weight-bold border">최고 우대 금리</div>
-          <div class="col-2 font-weight-bold border">저축 금리 유형</div>
+        <div class="row bg-light">
+          <div class="col-2 font-weight-bold border-col">상품명</div>
+          <div class="col-2 font-weight-bold border-col">담당 은행</div>
+          <div class="col-2 font-weight-bold border-col">최고 한도</div>
+          <div class="col-2 font-weight-bold border-col">저축 금리</div>
+          <div class="col-2 font-weight-bold border-col">최고 우대 금리</div>
+          <div class="col-2 font-weight-bold border-col">저축 금리 유형</div>
         </div>
 
         <div
-          v-for="(deposit, index) in user?.join_deposit"
+          v-for="(deposit, index) in user?.compare_deposit"
           :key="index"
           class="row"
         >
-          <div class="col-2 border">{{ deposit.fin_prdt_nm }}</div>
-          <div class="col-2 border">{{ deposit.kor_co_nm }}</div>
-          <div class="col-2 border">
+          <div class="col-2 border-col">
+            <RouterLink
+              :to="{
+                name: 'products-detail',
+                params: { id: deposit.id, type: 'deposit' },
+              }"
+              class="custom-link"
+              >{{ deposit.fin_prdt_nm }}</RouterLink
+            >
+          </div>
+          <div class="col-2 border-col">{{ deposit.kor_co_nm }}</div>
+          <div class="col-2 border-col">
             {{
               deposit.max_limit
                 ? formatNumber(deposit.max_limit) + " 원"
                 : "최고 한도 없음"
             }}
           </div>
-          <div :class="['col-2 border', getRateClass(deposit, 'intr_rate')]">
+          <div
+            :class="['col-2 border-col', getRateClass(deposit, 'intr_rate')]"
+          >
             {{ getInterestRate(deposit, "intr_rate") }}
           </div>
-          <div :class="['col-2 border', getRateClass(deposit, 'intr_rate2')]">
+          <div
+            :class="['col-2 border-col', getRateClass(deposit, 'intr_rate2')]"
+          >
             {{ getInterestRate(deposit, "intr_rate2") }}
           </div>
-          <div class="col-2 border">
+          <div class="col-2 border-col">
             {{ getInterestRate(deposit, "intr_rate_type_nm") }}
           </div>
         </div>
@@ -59,20 +72,23 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { onMounted, ref } from "vue";
+import { ref, watch } from "vue";
 import { useUserStore } from "@/stores/user";
-import { useRouter } from "vue-router";
 
 const user = ref(null);
 const store = useUserStore();
 const depositPeriod = ref(null);
 
-onMounted(() => {
-  store.getUserInfo();
-  user.value = store.userInfo;
-  depositPeriod.value = user.value.deposit_period;
-});
+watch(
+  () => store.userInfo,
+  (newValue) => {
+    user.value = newValue;
+    if (newValue) {
+      depositPeriod.value = newValue.deposit_period;
+    }
+  },
+  { immediate: true }
+);
 
 const formatNumber = (value) => {
   if (typeof value !== "number") return "최고 한도 없음";
@@ -87,7 +103,7 @@ const getInterestRate = (deposit, field) => {
 };
 
 const getRateClass = (deposit, field) => {
-  const rates = user.value.join_deposit
+  const rates = user.value.compare_deposit
     .map((d) => {
       const option = d.depositoption_set.find(
         (option) => option.save_trm == depositPeriod.value
@@ -125,9 +141,8 @@ const getRateClass = (deposit, field) => {
   margin-bottom: 1rem;
 }
 
-.border {
-  border: 1px solid #ccc;
-  border: 1px solid #ccc;
+.border-col {
+  border: 1px solid #1b1b1b;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -149,5 +164,13 @@ const getRateClass = (deposit, field) => {
 
 .text-danger {
   color: red;
+}
+
+.custom-link {
+  color: inherit; /* 부모 요소의 색상 상속 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+.custom-link:hover {
+  color: gray; /* 호버 시 색상 변경 (원하는 색상으로 변경 가능) */
 }
 </style>

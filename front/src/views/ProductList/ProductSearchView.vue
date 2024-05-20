@@ -389,7 +389,7 @@
                   <RouterLink
                     :to="{
                       name: 'products-detail',
-                      params: { id: product.id, type: selectedType },
+                      params: { id: product.id, type: selectedType2 },
                     }"
                     class="custom-link"
                     >{{ product.fin_prdt_nm }}</RouterLink
@@ -438,38 +438,22 @@ import { RouterLink, RouterView } from "vue-router";
 import { onMounted, ref, reactive } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
+import { useSearchStore } from "@/stores/search";
 
 const store = useUserStore();
+const searchStore = useSearchStore();
 const router = useRouter();
-const products = ref(null);
-const selectedType = ref("deposit");
-const selectedType2 = ref(null);
-const selectedPeriods = ref([1, 3, 6, 12, 24, 36]);
-const bankIds = ref([
-  "우리은행",
-  "한국스탠다드차타드은행",
-  "대구은행",
-  "부산은행",
-  "광주은행",
-  "제주은행",
-  "전북은행",
-  "경남은행",
-  "중소기업은행",
-  "한국산업은행",
-  "국민은행",
-  "신한은행",
-  "농협은행주식회사",
-  "하나은행",
-  "주식회사 케이뱅크",
-  "수협은행",
-  "주식회사 카카오뱅크",
-  "토스뱅크 주식회사",
-]);
-const sorting = ref("intr_rate-");
-// 옵션 선택 시 해당 옵션을 토대로 예.적금 리스트를 반환하는 함수
+
+const selectedType = ref(searchStore.selectedType);
+const selectedType2 = ref(searchStore.selectedType);
+const selectedPeriods = ref(searchStore.selectedPeriods);
+const bankIds = ref(searchStore.bankIds);
+const sorting = ref(searchStore.sorting);
+const products = ref(searchStore.products);
+
 const selectSort = function () {
   if (selectedPeriods.value.length === 0) {
-    periods.value = [1, 3, 6, 12, 24, 36];
+    selectedPeriods.value = [1, 3, 6, 12, 24, 36];
   }
   if (bankIds.value.length === 0) {
     bankIds.value = [
@@ -493,9 +477,13 @@ const selectSort = function () {
       "토스뱅크 주식회사",
     ];
   }
+  searchStore.selectedType = selectedType.value;
+  searchStore.selectedPeriods = selectedPeriods.value;
+  searchStore.sorting = sorting.value;
+  searchStore.bankIds = bankIds.value;
+  selectedType2.value = selectedType.value;
   const periods = selectedPeriods.value.slice();
   if (selectedType.value) {
-    selectedType2.value = selectedType.value;
     axios({
       method: "get",
       url: `${store.API_URL}/finances/get_${selectedType.value}_products/1,3,6,12,24,36/${sorting.value}/${bankIds.value}/`,
@@ -505,6 +493,7 @@ const selectSort = function () {
     })
       .then((response) => {
         products.value = response.data;
+        searchStore.products = response.data;
       })
       .catch((err) => {
         console.log(err);
@@ -552,6 +541,12 @@ const getRate2 = (options, term) => {
   const option = options?.find((opt) => opt.save_trm === term);
   return option ? option.intr_rate2 : null;
 };
+
+onMounted(() => {
+  if (searchStore.products) {
+    products.value = searchStore.products;
+  }
+});
 </script>
 
 <style scoped>

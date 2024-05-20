@@ -210,22 +210,62 @@ def get_saving_detail(request, id):
     serializer = SavingDetailSerializer(product)
     return Response(serializer.data)
 
-# 예금 상품 가입
-@api_view(['POST'])
+# 예금 상품 가입 및 해지
+@api_view(['POST', 'DELETE'])
 def join_deposit(request, deposit_id):
     deposit = DepositProduct.objects.get(id=deposit_id)
-    if request.user in deposit.join_user.all():
-        pass
-    else:
-        deposit.join_user.add(request.user)
-        return Response(status=status.HTTP_200_OK)
+    if request.method == 'POST':
+        if request.user in deposit.join_user.all():
+            pass
+        else:
+            deposit.join_user.add(request.user)
+            return Response(status=status.HTTP_200_OK)
+    elif request.method == 'DELETE':
+        if request.user in deposit.join_user.all():
+            deposit.join_user.remove(request.user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
     
-# 예금 상품 가입
-@api_view(['POST'])
+# 적금 상품 가입 및 해지
+@api_view(['POST', 'DELETE'])
 def join_saving(request, saving_id):
     saving = SavingProduct.objects.get(id=saving_id)
-    if request.user in saving.join_user.all():
-        pass
-    else:
-        saving.join_user.add(request.user)
-        return Response(status=status.HTTP_200_OK)
+    if request.method == 'POST':
+        if request.user in saving.join_user.all():
+            pass
+        else:
+            saving.join_user.add(request.user)
+            return Response(status=status.HTTP_200_OK)
+    elif request.method == 'DELETE':
+        if request.user in saving.join_user.all():
+            saving.join_user.remove(request.user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        
+# 예금 상품 비교 등록 및 해제
+@api_view(['POST', 'DELETE'])
+def compare_deposit(request, deposit_id):
+    deposit = DepositProduct.objects.get(id=deposit_id)
+    if request.method == 'POST':
+        if request.user in deposit.compare_user.all():
+            pass
+        else:
+            deposit.compare_user.add(request.user)
+            return Response(status=status.HTTP_200_OK)
+    elif request.method == 'DELETE':
+        if request.user in deposit.compare_user.all():
+            deposit.compare_user.remove(request.user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+# 적금 상품 비교 등록 및 해제
+@api_view(['POST', 'DELETE'])
+def compare_saving(request, saving_id):
+    saving = SavingProduct.objects.get(id=saving_id)
+    if request.method == 'POST':
+        if request.user in saving.compare_user.all():
+            pass
+        else:
+            saving.compare_user.add(request.user)
+            return Response(status=status.HTTP_200_OK)
+    elif request.method == 'DELETE':
+        if request.user in saving.compare_user.all():
+            saving.compare_user.remove(request.user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
