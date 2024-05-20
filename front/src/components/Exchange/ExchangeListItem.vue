@@ -29,16 +29,24 @@
           placeholder="값"
           v-model="computedValue"
         />
-        <span class="input-group-text" style="width: 90px">{{
-          exchangeStore.currencies[selectedItemCurrent - 1]?.cur_unit
-        }}</span>
+        <span class="input-group-text d-flex justify-content-between" style="width: 90px">
+          <span>{{ exchangeStore.currencies[selectedItemCurrent - 1]?.cur_unit }}</span>
+          <!-- <span
+            @mouseover="infoMouseOver"
+            @mouseout="infoMouseOut"
+            v-if="exchangeStore.currencies[selectedItemCurrent - 1]?.cur_unit"
+            class="material-symbols-outlined text-secondary"
+          >
+            info
+          </span> -->
+        </span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, computed, nextTick, defineProps, onMounted } from 'vue'
+import { ref, watch, computed, nextTick, onMounted } from 'vue'
 import { useExchangeStore } from '@/stores/exchange'
 
 // 선택된 경우의 boolean을 반환해주는 값
@@ -80,8 +88,23 @@ const computedRate = computed(() => {
 })
 
 const computedValue = computed(() => {
-  console.log(computedRate.value)
-  return computedRate.value * exchangeStore.inputAmount
+  console.log(props.handleId, computedRate.value)
+
+  const calculated = (exchangeStore.inputAmount / computedRate.value) * exchangeStore.selectedRate
+  // 계산한 값이 숫자가 숫자가 아니면 null 반환, 계산 가능값이면 결과값 반환
+  if (isNaN(calculated) || !isFinite(calculated)) {
+    return null
+  } else {
+    if (Number.isInteger(calculated)) {
+      return calculated
+    } else if (calculated.toString().split('.')[1].length <= 2) {
+      return calculated
+    } else {
+      return calculated.toFixed(2)
+    }
+
+    return (exchangeStore.inputAmount / computedRate.value) * exchangeStore.selectedRate
+  }
 })
 
 // select form에서 통화를 선택하면, 해당 통화를 현재 선택된 통화로 수정
@@ -89,10 +112,9 @@ const currentSelectChange = function () {
   if (selectedItemCurrent.value) {
     // exchangeStore의 현재 선택된 통화 값을 현재 선택 통화로 변경
     exchangeStore.selectedCurrent = selectedItemCurrent.value
+
     // exchangeStore의 현재 선택된 핸들 값 변경
     exchangeStore.selectedHandle = props.handleId
-    // 현재 input의 값을 기존의 computed 값으로 변경
-    // inputValue.value = computedValue.value
   }
 }
 
@@ -111,7 +133,7 @@ const inputElse = ref(null)
 // v-else 상태일 때, v-else 태그의 input을 클릭하면 현재의 통화를 기준 통화로 바꾸어주기
 // 클릭과 동시에 현재 선택 상태를 현재 통화로, focus도 함께 바꿔줌
 const focusInputIf = () => {
-  inputValue.value = 0
+  inputValue.value = null
   currentSelectChange()
   exchangeStore.selectedHandle = props.handleId // 상태 변경하여 v-if를 true로 설정
   nextTick(() => {
@@ -120,6 +142,16 @@ const focusInputIf = () => {
       inputIf.value.focus()
     }
   })
+}
+
+// 정보 아이콘에 마우스오버 이벤트 추가
+const infoMouseOver = function () {
+
+}
+
+// 정보 아이콘에 마우스아웃 이벤트 추가
+const infoMouseOut = function () {
+  
 }
 
 onMounted(() => {

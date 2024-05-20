@@ -11,7 +11,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
 
 const emit = defineEmits(['add-handle', 'remove-handle'])
 const props = defineProps({

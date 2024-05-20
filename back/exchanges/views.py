@@ -183,3 +183,37 @@ def __get_exchange_rate_api(get_date):
     else:
         return False
     
+@api_view(['GET'])
+def get_graph_data(request, current_pk):
+    
+    current = Current.objects.get(pk=current_pk)
+    
+    data_list = []
+    
+    data_list_date = []
+    data_list_rate = []
+    
+    target_date = today_date
+    
+    for i in range(365):
+        
+        target_date -= timedelta(days=1)
+        
+        exchange_rate = ExchangeRate.objects.filter(current_id=current_pk, date=target_date)
+        if exchange_rate.exists():
+            push_data = {
+                'date': target_date,
+                'rate': exchange_rate.first().deal_bas_r
+            }
+            if push_data:
+                # print(push_data)
+                data_list.append(push_data)
+                data_list_date.append(push_data['date'])
+                data_list_rate.append(push_data['rate'])
+    
+    json = {
+        'data_list_date': data_list_date,
+        'data_list_rate': data_list_rate,
+    }
+    print(json)
+    return JsonResponse(json, safe=False)
