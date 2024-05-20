@@ -23,6 +23,9 @@ import ProductDetailView from "@/views/ProductList/ProductDetailView.vue";
 import ProductCompareView from "@/views/ProductCompare/ProductCompareView.vue";
 import DepositCompareView from "@/views/ProductCompare/DepositCompareView.vue";
 import SavingCompareView from "@/views/ProductCompare/SavingCompareView.vue";
+// 은행 조회
+import BankView from "@/views/Bank/BankView.vue";
+import BankDetailView from "@/views/Bank/BankDetailView.vue";
 import { useUserStore } from "@/stores/user";
 
 const router = createRouter({
@@ -55,6 +58,14 @@ const router = createRouter({
           name: "products-detail",
           component: ProductDetailView,
         },
+      ],
+    },
+    {
+      path: "/bank/",
+      name: "bank",
+      component: BankView,
+      children: [
+        { path: ":id", name: "bank-detail", component: BankDetailView },
       ],
     },
     {
