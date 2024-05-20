@@ -1,31 +1,28 @@
 <template>
-  <div>
-    <h1>내 신용 점수</h1>
-    <!-- <p>{{ user?.credit_score }}</p> -->
+  <div class="credit-score-container">
+    <h1 class="text-center mb-4">내 신용 점수</h1>
+    <div class="text-center mb-3">
+      <DoughnutChart :score="userInfo.credit_score" />
+    </div>
   </div>
 </template>
 
-<script>
-// import { useUserStore } from "@/stores/user";
-// import { onMounted, ref } from "vue";
-// const user = ref(null);
-// const store = useUserStore();
-// onMounted(() => {
-//   console.log(store.name);
-//   axios({
-//     method: "get",
-//     url: `${store.API_URL}/accounts/profile/${store.name}/`,
-//     headers: {
-//       Authorization: `Token ${store.token}`,
-//     },
-//   })
-//     .then((response) => {
-//       user.value = response.data;
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
+<script setup>
+import { computed } from "vue";
+import { useUserStore } from "@/stores/user";
+import DoughnutChart from "@/components/MyAccount/DoughnutChart.vue";
+
+const store = useUserStore();
+const userInfo = computed(() => store.userInfo);
 </script>
 
-<style scoped></style>
+<style scoped>
+.credit-score-container {
+  max-width: 200px;
+  margin: auto;
+}
+
+.text-center {
+  text-align: center;
+}
+</style>

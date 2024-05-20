@@ -1,126 +1,18 @@
 <template>
-  <div>
-    <h1 class="text-center mb-4">ProfileInfoView</h1>
-    <div class="mx-auto" style="max-width: 600px">
-      <h4 class="text-center">{{ user?.username }}의 프로필</h4>
-      <div class="text-center my-3">
-        <img
-          :src="user?.profile_img"
-          alt="이미지없음"
-          class="img-thumbnail"
-          style="max-width: 200px"
-        />
-      </div>
-      <hr />
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label text-right font-weight-bold"
-          >생년월일 :</label
-        >
-        <div class="col-sm-8">
-          <p class="form-control-plaintext">{{ user?.date_of_birth }}</p>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label text-right font-weight-bold"
-          >주소 :</label
-        >
-        <div class="col-sm-8">
-          <p class="form-control-plaintext">{{ user?.address }}</p>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label text-right font-weight-bold"
-          >보유자산 :</label
-        >
-        <div class="col-sm-8">
-          <p class="form-control-plaintext">
-            {{
-              user?.budget
-                ? formatNumber(user?.budget) + "원"
-                : "보유 자산을 입력해주세요."
-            }}
-          </p>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label text-right font-weight-bold"
-          >월 수입 :</label
-        >
-        <div class="col-sm-8">
-          <p class="form-control-plaintext">
-            {{
-              user?.salary
-                ? formatNumber(user?.salary) + "원"
-                : "월 수입을 입력해주세요."
-            }}
-          </p>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label text-right font-weight-bold"
-          >예금 가능액 :</label
-        >
-        <div class="col-sm-8">
-          <p class="form-control-plaintext">
-            {{
-              user?.deposit_able
-                ? formatNumber(user?.deposit_able) + "원"
-                : "예금 가능액을 입력해주세요."
-            }}
-          </p>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label text-right font-weight-bold"
-          >적금 가능액 :</label
-        >
-        <div class="col-sm-8">
-          <p class="form-control-plaintext">
-            {{
-              user?.saving_able
-                ? formatNumber(user?.saving_able) + "원"
-                : "적금 가능액을 입력해주세요."
-            }}
-          </p>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label text-right font-weight-bold"
-          >예금 희망 기간 :</label
-        >
-        <div class="col-sm-8">
-          <p class="form-control-plaintext">{{ user?.deposit_period }}개월</p>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label text-right font-weight-bold"
-          >적금 희망 기간 :</label
-        >
-        <div class="col-sm-8">
-          <p class="form-control-plaintext">{{ user?.saving_period }}개월</p>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label text-right font-weight-bold"
-          >신용 점수 :</label
-        >
-        <div class="col-sm-8">
-          <p class="form-control-plaintext">
-            {{
-              user?.credit_score
-                ? user.credit_score
-                : "신용 점수를 입력해주세요."
-            }}
-          </p>
-        </div>
-      </div>
-      <div v-if="user?.join_deposit" class="mb-3">
-        <h4 class="font-weight-bold">
+  <div class="profile-container mx-auto row">
+    <div class="col-md-4 text-center">
+      <img
+        :src="user?.profile_img ? apiUrl + user.profile_img : ''"
+        alt="이미지없음"
+        class="profile-img"
+      />
+      <div v-if="user?.join_deposit" class="mt-4">
+        <h5 class="font-weight-bold">
           내가 가입한 예금 상품
-          <span class="badge badge-primary">
-            {{ user.join_deposit.length }}개</span
+          <span class="badge badge-primary"
+            >{{ user.join_deposit.length }}개</span
           >
-        </h4>
+        </h5>
         <ul class="list-group">
           <li
             v-for="deposit in user.join_deposit"
@@ -133,18 +25,19 @@
                 params: { id: deposit.id, type: 'deposit' },
               }"
               class="custom-link"
-              >{{ deposit.fin_prdt_nm }}</RouterLink
             >
+              {{ deposit.fin_prdt_nm }}
+            </RouterLink>
           </li>
         </ul>
       </div>
-      <div v-if="user?.join_saving" class="mb-3">
-        <h4 class="font-weight-bold">
+      <div v-if="user?.join_saving" class="mt-4">
+        <h5 class="font-weight-bold">
           내가 가입한 적금 상품
           <span class="badge badge-primary"
             >{{ user.join_saving.length }}개</span
           >
-        </h4>
+        </h5>
         <ul class="list-group">
           <li
             v-for="saving in user.join_saving"
@@ -157,17 +50,35 @@
                 params: { id: saving.id, type: 'saving' },
               }"
               class="custom-link"
-              >{{ saving.fin_prdt_nm }}</RouterLink
             >
+              {{ saving.fin_prdt_nm }}
+            </RouterLink>
           </li>
         </ul>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <h4>{{ user?.nickname }}님의 프로필</h4>
+      <hr />
+      <div class="profile-details">
+        <div
+          v-for="(label, key) in profileFields"
+          :key="key"
+          class="row mb-3 align-items-center"
+        >
+          <label class="col-sm-4 col-form-label text-right font-weight-bold">
+            {{ label }}
+          </label>
+          <div class="col-sm-8">
+            <p class="form-control-plaintext">{{ formatField(key) }}</p>
+          </div>
+          <div class="col-12"><hr /></div>
+          <!-- 구분선 추가 -->
+        </div>
       </div>
       <div class="d-flex justify-content-center mt-3">
         <button class="btn btn-primary mx-1" @click="goUpdate">
           프로필 정보 수정
-        </button>
-        <button class="btn btn-secondary mx-1" @click="goChangePassword">
-          비밀번호 변경
         </button>
       </div>
     </div>
@@ -180,9 +91,24 @@ import { onMounted, ref, watch } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 
+const apiUrl = "http://127.0.0.1:8000";
 const router = useRouter();
 const user = ref(null);
 const store = useUserStore();
+
+const profileFields = {
+  id: "회원번호",
+  nickname: "닉네임",
+  date_of_birth: "생년월일",
+  address: "주소",
+  budget: "보유자산",
+  salary: "월 수입",
+  deposit_able: "예금 가능액",
+  saving_able: "적금 가능액",
+  deposit_period: "예금 희망 기간",
+  saving_period: "적금 희망 기간",
+  credit_score: "신용 점수",
+};
 
 watch(
   () => store.userInfo,
@@ -201,25 +127,62 @@ const formatNumber = (value) => {
   return new Intl.NumberFormat().format(value);
 };
 
-const goUpdate = function () {
-  router.push({ name: "profile-update" });
+const formatField = (key) => {
+  const value = user.value?.[key];
+  if (
+    key === "budget" ||
+    key === "salary" ||
+    key === "deposit_able" ||
+    key === "saving_able"
+  ) {
+    return value ? formatNumber(value) + "원" : "정보를 입력해주세요.";
+  } else if (key === "deposit_period" || key === "saving_period") {
+    return value ? value + "개월" : "정보를 입력해주세요.";
+  }
+  return value || "정보를 입력해주세요.";
 };
 
-const goChangePassword = function () {
-  router.push({ name: "profile-password-change" });
+const goUpdate = function () {
+  router.push({ name: "profile-update" });
 };
 </script>
 
 <style scoped>
-.img-thumbnail {
-  max-width: 200px;
+.profile-container {
+  max-width: 900px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid #f0f0f0;
+}
+
+.profile-details {
+  margin-top: 20px;
+}
+
+.row {
+  margin-bottom: 15px;
 }
 
 .custom-link {
-  color: inherit; /* 부모 요소의 색상 상속 */
-  text-decoration: none; /* 밑줄 제거 */
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
 }
+
 .custom-link:hover {
-  color: gray; /* 호버 시 색상 변경 (원하는 색상으로 변경 가능) */
+  color: #0056b3;
+}
+
+.btn {
+  width: 200px;
 }
 </style>

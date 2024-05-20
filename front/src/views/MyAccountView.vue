@@ -4,7 +4,7 @@
     <div class="container mt-4">
       <div class="row mb-3">
         <div class="col-md-7 border mx-1 p-3">
-          <InterestedProducts />
+          <ComparedProducts />
         </div>
         <div class="col-md-4 border mx-1 p-3">
           <CreditScore />
@@ -12,7 +12,7 @@
       </div>
       <div class="row">
         <div class="col-md-7 border mx-1 p-3">
-          <SeenProducts />
+          <JoinProducts />
         </div>
         <div class="col-md-4 border mx-1 p-3">
           <RecommendProducts />
@@ -25,9 +25,9 @@
 
 <script setup>
 import { useUserStore } from "@/stores/user";
-import InterestedProducts from "@/components/MyAccount/InterestedProducts.vue";
+import ComparedProducts from "@/components/MyAccount/ComparedProducts.vue";
 import CreditScore from "@/components/MyAccount/CreditScore.vue";
-import SeenProducts from "@/components/MyAccount/SeenProducts.vue";
+import JoinProducts from "@/components/MyAccount/JoinProducts.vue";
 import RecommendProducts from "@/components/MyAccount/RecommendProducts.vue";
 
 const store = useUserStore();
