@@ -286,7 +286,7 @@ def recommend_deposit(request):
     me_budget = me.budget
     scores = [[0, i+1] for i in range(dp_cnt)]
     users = get_list_or_404(get_user_model())
-    print(me_year, me_salary, me_budget)
+    
     for user in users:
         score = 100
         score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
@@ -320,7 +320,7 @@ def recommend_saving(request):
     me_budget = me.budget
     scores = [[0, i+1] for i in range(sv_cnt)]
     users = get_list_or_404(get_user_model())
-    print(me_year, me_salary, me_budget)
+    
     for user in users:
         score = 100
         score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
