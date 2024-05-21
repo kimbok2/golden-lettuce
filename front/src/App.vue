@@ -28,6 +28,4 @@ import Footer from '@/components/Footer.vue'
   max-width: 100% !important;
 }
 
-
-
 </style>

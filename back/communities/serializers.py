@@ -8,8 +8,10 @@ User = get_user_model()
 class ArticleUsernameSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username',)
-
+        fields = '__all__'
+        read_only_fields = ('id', 'username',)
+    
+    profile_img = serializers.ImageField(use_url=True)
 # 게시글을 표시해줄 Serializer
 class ArticleListSerializer(serializers.ModelSerializer):
 
