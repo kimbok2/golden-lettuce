@@ -1,10 +1,28 @@
 <template>
-  <div>
-    <h1>ProductCompareView</h1>
-    <RouterLink :to="{ name: 'compare' }">예금 비교</RouterLink> |
-    <RouterLink :to="{ name: 'compare-saving' }">적금 비교</RouterLink>
-    <hr />
-    <RouterView />
+  <div class="compare-container mt-4">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <RouterLink
+          class="nav-link"
+          :class="{ active: $route.name === 'compare' }"
+          :to="{ name: 'compare' }"
+        >
+          예금 비교
+        </RouterLink>
+      </li>
+      <li class="nav-item">
+        <RouterLink
+          class="nav-link"
+          :class="{ active: $route.name === 'compare-saving' }"
+          :to="{ name: 'compare-saving' }"
+        >
+          적금 비교
+        </RouterLink>
+      </li>
+    </ul>
+    <div class="tab-content mt-3">
+      <RouterView />
+    </div>
   </div>
 </template>
 
@@ -42,6 +60,13 @@ const formatNumber = (value) => {
 </script>
 
 <style scoped>
+.compare-container {
+  max-width: 1000px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 .container {
   margin-top: 60px;
 }
@@ -74,5 +99,6 @@ const formatNumber = (value) => {
 
 .text-danger {
   color: red;
+  font-weight: bolder;
 }
 </style>

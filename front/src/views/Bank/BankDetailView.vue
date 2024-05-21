@@ -2,53 +2,78 @@
   <div class="container mt-4">
     <div v-if="bank" class="bank-card shadow-lg rounded">
       <div class="bank-card-header">
-        <h4 class="bank-title">{{ bank.kor_co_nm }}</h4>
-        <a :href="bank.homp_url" class="bank-link">
-          {{ bank.kor_co_nm }} 홈페이지로 이동
-        </a>
+        <h4 class="bank-title d-flex align-items-center justify-content-center">
+          <img :src="`/media/bank/${bank.id}.png`" alt="" />
+          <span class="mx-2">{{ bank.kor_co_nm }}</span>
+          <a :href="bank.homp_url" class="bank-link m-0">
+            <span class="material-symbols-outlined"> home </span>
+          </a>
+        </h4>
       </div>
       <div class="bank-card-body">
-        <p><strong>대표 번호:</strong> {{ bank.cal_tel }}</p>
-        <p><strong>담당자:</strong> {{ bank.dcls_chrg_man }}</p>
-        <div class="product-section">
-          <h5>예금 상품</h5>
-          <ul class="product-list">
-            <li
-              v-for="deposit in bank.depositproduct_set"
-              :key="deposit.id"
-              class="product-item"
-            >
-              <RouterLink
-                :to="{
-                  name: 'products-detail',
-                  params: { id: deposit.id, type: 'deposit' },
-                }"
-                class="product-link"
-              >
-                {{ deposit.fin_prdt_nm }}
-              </RouterLink>
-            </li>
-          </ul>
+        <div class="row mb-3">
+          <div class="col-3"><strong>대표 번호</strong></div>
+          <div class="col-9">{{ formattedPhoneNumber(bank.cal_tel) }}</div>
         </div>
-        <div class="product-section">
-          <h5>적금 상품</h5>
-          <ul class="product-list">
-            <li
-              v-for="saving in bank.savingproduct_set"
-              :key="saving.id"
-              class="product-item"
-            >
-              <RouterLink
-                :to="{
-                  name: 'products-detail',
-                  params: { id: saving.id, type: 'saving' },
-                }"
-                class="product-link"
-              >
-                {{ saving.fin_prdt_nm }}
-              </RouterLink>
-            </li>
-          </ul>
+        <hr />
+        <div class="row mb-3">
+          <div class="col-3"><strong>담당자</strong></div>
+          <div class="col-9">{{ bank.dcls_chrg_man }}</div>
+        </div>
+        <hr />
+        <h4>
+          <b>{{ bank.kor_co_nm }}이 보유한 금융 상품을 소개합니다!</b>
+        </h4>
+        <hr />
+        <div class="row">
+          <div class="col-6">
+            <div class="product-section">
+              <h5>
+                <b>예금 상품 {{ bank.depositproduct_set.length }}개</b>
+              </h5>
+              <ul class="product-list">
+                <li
+                  v-for="deposit in bank.depositproduct_set"
+                  :key="deposit.id"
+                  class="product-item"
+                >
+                  <RouterLink
+                    :to="{
+                      name: 'products-detail',
+                      params: { id: deposit.id, type: 'deposit' },
+                    }"
+                    class="product-link"
+                  >
+                    {{ deposit.fin_prdt_nm }}
+                  </RouterLink>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="product-section">
+              <h5>
+                <b> 적금 상품 {{ bank.savingproduct_set.length }}개</b>
+              </h5>
+              <ul class="product-list">
+                <li
+                  v-for="saving in bank.savingproduct_set"
+                  :key="saving.id"
+                  class="product-item"
+                >
+                  <RouterLink
+                    :to="{
+                      name: 'products-detail',
+                      params: { id: saving.id, type: 'saving' },
+                    }"
+                    class="product-link"
+                  >
+                    {{ saving.fin_prdt_nm }}
+                  </RouterLink>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -78,6 +103,11 @@ const fetchBank = () => {
     });
 };
 
+const formattedPhoneNumber = (phone) => {
+  if (!phone) return "";
+  return phone.replace(/(\d{4})(\d{4})/, "$1-$2");
+};
+
 onMounted(() => {
   bankId.value = route.params.id;
   fetchBank();
@@ -85,6 +115,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.bank-container {
+  max-width: 1000px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 .bank-card {
   border: 1px solid #e2e2e2;
   border-radius: 0.75rem;

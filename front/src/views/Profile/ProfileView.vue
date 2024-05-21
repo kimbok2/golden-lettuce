@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>ProfileView</h1>
     <RouterView />
   </div>
 </template>

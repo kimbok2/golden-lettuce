@@ -49,6 +49,7 @@ class SavingOptionSerializer(serializers.ModelSerializer):
 
 # 예금 전체 조회 시리얼라이저
 class DepositListSerializer(serializers.ModelSerializer):
+    join_user_count = serializers.IntegerField(source='join_user.count', read_only=True)
     depositoption_set = DepositOptionSerializer(read_only=True, many=True)
     class Meta:
         model = DepositProduct
@@ -56,6 +57,7 @@ class DepositListSerializer(serializers.ModelSerializer):
 
 # 적금 전체 조회 시리얼라이저
 class SavingListSerializer(serializers.ModelSerializer):
+    join_user_count = serializers.IntegerField(source='join_user.count', read_only=True)
     savingoption_set = SavingOptionSerializer(read_only=True, many=True)
     class Meta:
         model = SavingProduct

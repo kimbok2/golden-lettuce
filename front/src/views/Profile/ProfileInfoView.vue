@@ -1,6 +1,6 @@
 <template>
   <div class="profile-container mx-auto row">
-    <div class="col-md-4 text-center">
+    <div class="col-md-7 text-center">
       <img
         :src="user?.profile_img ? apiUrl + user.profile_img : ''"
         alt="이미지없음"
@@ -30,6 +30,7 @@
             </RouterLink>
           </li>
         </ul>
+        <ProfileGraphItem :join_product="user.join_deposit" />
       </div>
       <div v-if="user?.join_saving" class="mt-4">
         <h5 class="font-weight-bold">
@@ -55,9 +56,10 @@
             </RouterLink>
           </li>
         </ul>
+        <ProfileGraphItem :join_product="user.join_saving" />
       </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-5">
       <h4>{{ user?.nickname }}님의 프로필</h4>
       <hr />
       <div class="profile-details">
@@ -93,6 +95,7 @@ import axios from "axios";
 import { onMounted, ref, watch } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
+import ProfileGraphItem from "@/components/Profile/ProfileGraphItem.vue";
 
 const apiUrl = "http://127.0.0.1:8000";
 const router = useRouter();
@@ -155,7 +158,7 @@ const goPasswordChange = function () {
 
 <style scoped>
 .profile-container {
-  max-width: 900px;
+  max-width: 1000px;
   padding: 20px;
   background-color: #fff;
   border-radius: 10px;

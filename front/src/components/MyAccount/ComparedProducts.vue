@@ -184,6 +184,7 @@ const getInterestRate = (product, rateType) => {
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   background-size: 100%, 100%;
+  border-radius: 10px;
 }
 
 .btn.active {

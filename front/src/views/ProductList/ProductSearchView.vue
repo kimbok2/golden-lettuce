@@ -1,360 +1,234 @@
 <template>
-  <div>
-    <h1>
-      ProductSearchView
-      <button @click="savedata" class="btn btn-primary">
-        DB초기화 이후 1회만 실행
-      </button>
-    </h1>
-    <hr />
-
+  <div class="search-container">
     <div class="container">
       <h3>상품 검색 조건 바</h3>
       <form @submit.prevent="selectSort">
-        <span>상품 종류 : </span>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="deposit"
-            value="deposit"
-            v-model="selectedType"
-            required
-          />
-          <label class="form-check-label" for="deposit"> 예금 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="saving"
-            value="saving"
-            v-model="selectedType"
-            required
-          />
-          <label class="form-check-label" for="saving">적금</label>
-        </div>
-        <br />
-        <span>저축 기간 : </span>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="per1"
-            name="savingPeriod"
-            value="1"
-            v-model="selectedPeriods"
-          />
-          <label class="form-check-label" for="per1"> 1개월 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="per3"
-            name="savingPeriod"
-            value="3"
-            v-model="selectedPeriods"
-          />
-          <label class="form-check-label" for="per3"> 3개월 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="per6"
-            name="savingPeriod"
-            value="6"
-            v-model="selectedPeriods"
-          />
-          <label class="form-check-label" for="per6"> 6개월 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="per12"
-            name="savingPeriod"
-            value="12"
-            v-model="selectedPeriods"
-          />
-          <label class="form-check-label" for="per12"> 12개월 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="per24"
-            name="savingPeriod"
-            value="24"
-            v-model="selectedPeriods"
-          />
-          <label class="form-check-label" for="per24"> 24개월 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="per36"
-            name="savingPeriod"
-            value="36"
-            v-model="selectedPeriods"
-          />
-          <label class="form-check-label" for="per36"> 36개월 </label>
-        </div>
-        <br />
-
-        <span>정렬 기준 : </span>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="intr_rate-"
-            value="intr_rate-"
-            v-model="sorting"
-            required
-          />
-          <label class="form-check-label" for="intr_rate-">
-            기본금리 높은 순
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="intr_rate"
-            value="intr_rate"
-            v-model="sorting"
-            required
-          />
-          <label class="form-check-label" for="intr_rate">
-            기본 금리 낮은 순
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="intr_rate2-"
-            value="intr_rate2-"
-            v-model="sorting"
-            required
-          />
-          <label class="form-check-label" for="intr_rate2-">
-            최고 우대 금리 높은 순
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="intr_rate2"
-            value="intr_rate2"
-            v-model="sorting"
-            required
-          />
-          <label class="form-check-label" for="intr_rate2">
-            최고 우대 금리 낮은 순
-          </label>
-        </div>
-        <br />
-        <span>담당 은행 : </span>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank1"
-            value="우리은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank1"> 우리은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank2"
-            value="한국스탠다드차타드은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank2">
-            한국스탠다드차타드은행
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank3"
-            value="대구은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank3"> 대구은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank4"
-            value="부산은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank4"> 부산은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank5"
-            value="광주은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank5"> 광주은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank6"
-            value="제주은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank6"> 제주은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank7"
-            value="전북은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank7"> 전북은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank8"
-            value="경남은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank8"> 경남은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank9"
-            value="중소기업은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank9"> 중소기업은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank10"
-            value="한국산업은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank10"> 한국산업은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank11"
-            value="국민은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank11"> 국민은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank12"
-            value="신한은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank12"> 신한은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank13"
-            value="농협은행주식회사"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank13">
-            농협은행주식회사
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank14"
-            value="하나은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank14"> 하나은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank15"
-            value="주식회사 케이뱅크"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank15">
-            주식회사 케이뱅크
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank16"
-            value="수협은행"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank16"> 수협은행 </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank17"
-            value="주식회사 카카오뱅크"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank17">
-            주식회사 카카오뱅크
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="bank18"
-            value="토스뱅크 주식회사"
-            v-model="bankIds"
-          />
-          <label class="form-check-label" for="bank18">
-            토스뱅크 주식회사
-          </label>
+        <!-- 상품 종류 -->
+        <div class="form-group row mb-3">
+          <label class="col-sm-2 col-form-label">상품 종류</label>
+          <div class="col-sm-10">
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="deposit"
+                value="deposit"
+                v-model="selectedType"
+                required
+              />
+              <label class="form-check-label" for="deposit"> 예금 </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="saving"
+                value="saving"
+                v-model="selectedType"
+                required
+              />
+              <label class="form-check-label" for="saving">적금</label>
+            </div>
+          </div>
         </div>
 
-        <br /><br />
+        <!-- 저축 기간 -->
+        <div class="form-group row mb-3">
+          <label class="col-sm-2 col-form-label">저축 기간</label>
+          <div class="col-sm-10">
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="per1"
+                name="savingPeriod"
+                value="1"
+                v-model="selectedPeriods"
+              />
+              <label class="form-check-label" for="per1"> 1개월 </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="per3"
+                name="savingPeriod"
+                value="3"
+                v-model="selectedPeriods"
+              />
+              <label class="form-check-label" for="per3"> 3개월 </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="per6"
+                name="savingPeriod"
+                value="6"
+                v-model="selectedPeriods"
+              />
+              <label class="form-check-label" for="per6"> 6개월 </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="per12"
+                name="savingPeriod"
+                value="12"
+                v-model="selectedPeriods"
+              />
+              <label class="form-check-label" for="per12"> 12개월 </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="per24"
+                name="savingPeriod"
+                value="24"
+                v-model="selectedPeriods"
+              />
+              <label class="form-check-label" for="per24"> 24개월 </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="per36"
+                name="savingPeriod"
+                value="36"
+                v-model="selectedPeriods"
+              />
+              <label class="form-check-label" for="per36"> 36개월 </label>
+            </div>
+            <div class="mt-2">
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                @click="selectAllPeriods"
+              >
+                전체 선택
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                @click="deselectAllPeriods"
+              >
+                전체 해제
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 정렬 기준 -->
+        <div class="form-group row mb-3">
+          <label class="col-sm-2 col-form-label">정렬 기준</label>
+          <div class="col-sm-10">
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="intr_rate-"
+                value="intr_rate-"
+                v-model="sorting"
+                required
+              />
+              <label class="form-check-label" for="intr_rate-">
+                기본금리 높은 순
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="intr_rate"
+                value="intr_rate"
+                v-model="sorting"
+                required
+              />
+              <label class="form-check-label" for="intr_rate">
+                기본 금리 낮은 순
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="intr_rate2-"
+                value="intr_rate2-"
+                v-model="sorting"
+                required
+              />
+              <label class="form-check-label" for="intr_rate2-">
+                최고 우대 금리 높은 순
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="intr_rate2"
+                value="intr_rate2"
+                v-model="sorting"
+                required
+              />
+              <label class="form-check-label" for="intr_rate2">
+                최고 우대 금리 낮은 순
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 담당 은행 -->
+        <div class="form-group row mb-3">
+          <label class="col-sm-2 col-form-label">담당 은행</label>
+          <div class="col-sm-10">
+            <div class="row">
+              <div
+                class="col-6 col-md-4 col-lg-3"
+                v-for="bank in banks"
+                :key="bank.id"
+              >
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    :id="'bank' + bank.id"
+                    :value="bank.name"
+                    v-model="bankIds"
+                  />
+                  <label class="form-check-label" :for="'bank' + bank.id">{{
+                    bank.name
+                  }}</label>
+                </div>
+              </div>
+            </div>
+            <div class="mt-2">
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                @click="selectAllBanks"
+              >
+                전체 선택
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                @click="deselectAllBanks"
+              >
+                전체 해제
+              </button>
+            </div>
+          </div>
+        </div>
+
         <button type="submit" class="btn btn-primary">제출</button>
       </form>
     </div>
     <hr />
+
+    <!-- 검색 결과 -->
     <div>
       <ul class="text-start ps-0 text-center">
         <li class="card rounded-0">
@@ -434,8 +308,8 @@
 
 <script setup>
 import axios from "axios";
-import { RouterLink, RouterView } from "vue-router";
-import { onMounted, ref, reactive } from "vue";
+import { RouterLink } from "vue-router";
+import { onMounted, ref } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 import { useSearchStore } from "@/stores/search";
@@ -450,32 +324,50 @@ const selectedPeriods = ref(searchStore.selectedPeriods);
 const bankIds = ref(searchStore.bankIds);
 const sorting = ref(searchStore.sorting);
 const products = ref(searchStore.products);
+let i = 1;
+const banks = [
+  { id: i++, name: "우리은행" },
+  { id: i++, name: "한국스탠다드차타드은행" },
+  { id: i++, name: "대구은행" },
+  { id: i++, name: "부산은행" },
+  { id: i++, name: "광주은행" },
+  { id: i++, name: "제주은행" },
+  { id: i++, name: "전북은행" },
+  { id: i++, name: "경남은행" },
+  { id: i++, name: "중소기업은행" },
+  { id: i++, name: "한국산업은행" },
+  { id: i++, name: "국민은행" },
+  { id: i++, name: "신한은행" },
+  { id: i++, name: "농협은행주식회사" },
+  { id: i++, name: "하나은행" },
+  { id: i++, name: "주식회사 케이뱅크" },
+  { id: i++, name: "수협은행" },
+  { id: i++, name: "주식회사 카카오뱅크" },
+  { id: i++, name: "토스뱅크 주식회사" },
+];
+
+const selectAllPeriods = () => {
+  selectedPeriods.value = ["1", "3", "6", "12", "24", "36"];
+};
+
+const deselectAllPeriods = () => {
+  selectedPeriods.value = [];
+};
+
+const selectAllBanks = () => {
+  bankIds.value = banks.map((bank) => bank.name);
+};
+
+const deselectAllBanks = () => {
+  bankIds.value = [];
+};
 
 const selectSort = function () {
   if (selectedPeriods.value.length === 0) {
     selectedPeriods.value = [1, 3, 6, 12, 24, 36];
   }
   if (bankIds.value.length === 0) {
-    bankIds.value = [
-      "우리은행",
-      "한국스탠다드차타드은행",
-      "대구은행",
-      "부산은행",
-      "광주은행",
-      "제주은행",
-      "전북은행",
-      "경남은행",
-      "중소기업은행",
-      "한국산업은행",
-      "국민은행",
-      "신한은행",
-      "농협은행주식회사",
-      "하나은행",
-      "주식회사 케이뱅크",
-      "수협은행",
-      "주식회사 카카오뱅크",
-      "토스뱅크 주식회사",
-    ];
+    bankIds.value = banks.map((bank) => bank.name);
   }
   searchStore.selectedType = selectedType.value;
   searchStore.selectedPeriods = selectedPeriods.value;
@@ -550,6 +442,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.search-container {
+  max-width: 1000px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 .nowrap {
   white-space: nowrap;
   text-overflow: ellipsis;
