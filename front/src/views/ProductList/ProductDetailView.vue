@@ -5,7 +5,7 @@
         <h4 class="card-title">{{ product.fin_prdt_nm }}</h4>
         <div class="d-flex justify-content-between align-items-center mb-3">
           <span class="badge bg-secondary"
-            >가입자 수 {{ product.join_user_count }}명</span
+            >가입자 수 : {{ product.join_user_count }}명</span
           >
           <div>
             <button
@@ -162,20 +162,33 @@ const formatNumber = (value) => {
 };
 
 const joinProduct = (apiMethod) => {
-  axios({
-    method: apiMethod,
-    url: `${store.API_URL}/finances/join_${productType.value}/${productId.value}/`,
-    headers: {
-      Authorization: `Token ${store.token}`,
-    },
-  })
-    .then((res) => {
-      console.log("가입/해지");
-      fetchProduct(); // 업데이트 후 데이터를 다시 가져옴
+  const joinOrNot = ref(null);
+  if (apiMethod === "post") {
+    joinOrNot.value = window.confirm("가입하시겠습니까?");
+  } else {
+    joinOrNot.value = window.confirm("정말 해지하시겠습니까?");
+  }
+  if (joinOrNot.value === true) {
+    axios({
+      method: apiMethod,
+      url: `${store.API_URL}/finances/join_${productType.value}/${productId.value}/`,
+      headers: {
+        Authorization: `Token ${store.token}`,
+      },
     })
-    .catch((err) => {
-      console.log(err);
-    });
+      .then((res) => {
+        if (apiMethod === "post") {
+          alert("성공적으로 가입되었습니다.");
+        } else {
+          alert("해지되었습니다.");
+        }
+        console.log("가입/해지");
+        fetchProduct(); // 업데이트 후 데이터를 다시 가져옴
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
 
 const compareProduct = (apiMethod) => {
@@ -249,18 +262,20 @@ const formattedEndDate = (date) => {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #e2e2e2;
-  padding: 0.5rem 0;
+  align-items: center;
+  padding: 12px 0;
 }
 
 .detail-title {
   flex: 1;
-  font-weight: bold;
+
+  margin: 8px 0;
 }
 
 .detail-content {
   flex: 2;
+  margin: 8px 0;
 }
-
 .table {
   margin-top: 1rem;
 }

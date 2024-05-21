@@ -1,66 +1,70 @@
 <template>
-  <div>
+  <div class="container mt-4">
     <h3>
       예금 희망 기간 :
       {{ depositPeriod ? depositPeriod + "개월" : "희망 기간을 입력해주세요." }}
     </h3>
-    <label for="term">희망 기간 선택 : </label>
-    <select id="term" v-model="depositPeriod">
-      <option value="1">1개월</option>
-      <option value="3">3개월</option>
-      <option value="6">6개월</option>
-      <option value="12">12개월</option>
-      <option value="24">24개월</option>
-      <option value="36">36개월</option>
-    </select>
-
-    <div>
-      <div class="container">
-        <div class="row bg-light">
-          <div class="col-2 font-weight-bold border-col">상품명</div>
-          <div class="col-2 font-weight-bold border-col">담당 은행</div>
-          <div class="col-2 font-weight-bold border-col">최고 한도</div>
-          <div class="col-2 font-weight-bold border-col">저축 금리</div>
-          <div class="col-2 font-weight-bold border-col">최고 우대 금리</div>
-          <div class="col-2 font-weight-bold border-col">저축 금리 유형</div>
-        </div>
-
-        <div
-          v-for="(deposit, index) in user?.compare_deposit"
-          :key="index"
-          class="row"
+    <div class="form-group row align-items-center">
+      <label for="term" class="col-sm-2 offset-3 col-form-label"
+        >희망 기간 선택 :</label
+      >
+      <div class="col-sm-3">
+        <select
+          id="term"
+          v-model="depositPeriod"
+          class="form-select form-select-sm"
         >
-          <div class="col-2 border-col">
-            <RouterLink
-              :to="{
-                name: 'products-detail',
-                params: { id: deposit.id, type: 'deposit' },
-              }"
-              class="custom-link"
-              >{{ deposit.fin_prdt_nm }}</RouterLink
-            >
-          </div>
-          <div class="col-2 border-col">{{ deposit.kor_co_nm }}</div>
-          <div class="col-2 border-col">
-            {{
-              deposit.max_limit
-                ? formatNumber(deposit.max_limit) + " 원"
-                : "최고 한도 없음"
-            }}
-          </div>
-          <div
-            :class="['col-2 border-col', getRateClass(deposit, 'intr_rate')]"
+          <option value="1">1개월</option>
+          <option value="3">3개월</option>
+          <option value="6">6개월</option>
+          <option value="12">12개월</option>
+          <option value="24">24개월</option>
+          <option value="36">36개월</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row bg-light">
+        <div class="col-2 font-weight-bold border-col">상품명</div>
+        <div class="col-2 font-weight-bold border-col">담당 은행</div>
+        <div class="col-2 font-weight-bold border-col">최고 한도</div>
+        <div class="col-2 font-weight-bold border-col">저축 금리</div>
+        <div class="col-2 font-weight-bold border-col">최고 우대 금리</div>
+        <div class="col-2 font-weight-bold border-col">저축 금리 유형</div>
+      </div>
+
+      <div
+        v-for="(deposit, index) in user?.compare_deposit"
+        :key="index"
+        class="row"
+      >
+        <div class="col-2 border-col">
+          <RouterLink
+            :to="{
+              name: 'products-detail',
+              params: { id: deposit.id, type: 'deposit' },
+            }"
+            class="custom-link"
+            >{{ deposit.fin_prdt_nm }}</RouterLink
           >
-            {{ getInterestRate(deposit, "intr_rate") }}
-          </div>
-          <div
-            :class="['col-2 border-col', getRateClass(deposit, 'intr_rate2')]"
-          >
-            {{ getInterestRate(deposit, "intr_rate2") }}
-          </div>
-          <div class="col-2 border-col">
-            {{ getInterestRate(deposit, "intr_rate_type_nm") }}
-          </div>
+        </div>
+        <div class="col-2 border-col">{{ deposit.kor_co_nm }}</div>
+        <div class="col-2 border-col">
+          {{
+            deposit.max_limit
+              ? formatNumber(deposit.max_limit) + " 원"
+              : "최고 한도 없음"
+          }}
+        </div>
+        <div :class="['col-2 border-col', getRateClass(deposit, 'intr_rate')]">
+          {{ getInterestRate(deposit, "intr_rate") }}
+        </div>
+        <div :class="['col-2 border-col', getRateClass(deposit, 'intr_rate2')]">
+          {{ getInterestRate(deposit, "intr_rate2") }}
+        </div>
+        <div class="col-2 border-col">
+          {{ getInterestRate(deposit, "intr_rate_type_nm") }}
         </div>
       </div>
     </div>
@@ -146,11 +150,6 @@ const getRateClass = (deposit, field) => {
 
 .bg-light {
   background-color: #f8f9fa;
-}
-
-.py-2 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
 }
 
 .text-success {

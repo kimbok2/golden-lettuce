@@ -4,15 +4,25 @@
       적금 희망 기간 :
       {{ savingPeriod ? savingPeriod + "개월" : "희망 기간을 입력해주세요." }}
     </h3>
-    <label for="term">희망 기간 선택 : </label>
-    <select id="term" v-model="savingPeriod">
-      <option value="1">1개월</option>
-      <option value="3">3개월</option>
-      <option value="6">6개월</option>
-      <option value="12">12개월</option>
-      <option value="24">24개월</option>
-      <option value="36">36개월</option>
-    </select>
+    <div class="form-group row align-items-center">
+      <label for="term" class="col-sm-2 offset-3 col-form-label"
+        >희망 기간 선택 :
+      </label>
+      <div class="col-sm-3">
+        <select
+          id="term"
+          v-model="savingPeriod"
+          class="form-select form-select-sm"
+        >
+          <option value="1">1개월</option>
+          <option value="3">3개월</option>
+          <option value="6">6개월</option>
+          <option value="12">12개월</option>
+          <option value="24">24개월</option>
+          <option value="36">36개월</option>
+        </select>
+      </div>
+    </div>
 
     <div>
       <div class="container">

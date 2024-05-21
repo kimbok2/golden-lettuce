@@ -8,7 +8,7 @@
         <!-- 상품 종류 -->
         <div class="form-group row mb-3">
           <label class="col-sm-2 col-form-label">상품 종류</label>
-          <div class="col-sm-10">
+          <div class="col-sm-10 d-flex justify-content-around">
             <div class="form-check form-check-inline">
               <input
                 class="form-check-input"
@@ -36,8 +36,18 @@
 
         <!-- 저축 기간 -->
         <div class="form-group row mb-3">
-          <label class="col-sm-2 col-form-label">저축 기간</label>
-          <div class="col-sm-10">
+          <label class="col-sm-2 col-form-label"
+            >저축 기간
+            <br />
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              @click="selectAllPeriods"
+            >
+              전체 선택
+            </button>
+          </label>
+          <div class="col-sm-10 d-flex justify-content-between">
             <div class="form-check form-check-inline">
               <input
                 class="form-check-input"
@@ -104,29 +114,13 @@
               />
               <label class="form-check-label" for="per36"> 36개월 </label>
             </div>
-            <div class="mt-2">
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm"
-                @click="selectAllPeriods"
-              >
-                전체 선택
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm"
-                @click="deselectAllPeriods"
-              >
-                전체 해제
-              </button>
-            </div>
           </div>
         </div>
 
         <!-- 정렬 기준 -->
         <div class="form-group row mb-3">
           <label class="col-sm-2 col-form-label">정렬 기준</label>
-          <div class="col-sm-10">
+          <div class="col-sm-10 d-flex justify-content-between">
             <div class="form-check form-check-inline">
               <input
                 class="form-check-input"
@@ -184,11 +178,21 @@
 
         <!-- 담당 은행 -->
         <div class="form-group row mb-3">
-          <label class="col-sm-2 col-form-label">담당 은행</label>
+          <label class="col-sm-2 col-form-label"
+            >담당 은행
+            <br />
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              @click="selectAllBanks"
+            >
+              전체 선택
+            </button></label
+          >
           <div class="col-sm-10">
             <div class="row">
               <div
-                class="col-6 col-md-4 col-lg-3"
+                class="col-6 col-md-4 col-lg-4 d-flex"
                 v-for="bank in banks"
                 :key="bank.id"
               >
@@ -206,25 +210,8 @@
                 </div>
               </div>
             </div>
-            <div class="mt-2">
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm"
-                @click="selectAllBanks"
-              >
-                전체 선택
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm"
-                @click="deselectAllBanks"
-              >
-                전체 해제
-              </button>
-            </div>
           </div>
         </div>
-
         <button type="submit" class="btn btn-primary">제출</button>
       </form>
     </div>
@@ -233,11 +220,8 @@
     <!-- 검색 결과 -->
     <div>
       <ul class="text-start ps-0 text-center">
-        <li class="card rounded-0">
+        <li class="card rounded-0 py-1">
           <div class="row m-0">
-            <div class="col-1">
-              <b>공시<br />기준월</b>
-            </div>
             <div class="col-2"><b>담당 은행</b></div>
             <div class="col-3"><b>상품명</b></div>
             <div class="col-6">
@@ -250,15 +234,15 @@
                 <div class="col-2"><b>36개월</b></div>
               </div>
             </div>
+            <div class="col-1">
+              <b>고객 수</b>
+            </div>
           </div>
         </li>
         <div v-if="products">
           <div v-for="product in products" :key="product.id">
             <li class="card border border-0 border-bottom rounded-0">
               <div class="row m-0">
-                <div class="col-1">
-                  {{ product.dcls_month }}
-                </div>
                 <div class="col-2">{{ product.kor_co_nm }}</div>
 
                 <div class="col-3">
@@ -299,6 +283,7 @@
                     </div>
                   </div>
                 </div>
+                <div class="col-1">{{ product.join_user_count }} 명</div>
               </div>
             </li>
           </div>
@@ -349,15 +334,22 @@ const banks = [
 ];
 
 const selectAllPeriods = () => {
-  selectedPeriods.value = ["1", "3", "6", "12", "24", "36"];
-};
+  if (selectedPeriods.value.length !== 6) {
+    // 모두 선택된 것이 아니라면
 
-const deselectAllPeriods = () => {
-  selectedPeriods.value = [];
+    selectedPeriods.value = ["1", "3", "6", "12", "24", "36"];
+  } else {
+    selectedPeriods.value = [];
+  }
 };
 
 const selectAllBanks = () => {
-  bankIds.value = banks.map((bank) => bank.name);
+  if (bankIds.value.length !== 18) {
+    // 하나라도 선택되지 않은게 있다면 전체 선택
+    bankIds.value = banks.map((bank) => bank.name);
+  } else {
+    bankIds.value = [];
+  }
 };
 
 const deselectAllBanks = () => {
