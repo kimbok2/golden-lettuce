@@ -80,6 +80,9 @@
         <button class="btn btn-primary mx-1" @click="goUpdate">
           프로필 정보 수정
         </button>
+        <button class="btn btn-primary mx-1" @click="goPasswordChange">
+          비밀번호 변경
+        </button>
       </div>
     </div>
   </div>
@@ -144,6 +147,9 @@ const formatField = (key) => {
 
 const goUpdate = function () {
   router.push({ name: "profile-update" });
+};
+const goPasswordChange = function () {
+  router.push({ name: "profile-password-change" });
 };
 </script>
 
