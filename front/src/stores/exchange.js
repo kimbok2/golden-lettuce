@@ -124,8 +124,10 @@ export const useExchangeStore = defineStore(
       },
     ]
 
+    // 환율 정보 저장 (각각 가장 최신 환율)
     const exchangeRates = ref([])
 
+    // 현재 선택한 통화의 입력값
     const inputAmount = ref(null)
 
     // 현재 선택된 통화의 번호
@@ -135,11 +137,16 @@ export const useExchangeStore = defineStore(
       console.log(currencies[selectedCurrent.value-1]['cur_nm'])
       return currencies[selectedCurrent.value-1]['cur_nm']
     })
+
     const selectedChartCurrent = ref(null)
+    const updateChartTrigger = ref(0)
     const selectedHandle = ref(0)
 
+    // 차트 정보는 장고 서버에서 불러옴
+    // 최근 ~ 일 간의 정보를 DB에서 확인
     const chartData = ref([])
 
+    // 선택한 통화의 환율 정보는 computed로
     const selectedRate = computed(() => {
       const index = exchangeRates.value.findIndex((rate) => rate.current_id === selectedCurrent.value)
       if (index !== -1) {
@@ -150,6 +157,7 @@ export const useExchangeStore = defineStore(
     })
 
     // DB에서 각 통화별로 마지막으로 저장된 환율을 받아옴
+    // exchangeRates의 value에 배열로 저장
     const get_exchange_rate = function () {
       axios({
         method: 'get',
@@ -157,21 +165,26 @@ export const useExchangeStore = defineStore(
       })
         .then((response) => {
           exchangeRates.value = response.data
-          console.log(exchangeRates.value)
+          console.log('exchangeStore.get_exchange_rate : ', exchangeRates.value)
         })
         .catch((error) => {
           console.log(error)
         })
     }
 
+    // 장고 서버에서 chartData를 불러오는 요청
     const getChartData = function () {
       axios({
         method: 'get',
         url: `${API_URL}/exchanges/get_graph_data/${selectedChartCurrent.value}/`,
       })
         .then((response) => {
-          console.log(response.data)
+          console.log('exchangeStore.getChartData : ', response.data)
           chartData.value = response.data
+        })
+        .then((response) => {
+          updateChartTrigger.value += 1
+          console.log(updateChartTrigger.value)
         })
         .catch((error) => {
           console.log(error)
@@ -190,6 +203,7 @@ export const useExchangeStore = defineStore(
       selectedHandle,
       selectedChartCurrent,
       chartData,
+      updateChartTrigger,
       get_exchange_rate,
       getChartData,
     }

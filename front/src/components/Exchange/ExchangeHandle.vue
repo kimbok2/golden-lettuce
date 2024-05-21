@@ -3,7 +3,7 @@
     <button @click="addHandleClick" class="btn btn-secondary">
       <span class="material-symbols-outlined"> add </span>
     </button>
-    <button @click="removeHandleClick" class="btn btn-secondary mx-3">
+    <button @click="removeHandleClick" class="btn btn-secondary mx-1">
       <span class="material-symbols-outlined"> remove </span>
     </button>
     <!-- <button class="btn btn-secondary"><span class="material-symbols-outlined"> menu </span></button> -->

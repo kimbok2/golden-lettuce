@@ -107,7 +107,6 @@ const loadScript = function () {
     document.head.appendChild(script)
 
     script.onload = function () {
-      console.log(1)
       kakao.maps.load(() => {
         if (userStore.userInfo.address) {
           console.log(userStore.userInfo.address)

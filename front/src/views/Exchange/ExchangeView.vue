@@ -53,7 +53,7 @@ onMounted(() => {
 }
 
 .exchange-box {
-  width: 800px;
+  width: 900px;
   min-height: 200px;
 
   /* border: 1px solid #dee2e6; */
