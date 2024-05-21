@@ -270,35 +270,71 @@ def compare_saving(request, saving_id):
             saving.compare_user.remove(request.user)
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-# 추천 알고리즘 1 (평균, 평균, 평균)
-# 평균이 모두 비슷함 -> 다른 알고리즘 필요
+# 각 상품의 적합도 점수 계산
 @api_view(['GET'])
 def recommend_deposit(request):
-    
-    
-    deposits = get_list_or_404(DepositProduct)
-    for deposit in deposits:
-        users = deposit.join_user.all()
-        total = 0
-        for user in users:
-            total += user.date_of_birth.year
-        print(total//len(users))
+    dp_cnt = 38
+    me = get_object_or_404(get_user_model(), username=request.user.username)
+    max_year = 2010
+    min_year = 1950
+    max_budget = 1000000000
+    min_budget = 0
+    max_salary = 15000000
+    min_salary = 0
+    me_year = me.date_of_birth.year
+    me_salary = me.salary
+    me_budget = me.budget
+    scores = [[0, i+1] for i in range(dp_cnt)]
+    users = get_list_or_404(get_user_model())
+    print(me_year, me_salary, me_budget)
+    for user in users:
+        score = 100
+        score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
+        score *= abs(me_salary-user.salary)/(max_salary-min_salary)
+        score *= abs(me_budget-user.budget)/(max_budget-min_budget)
         
+        for deposit in user.join_deposit.all():
+            scores[deposit.id-1][0] += score
     
-    return Response(status=status.HTTP_200_OK)
+    scores.sort()
+    recommend_list = []
+    for i in range(5):
+        product = DepositProduct.objects.get(pk=scores[i][1])
+        recommend_list.append(product)
+    serializer = DepositListSerializer(recommend_list, many=True)
+    
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def recommend_saving(request):
+    sv_cnt = 63
+    me = get_object_or_404(get_user_model(), username=request.user.username)
+    max_year = 2010
+    min_year = 1950
+    max_budget = 1000000000
+    min_budget = 0
+    max_salary = 15000000
+    min_salary = 0
+    me_year = me.date_of_birth.year
+    me_salary = me.salary
+    me_budget = me.budget
+    scores = [[0, i+1] for i in range(sv_cnt)]
+    users = get_list_or_404(get_user_model())
+    print(me_year, me_salary, me_budget)
+    for user in users:
+        score = 100
+        score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
+        score *= abs(me_salary-user.salary)/(max_salary-min_salary)
+        score *= abs(me_budget-user.budget)/(max_budget-min_budget)
         
-    # users = get_list_or_404(get_user_model())
+        for saving in user.join_saving.all():
+            scores[saving.id-1][0] += score
     
-    # total = 0
-    # for user in users:
-    #     total += user.date_of_birth.year
-        
-    # print(total//len(users))
+    scores.sort()
+    recommend_list = []
+    for i in range(5):
+        product = SavingProduct.objects.get(pk=scores[i][1])
+        recommend_list.append(product)
+    serializer = SavingListSerializer(recommend_list, many=True)
     
-    # print(users)
-    # print(user.date_of_birth.year)
-    # 모든 예금 상품에 대해
-    # 상품 가입자의 평균 출생연도, 평균 자산, 평균 월급이 이용자와 가장 비슷한 상품을 추천
-    # user = get_object_or_404(get_user_model(), username=request.user.username)
-    
-    
+    return Response(data=serializer.data, status=status.HTTP_200_OK)

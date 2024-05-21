@@ -5,7 +5,7 @@
         <h4 class="card-title">{{ product.fin_prdt_nm }}</h4>
         <div class="d-flex justify-content-between align-items-center mb-3">
           <span class="badge bg-secondary"
-            >가입자 수: {{ product.join_user_count }}명</span
+            >가입자 수 {{ product.join_user_count }}명</span
           >
           <div>
             <button
@@ -41,32 +41,36 @@
         <hr />
         <div class="product-details">
           <div class="detail-item">
-            <h5 class="detail-title">담당 회사:</h5>
+            <h5 class="detail-title">담당 회사</h5>
             <p class="detail-content">{{ product.kor_co_nm }}</p>
           </div>
           <div class="detail-item">
-            <h5 class="detail-title">공시제출월:</h5>
+            <h5 class="detail-title">공시제출월</h5>
             <p class="detail-content">
               {{ product.dcls_month.substring(0, 4) }}년
               {{ product.dcls_month.substring(5) }}월
             </p>
           </div>
           <div class="detail-item">
-            <h5 class="detail-title">공시시작일:</h5>
-            <p class="detail-content">{{ product.dcls_strt_day }}</p>
-          </div>
-          <div class="detail-item">
-            <h5 class="detail-title">공시종료일:</h5>
+            <h5 class="detail-title">공시시작일</h5>
             <p class="detail-content">
-              {{ product.dcls_end_day ? product.dcls_end_day : "없음" }}
+              {{
+                formattedDate(product.dcls_strt_day, "공시 시작일 정보 없음")
+              }}
             </p>
           </div>
           <div class="detail-item">
-            <h5 class="detail-title">가입 방법:</h5>
+            <h5 class="detail-title">공시종료일</h5>
+            <p class="detail-content">
+              {{ formattedEndDate(product.dcls_end_day) }}
+            </p>
+          </div>
+          <div class="detail-item">
+            <h5 class="detail-title">가입 방법</h5>
             <p class="detail-content">{{ product.join_way }}</p>
           </div>
           <div class="detail-item">
-            <h5 class="detail-title">최고 한도:</h5>
+            <h5 class="detail-title">최고 한도</h5>
             <p class="detail-content">
               {{
                 product.max_limit
@@ -76,15 +80,15 @@
             </p>
           </div>
           <div class="detail-item">
-            <h5 class="detail-title">우대 조건:</h5>
+            <h5 class="detail-title">우대 조건</h5>
             <p class="detail-content">{{ product.spcl_cnd }}</p>
           </div>
           <div class="detail-item">
-            <h5 class="detail-title">만기 후 이자율:</h5>
+            <h5 class="detail-title">만기 후 이자율</h5>
             <p class="detail-content">{{ product.mtrt_int }}</p>
           </div>
           <div class="detail-item">
-            <h5 class="detail-title">유의사항:</h5>
+            <h5 class="detail-title">유의사항</h5>
             <p class="detail-content">{{ product.etc_note }}</p>
           </div>
         </div>
@@ -209,6 +213,16 @@ const productOptions = computed(() => {
   }
   return [];
 });
+
+const formattedDate = (date, defaultText) => {
+  if (!date) return defaultText;
+  return date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+};
+
+const formattedEndDate = (date) => {
+  if (!date || date === "99991231") return "공시 종료일 미정";
+  return formattedDate(date, "공시 종료일 정보 없음");
+};
 </script>
 
 <style scoped>

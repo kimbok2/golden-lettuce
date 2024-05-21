@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted, onUnmounted } from "vue";
 import { Doughnut } from "vue-chartjs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -20,6 +20,7 @@ const props = defineProps({
 
 const animatedScore = ref(0);
 const isAnimatingChart = ref(false);
+let animationFrameId = null;
 
 const chartData = computed(() => {
   return {
@@ -34,7 +35,7 @@ const chartData = computed(() => {
   };
 });
 
-const chartOptions = {
+const chartOptions = ref({
   responsive: true,
   cutout: "70%",
   plugins: {
@@ -49,9 +50,9 @@ const chartOptions = {
       text: "0점", // 초기 텍스트 설정
     },
   },
-};
+});
 
-// Custom plugin to draw text in the center
+// 중심에 텍스트를 그리기 위한 커스텀 플러그인
 const centerTextPlugin = {
   id: "centerText",
   beforeDraw: function (chart) {
@@ -70,19 +71,19 @@ const centerTextPlugin = {
         (sidePadding / 100) * (chart.innerRadius * 2);
       ctx.font = `30px ${fontStyle}`;
 
-      // Get the width of the string and also the total width of the element
+      // 문자열의 너비와 요소의 전체 너비를 얻습니다.
       const stringWidth = ctx.measureText(txt).width;
       const elementWidth = chart.innerRadius * 2 - sidePaddingCalculated;
 
-      // Find out how much the font can grow in width.
+      // 폰트가 얼마나 넓어질 수 있는지 확인합니다.
       const widthRatio = elementWidth / stringWidth;
       const newFontSize = Math.floor(30 * widthRatio);
       const elementHeight = chart.innerRadius * 2;
 
-      // Pick a new font size so it will not be larger than the height of label.
+      // 레이블의 높이보다 크지 않도록 새로운 폰트 크기를 선택합니다.
       const fontSizeToUse = Math.min(newFontSize, elementHeight);
 
-      // Set font settings to draw it correctly.
+      // 올바르게 그리기 위한 폰트 설정을 합니다.
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       const centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
@@ -90,15 +91,16 @@ const centerTextPlugin = {
       ctx.font = `${fontSizeToUse}px ${fontStyle}`;
       ctx.fillStyle = color;
 
-      // Draw text in center
+      // 중심에 텍스트를 그립니다.
       ctx.fillText(txt, centerX, centerY);
     }
   },
 };
 
+// Chart.js에 커스텀 플러그인을 등록합니다.
 ChartJS.register(centerTextPlugin);
 
-// Function to animate the score
+// 점수를 애니메이션하는 함수
 const animateChart = (start, end, duration) => {
   return new Promise((resolve) => {
     const startTime = performance.now();
@@ -106,40 +108,59 @@ const animateChart = (start, end, duration) => {
       const progress = Math.min((currentTime - startTime) / duration, 1);
       animatedScore.value = Math.floor(progress * (end - start) + start);
       if (progress < 1) {
-        requestAnimationFrame(step);
+        animationFrameId = requestAnimationFrame(step);
       } else {
         resolve();
       }
     };
-    requestAnimationFrame(step);
+    animationFrameId = requestAnimationFrame(step);
   });
 };
 
+// 텍스트를 애니메이션하는 함수
 const animateText = (start, end, duration) => {
   const startTime = performance.now();
   const step = (currentTime) => {
     const progress = Math.min((currentTime - startTime) / duration, 1);
-    chartOptions.plugins.centerText.text = `${Math.floor(
+    chartOptions.value.plugins.centerText.text = `${Math.floor(
       progress * (end - start) + start
     )}점`;
     if (progress < 1) {
-      requestAnimationFrame(step);
+      animationFrameId = requestAnimationFrame(step);
     }
   };
-  requestAnimationFrame(step);
+  animationFrameId = requestAnimationFrame(step);
 };
 
-// Watch for score prop and trigger animation
+// 컴포넌트가 마운트될 때 애니메이션을 초기화합니다.
+onMounted(() => {
+  animateChart(0, props.score, 1000); // 0에서 props.score까지 1초 동안 애니메이션합니다.
+  animateText(0, props.score, 1000); // 텍스트를 0에서 props.score까지 1초 동안 애니메이션합니다.
+});
+
+// 컴포넌트가 언마운트될 때 애니메이션 프레임을 취소합니다.
+onUnmounted(() => {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+  }
+});
+
+// score prop을 감시하고 애니메이션을 트리거합니다.
 watch(
   () => props.score,
   async (newScore) => {
     isAnimatingChart.value = true;
-    await animateChart(0, newScore, 1000); // Animate from 0 to newScore in 1 second
+    await animateChart(0, newScore, 1000); // 0에서 newScore까지 1초 동안 애니메이션합니다.
     isAnimatingChart.value = false;
-    animateText(0, newScore, 1000); // Animate text from 0 to newScore in 1 second
+    animateText(0, newScore, 1000); // 텍스트를 0에서 newScore까지 1초 동안 애니메이션합니다.
   },
   { immediate: true }
 );
 </script>
 
-<style scoped></style>
+<style scoped>
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+</style>

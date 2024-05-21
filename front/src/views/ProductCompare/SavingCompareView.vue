@@ -14,10 +14,6 @@
       <option value="36">36개월</option>
     </select>
 
-    <p>
-      희망 기간 선택 : select만들어 입력 받기, 기본 값은 user_period로 내일 아침
-      구현
-    </p>
     <div>
       <div class="container">
         <div class="row bg-light">
@@ -158,6 +154,7 @@ const getRateClass = (saving, field) => {
 
 .text-danger {
   color: red;
+  font-weight: bolder;
 }
 .custom-link {
   color: inherit; /* 부모 요소의 색상 상속 */

@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h1>ProductListView</h1>
-    <hr />
     <RouterView />
   </div>
 </template>
