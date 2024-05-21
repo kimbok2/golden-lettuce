@@ -4,7 +4,6 @@
 
 /* :hover */
 
-
 .main-h1-container {
   display: flex;
   justify-content: center;
@@ -44,6 +43,14 @@
 
 h1 {
   font-weight: 900 !important; /* 더 굵게 만들기 위해 font-weight 값을 900으로 설정 */
+}
+
+h3 {
+  font-weight: 700 !important; /* 더 굵게 만들기 위해 font-weight 값을 700으로 설정 */
+}
+
+h5 {
+  font-weight: 600 !important; /* 더 굵게 만들기 위해 font-weight 값을 600으로 설정 */
 }
 
 @keyframes shake {
@@ -92,12 +99,12 @@ h1 {
 }
 
 .single-line-text {
-  white-space: nowrap;         /* 텍스트를 한 줄로 표시 */
+  white-space: nowrap; /* 텍스트를 한 줄로 표시 */
 }
 
 .overflow-text {
-  overflow: hidden;            /* 넘치는 텍스트를 숨김 */
-  text-overflow: ellipsis;     /* 넘치는 텍스트를 줄임표(...)로 표시 */
+  overflow: hidden; /* 넘치는 텍스트를 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트를 줄임표(...)로 표시 */
 }
 
 body {

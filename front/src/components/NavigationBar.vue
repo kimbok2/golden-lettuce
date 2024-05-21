@@ -5,7 +5,7 @@
     </RouterLink>
     <div class="col-10">
       <div class="d-flex justify-content-between align-items-center pe-2" id="navbarNav" style="height: 50px">
-        <div style="width: 300px"></div>
+        <div></div>
         <div>
           <div class="input-group mt-4">
             <input class="form-control text-center" type="text" style="width: 500px" placeholder="금상추와 대화하기" />
@@ -13,7 +13,8 @@
           </div>
         </div>
         <!-- 프로필 관련 버튼 목록 -->
-        <div>
+        <div></div>
+        <div class="profile-button-div">
           <template class="nav-item" v-for="navProfileItem in navProfileItems" :key="navProfileItem.id">
             <RouterLink v-if="isLogin === navProfileItem.isLogin" :to="{ name: navProfileItem.name }">
               <button
@@ -101,6 +102,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.profile-button-div {
+  position: absolute;
+  right: 20px;
+}
+
 .form-control {
   border-radius: 20px !important;
 }

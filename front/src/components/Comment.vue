@@ -33,7 +33,9 @@
                   <template v-if="username === comment.user.username">
                     <!-- 댓글 삭제 버튼 -->
                     <span>
-                      <button @click.prevent="deleteComment(comment.id)" class="btn text-danger py-0">X</button>
+                      <button @click.prevent="deleteComment(comment.id)" class="btn text-danger p-0 ms-2">
+                        <span class="material-symbols-outlined"> close </span>
+                      </button>
                     </span>
                   </template>
                 </div>
@@ -95,7 +97,9 @@
                       <template v-if="username === reply.user.username">
                         <!-- 대댓글 삭제 버튼 -->
                         <span>
-                          <button @click.prevent="deleteComment(reply.id)" class="btn text-danger py-0">X</button>
+                          <button @click.prevent="deleteComment(reply.id)" class="btn text-danger p-0 ms-2">
+                            <span class="material-symbols-outlined"> close </span>
+                          </button>
                         </span>
                       </template>
                     </div>
@@ -280,7 +284,7 @@ watch(
 onMounted(() => {
   articleId.value = route.params.id
   article.value = store.getArticle(articleId.value)
-  username.value = userStore.userInfo.nickname
+  username.value = userStore.userInfo.username
 })
 </script>
 
