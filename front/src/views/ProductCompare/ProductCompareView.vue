@@ -1,62 +1,64 @@
 <template>
-  <div class="compare-container mt-4">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <RouterLink
-          class="nav-link"
-          :class="{ active: $route.name === 'compare' }"
-          :to="{ name: 'compare' }"
-        >
-          예금 비교
-        </RouterLink>
-      </li>
-      <li class="nav-item">
-        <RouterLink
-          class="nav-link"
-          :class="{ active: $route.name === 'compare-saving' }"
-          :to="{ name: 'compare-saving' }"
-        >
-          적금 비교
-        </RouterLink>
-      </li>
-    </ul>
-    <div class="tab-content mt-3">
-      <RouterView />
+  <div>
+    <h1 class="main-h1-container">
+      <span>상품 비교</span>
+      <span class="material-symbols-outlined"> balance </span>
+    </h1>
+    <div class="compare-container mt-4">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <RouterLink class="nav-link" :class="{ active: $route.name === 'compare' }" :to="{ name: 'compare' }">
+            예금 비교
+          </RouterLink>
+        </li>
+        <li class="nav-item">
+          <RouterLink
+            class="nav-link"
+            :class="{ active: $route.name === 'compare-saving' }"
+            :to="{ name: 'compare-saving' }"
+          >
+            적금 비교
+          </RouterLink>
+        </li>
+      </ul>
+      <div class="tab-content mt-3">
+        <RouterView />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
-import { useUserStore } from "@/stores/user";
-import { useRoute } from "vue-router";
+import { ref, watch, onMounted } from 'vue'
+import { useUserStore } from '@/stores/user'
+import { useRoute } from 'vue-router'
 
-const user = ref(null);
-const store = useUserStore();
-const route = useRoute();
-const depositPeriod = ref(null);
+const user = ref(null)
+const store = useUserStore()
+const route = useRoute()
+const depositPeriod = ref(null)
 
 const fetchUserInfo = async () => {
-  await store.getUserInfo();
-  user.value = store.userInfo;
-  depositPeriod.value = user.value.deposit_period;
-};
+  await store.getUserInfo()
+  user.value = store.userInfo
+  depositPeriod.value = user.value.deposit_period
+}
 
 onMounted(async () => {
-  await fetchUserInfo();
-});
+  await fetchUserInfo()
+})
 
 watch(
   () => route.path,
   async () => {
-    await fetchUserInfo();
+    await fetchUserInfo()
   }
-);
+)
 
 const formatNumber = (value) => {
-  if (typeof value !== "number") return "최고 한도 없음";
-  return new Intl.NumberFormat().format(value);
-};
+  if (typeof value !== 'number') return '최고 한도 없음'
+  return new Intl.NumberFormat().format(value)
+}
 </script>
 
 <style scoped>

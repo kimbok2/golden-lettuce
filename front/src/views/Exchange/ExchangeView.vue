@@ -1,7 +1,7 @@
 <template>
-  <h1 class="d-flex justify-content-center ">
+  <h1 class="main-h1-container">
     <span>환율 계산</span>
-    <span class="material-symbols-outlined mx-3" style="font-size: 50px"> currency_exchange </span>
+    <span class="material-symbols-outlined"> currency_exchange </span>
   </h1>
   <div class="exchange-main-container">
   <p class="d-flex justify-content-end">
@@ -42,6 +42,7 @@ onMounted(() => {
 
 <style scoped>
 .exchange-main-container {
+  border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 .exchange-container {
