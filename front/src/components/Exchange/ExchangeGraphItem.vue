@@ -1,9 +1,11 @@
 <template>
   <!-- <h1 @click="viewChart">GRAPH</h1> -->
   <div>
-    <h3>GRAPH</h3>
     <div class="col">
       <div class="graph-item chart-container">
+        <div>
+          <h3>환율 그래프</h3>
+        </div>
         <canvas ref="chartCanvas"></canvas>
       </div>
     </div>
@@ -54,6 +56,7 @@ const chartOptions = ref({
   maintainAspectRatio: false,
   scales: {
     x: {
+      reverse: true,
       grid: {
         display: false,
       },
@@ -105,7 +108,6 @@ const updateChart = () => {
 onBeforeUnmount(() => {
   destroyChart()
   exchangeStore.updateChartTrigger = 0
-
 })
 
 // 감시
@@ -142,11 +144,7 @@ const viewChart = () => {
 
 <style scoped>
 .graph-item {
-  /* height: 200px; */
   height: 400px;
   width: 800px;
-
-  /* border: 1px solid #dee2e6; */
-  /* border-radius: 25px; */
 }
 </style>
