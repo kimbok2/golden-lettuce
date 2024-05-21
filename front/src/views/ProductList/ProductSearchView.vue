@@ -1,5 +1,8 @@
 <template>
   <div class="search-container">
+    <button @click="savedata" class="btn btn-primary">
+      DB저장하는 버튼 1회만 실행
+    </button>
     <div class="container">
       <form @submit.prevent="selectSort">
         <!-- 상품 종류 -->
