@@ -22,7 +22,7 @@
         </button>
       </div>
 
-      <div id="carouselCompare" class="carousel slide">
+      <div id="carouselRecommend" class="carousel slide">
         <div class="carousel-inner">
           <div
             v-for="(product, index) in products"
@@ -32,14 +32,16 @@
           >
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">{{ product.fin_prdt_nm }}</h5>
+                <h5 class="card-title">
+                  BEST {{ index + 1 }} : {{ product.fin_prdt_nm }}
+                </h5>
                 <p class="card-text">{{ product.kor_co_nm }}</p>
                 <p class="card-text">
                   최고 한도:
                   {{
                     product.max_limit
                       ? formatNumber(product.max_limit) + "원"
-                      : "최고 한도가 없는 상품입니다."
+                      : "한도 없음"
                   }}
                 </p>
                 <p class="card-text">
@@ -64,7 +66,7 @@
         <button
           class="carousel-control-prev"
           type="button"
-          data-bs-target="#carouselCompare"
+          data-bs-target="#carouselRecommend"
           data-bs-slide="prev"
         >
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -73,7 +75,7 @@
         <button
           class="carousel-control-next"
           type="button"
-          data-bs-target="#carouselCompare"
+          data-bs-target="#carouselRecommend"
           data-bs-slide="next"
         >
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
@@ -86,25 +88,35 @@
 
 <script setup>
 import axios from "axios";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 
 const store = useUserStore();
 const recomDeposits = ref([]);
 const recomSavings = ref([]);
 const products = ref([]);
-const selectedType = ref("deposit"); // 처음 보이는 것은 예금
+const selectedType = ref(null); // 처음 보이는 것은 예금
 const Isrecommended = ref(false); // 추천이 되었는지 여부
 const activeIndex = ref(0);
+const user = ref(null);
+
+// Mount시 user에 추천 상품이 있는지 확인
+onMounted(() => {
+  user.value = store.userInfo;
+  if (user.value.deposit_recommend !== null) {
+    Isrecommended.value = true;
+    selectedType.value = "deposit";
+  }
+});
 
 // watch를 사용하여 selectedType이 변경될 때마다 제품 목록을 업데이트합니다.
 watch(
   selectedType,
   () => {
     if (selectedType.value === "deposit") {
-      products.value = recomDeposits.value || [];
+      products.value = user.value?.deposit_recommend || [];
     } else if (selectedType.value === "saving") {
-      products.value = recomSavings.value || [];
+      products.value = user.value?.saving_recommend || [];
     }
     activeIndex.value = 0; // 슬라이드 인덱스를 초기화합니다.
   },
@@ -129,8 +141,9 @@ const Recommend = function () {
         },
       })
         .then((res) => {
-          recomSavings.value = res.data;
+          user.value = res.data;
           Isrecommended.value = true;
+          selectedType.value = "deposit";
           console.log(recomDeposits.value);
           console.log(recomSavings.value);
           alert("추천 성공");

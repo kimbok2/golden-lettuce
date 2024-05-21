@@ -4,7 +4,6 @@ from .models import User
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from finances.serializers import DepositDetailSerializer, SavingDetailSerializer
 
-
 class CustomRegisterSerializer(RegisterSerializer):
     # 필요한 필드들을 추가
     # 별명 필드
@@ -47,7 +46,8 @@ class ProfileSerializer(serializers.ModelSerializer):
                   'budget', 'salary', 'deposit_able', 'saving_able', 
                   'deposit_period', 'saving_period','credit_score',
                   'join_deposit', 'join_saving', 'compare_deposit',
-                  'compare_saving', 'profile_img','nickname',)
+                  'compare_saving', 'profile_img','nickname',
+                  'deposit_recommend', 'saving_recommend',)
         read_only_fields = ('id', 'username','nickname',)
     
 # 전체 프로필 정보를 수정, 조회, 삭제할 serializer

@@ -56,13 +56,9 @@ const chartOptions = ref({
 const centerTextPlugin = {
   id: "centerText",
   beforeDraw: function (chart) {
-    if (
-      chart.config.options.plugins.centerText.display !== null &&
-      typeof chart.config.options.plugins.centerText.display !== "undefined" &&
-      chart.config.options.plugins.centerText.display
-    ) {
+    const centerConfig = chart.config.options.plugins?.centerText;
+    if (centerConfig?.display) {
       const ctx = chart.ctx;
-      const centerConfig = chart.config.options.plugins.centerText;
       const fontStyle = centerConfig.fontStyle || "Arial";
       const txt = centerConfig.text;
       const color = centerConfig.color || "#000";
