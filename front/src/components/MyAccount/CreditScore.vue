@@ -1,6 +1,6 @@
 <template>
   <div class="credit-score-container">
-    <h1 class="text-center mb-4">내 신용 점수</h1>
+    <h2 class="text-center mb-4">내 신용 점수</h2>
     <div class="text-center mb-3">
       <DoughnutChart :score="userInfo.credit_score" />
     </div>
