@@ -1,7 +1,7 @@
 <template>
   <div class="text-start">
     <!-- 지도 검색창 -->
-    <div class="map-search-box p-2">
+    <div class="map-search-box p-3">
       <div class="d-flex flex-row justify-content-between">
         <form class="d-flex" @submit.prevent="updateMapSearchKeyWord">
           <input
@@ -26,7 +26,7 @@
       </div>
       <div class="d-flex flex-row-reverse justify-content-end">
         <button
-          class="btn btn-outline-secondary m-2 me-0"
+          class="btn btn-outline-secondary ms-2 mt-3 me-0"
           v-for="searchHistory in searchHistoryList"
           :key="searchHistory.id"
           @click="setSearchKeyWord(searchHistory)"
@@ -161,8 +161,7 @@ onUnmounted(() => {
 <style scoped>
 .map-search-box {
   width: 1000px;
-  min-height: 100px;
+  min-height: 125px;
 
-  border: 1px solid #dee2e6;
 }
 </style>

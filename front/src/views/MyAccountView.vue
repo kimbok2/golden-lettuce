@@ -1,5 +1,9 @@
 <template>
   <div>
+    <h1 class="main-h1-container">
+      <span>나의 정보</span>
+      <span class="material-symbols-outlined"> inventory </span>
+    </h1>
     <div class="my-container mt-4">
       <div class="row mb-3">
         <div class="col-md-7 border mx-1 p-3 col-container">
@@ -23,16 +27,16 @@
 </template>
 
 <script setup>
-import { useUserStore } from "@/stores/user";
-import ComparedProducts from "@/components/MyAccount/ComparedProducts.vue";
-import CreditScore from "@/components/MyAccount/CreditScore.vue";
-import JoinProducts from "@/components/MyAccount/JoinProducts.vue";
-import RecommendProducts from "@/components/MyAccount/RecommendProducts.vue";
+import { useUserStore } from '@/stores/user'
+import ComparedProducts from '@/components/MyAccount/ComparedProducts.vue'
+import CreditScore from '@/components/MyAccount/CreditScore.vue'
+import JoinProducts from '@/components/MyAccount/JoinProducts.vue'
+import RecommendProducts from '@/components/MyAccount/RecommendProducts.vue'
 
-const store = useUserStore();
+const store = useUserStore()
 const logOut = function () {
-  store.logOut();
-};
+  store.logOut()
+}
 </script>
 
 <style scoped>

@@ -1,7 +1,6 @@
 <template>
   <div class="search-container">
     <div class="container">
-      <h3>상품 검색 조건 바</h3>
       <form @submit.prevent="selectSort">
         <!-- 상품 종류 -->
         <div class="form-group row mb-3">

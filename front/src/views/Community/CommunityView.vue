@@ -1,8 +1,8 @@
 <template>
   <div>
     <RouterLink :to="{ name: 'community' }" class="text-decoration-none text-black">
-      <h1 class="d-flex justify-content-center">
-        <span>커뮤니티</span><span class="material-symbols-outlined mx-3" style="font-size: 50px"> forum </span>
+      <h1 class="main-h1-container">
+        <span>커뮤니티</span><span class="material-symbols-outlined"> forum </span>
       </h1>
     </RouterLink>
     <div class="community-container">
@@ -22,6 +22,8 @@ import CommunityHomeView from '@/views/Community/CommunityHomeView.vue'
 
 <style scoped>
 .community-container {
+  border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
+
 </style>
