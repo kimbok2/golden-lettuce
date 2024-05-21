@@ -13,7 +13,7 @@
         height="50"
         class="d-inline-block align-text-top border rounded-circle"
       />
-      <span class="fw-bolder">{{ article.user.username }}</span>
+      <span class="ms-3 fw-bolder">{{ article.user.username }}</span>
       <!-- 게시글 작성일, 게시글 수정일 표시 -->
       <div class="text-end">
         <span>작성 : {{ formattedDate(article.created_at) + ' ' + formattedTime(article.created_at) }}</span>
