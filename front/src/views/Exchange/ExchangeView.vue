@@ -1,14 +1,14 @@
 <template>
-  <div>
-    <h1 class="d-flex justify-content-center">
-      <span>환율 계산</span>
-      <span class="material-symbols-outlined mx-3" style="font-size: 50px"> calculate </span>
-    </h1>
-    <p class="d-flex justify-content-end">
-      <button @click="getRate" class="btn btn-primary d-flex">
-        <span class="material-symbols-outlined"> restart_alt </span>
-      </button>
-    </p>
+  <h1 class="d-flex justify-content-center ">
+    <span>환율 계산</span>
+    <span class="material-symbols-outlined mx-3" style="font-size: 50px"> currency_exchange </span>
+  </h1>
+  <div class="exchange-main-container">
+  <p class="d-flex justify-content-end">
+    <button @click="getRate" class="btn btn-primary d-flex">
+      <span class="material-symbols-outlined"> restart_alt </span>
+    </button>
+  </p>
     <div class="exchange-container">
       <div class="exchange-box">
         <ExchangeList />
@@ -41,6 +41,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.exchange-main-container {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 .exchange-container {
   display: flex;
   flex-direction: column;

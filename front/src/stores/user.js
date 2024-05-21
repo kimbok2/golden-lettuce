@@ -74,6 +74,9 @@ export const useUserStore = defineStore(
           token.value = response.data.key;
           router.push({ name: "home" });
         })
+        .then((response) => {
+          getUserInfo()
+        })
         .catch((error) => {
           alert("아이디 혹은 비밀번호를 잘못 입력하셨습니다.");
           console.log(error);

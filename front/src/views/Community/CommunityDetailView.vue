@@ -27,12 +27,11 @@
       <p>{{ article.content }}</p>
     </div>
     <!-- 게시글 수정 / 삭제 버튼 -->
-    <p class="text-end">
+    <p  v-if="username === article.user.username" class="text-end">
       <RouterLink :to="{ name: 'community-update', params: { id: article.id } }">
         <button class="btn btn-primary" @click="updateArticle">게시글 수정</button>
       </RouterLink>
-      <span> | </span>
-      <button class="btn btn-primary" @click="deleteArticle">게시글 삭제</button>
+      <button class="btn btn-primary ms-2" @click="deleteArticle">게시글 삭제</button>
     </p>
     <hr />
     <!-- 댓글 박스 -->

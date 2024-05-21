@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useMapStore } from '@/stores/map'
 
@@ -35,6 +35,7 @@ const mapScriptSrc = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${AP
 
 // mapStore 선언
 const mapStore = useMapStore()
+const userStore = useUserStore()
 
 // 지도 컨테이너
 const mapContainer = ref(null)
@@ -45,12 +46,23 @@ let infowindow
 const bankSearchList = ref([])
 
 // 지도 검색을 위한 변수 설정
+// const mapCenter = ref(null)
 const mapCenter = ref({ y: 36.3549777, x: 127.2983403 })
 const mapLevel = ref(5)
 
 // 지도 검색 인자에 전달할 키워드
 const searchKeyWordDefault = ref('은행')
 const searchKeyWordInput = computed(() => mapStore.searchKeyWord)
+const selectedBank = ref('')
+
+// mapStore의 선택 은행이 변경됨을 감시하는 함수
+watch(
+  () => mapStore.selectedBank,
+  (newBank) => {
+    initMap()
+    selectedBank.value = newBank
+  }
+)
 
 // mapCenter가 변경됐을 때를 보는 감시하는 함수
 watch(
@@ -83,20 +95,51 @@ watch(
   { deep: true }
 )
 
+const kakaoMapScript = ref(null)
+
 // 지도의 Script를 Load하는 함수
 // script 태그를 별도로 생성해서, html의 head 안에 넣어줌
 const loadScript = function () {
-  const script = document.createElement('script')
-  // 동적 로딩을 위한 autoload=false 추가
-  script.src = mapScriptSrc
-  script.addEventListener('load', () => kakao.maps.load(initMap))
-  document.head.appendChild(script)
-  // 로드 완료 메세지
-  console.log('loadScript 함수 실행 완료')
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = mapScriptSrc
+    kakaoMapScript.value = script
+    document.head.appendChild(script)
+
+    script.onload = function () {
+      console.log(1)
+      kakao.maps.load(() => {
+        if (userStore.userInfo.address) {
+          console.log(userStore.userInfo.address)
+          const geocoder = new kakao.maps.services.Geocoder()
+
+          geocoder.addressSearch(userStore.userInfo.address, function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              // 검색 성공시 지도 중심 좌표를 변경 후 해당 좌표로 지도 검색
+              mapCenter.value = {
+                y: result[0].y,
+                x: result[0].x,
+              }
+              kakao.maps.load(initMap)
+            } else {
+              console.log(status)
+            }
+          })
+        } else {
+          kakao.maps.load(initMap)
+        }
+      })
+    }
+    // 로드 완료 메세지
+    resolve(console.log('loadScript 함수 실행 완료'))
+  })
 }
 
 // 초기 지도를 실제로 띄워주는 함수
 const initMap = () => {
+  clearMarkers()
+  markerList.value = []
+
   const mapOptions = {
     //
     center: new kakao.maps.LatLng(mapCenter.value.y, mapCenter.value.x),
@@ -127,7 +170,7 @@ const initMap = () => {
     mapLevel.value = mapObject.value.getLevel()
   })
 
-  // defaultMarker 함수 실행
+  // 현재 지도 검색 함수 실행
   searchCurrentMap()
 }
 
@@ -140,6 +183,30 @@ onMounted(() => {
   } else {
     console.log('onMount : 지도 Script가 load되어있지 않음 -> loadScript 함수 실행')
     loadScript()
+  }
+})
+
+// Unmount 훅에서 클린업 작업 수행
+onUnmounted(() => {
+  if (mapObject.value) {
+    // 지도와 관련된 리소스 해제
+    kakao.maps.event.removeListener(mapObject.value, 'dragend')
+    kakao.maps.event.removeListener(mapObject.value, 'zoom_changed')
+    mapObject.value = null
+    console.log('onUnmounted : 지도 관련 리소스 해제 완료')
+  }
+
+  if (kakaoMapScript.value) {
+    // 스크립트 태그를 제거
+    document.head.removeChild(kakaoMapScript.value)
+    kakaoMapScript.value = null
+    console.log('onUnmounted : 스크립트 태그 제거 완료')
+  }
+
+  if (window.kakao) {
+    // window.kakao 객체와 하위 객체 제거
+    delete window.kakao
+    console.log('onUnmounted : window.kakao 객체 제거 완료')
   }
 })
 
@@ -179,13 +246,16 @@ function placesSearchCB(data, status, pagination) {
   if (status === kakao.maps.services.Status.OK) {
     bankSearchList.value = []
     for (let i = 0; i < data.length; i++) {
-      // 조건문으로 ATM, 365 제거
-      if (data[i].place_name.includes('ATM') || data[i].place_name.includes('365')) {
+      if (
+        // 조건문으로 ATM, 365 제거
+        data[i].place_name.includes('ATM') ||
+        data[i].place_name.includes('365') ||
+        !data[i].place_name.includes(selectedBank.value)
+      ) {
       } else {
         const distance = getDistance(mapCenter.value.y, mapCenter.value.x, data[i].y, data[i].x)
         data[i]['distance'] = parseFloat(distance.toFixed(2)).toString()
         // 지도 출력 확인
-        // console.log(distance)
         bankSearchList.value.push(data[i])
         displayMarker(data[i])
       }
@@ -197,6 +267,17 @@ function placesSearchCB(data, status, pagination) {
   }
 }
 
+// 마커를 저장할 배열
+const markerList = ref([])
+
+// 마커를 제거하는 함수
+const clearMarkers = () => {
+  for (let i = 0; i < markerList.value.length; i++) {
+    markerList.value[i].setMap(null)
+  }
+  markerList.value = []
+}
+
 // 지도에 마커를 표시하는 함수입니다
 function displayMarker(place) {
   // 마커를 생성하고 지도에 표시합니다
@@ -204,6 +285,8 @@ function displayMarker(place) {
     map: mapObject.value,
     position: new kakao.maps.LatLng(place.y, place.x),
   })
+
+  markerList.value.push(marker)
 
   // 마커에 클릭이벤트를 등록합니다
   kakao.maps.event.addListener(marker, 'click', function () {
@@ -227,6 +310,7 @@ function displayMarker(place) {
     infowindow.open(mapObject.value, marker)
   })
 }
+
 // 위도와 경도 사이의 거리를 구하는 함수
 function getDistance(lat1, lon1, lat2, lon2) {
   const R = 6371 // 지구의 반경 (단위: km)
