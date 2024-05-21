@@ -15,8 +15,7 @@
               <!-- 댓글 작성자 -->
               <!-- 댓글 작성자 프로필 이미지 // 수정 필요 // 현재는 기본 이미지로 돼있음-->
               <img
-              :src="comment.user?.profile_img ? apiUrl + comment.user.profile_img : '@/assets/userdefault.png'"
-
+                :src="comment.user?.profile_img ? apiUrl + comment.user.profile_img : '@/assets/userdefault.png'"
                 alt="Logo"
                 width="50"
                 height="50"
@@ -148,7 +147,7 @@ import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
 import axios from 'axios'
 
-const apiUrl = "http://127.0.0.1:8000";
+const apiUrl = 'http://127.0.0.1:8000'
 const route = useRoute()
 const router = useRouter()
 const store = useCommunityStore()
@@ -198,26 +197,28 @@ const formattedTime = function (date) {
 }
 
 const createComment = function () {
-  if (confirm('댓글을 작성하시겠습니까?')) {
-    axios({
-      method: 'post',
-      url: `${store.API_URL}/communities/${articleId.value}/comment/`,
-      data: {
-        content: commentContent.value,
-      },
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    })
-      .then((response) => {
-        article.value = store.getArticle(articleId.value)
-        console.log('댓글 작성 완료')
+  if (commentContent.value) {
+    if (confirm('댓글을 작성하시겠습니까?')) {
+      axios({
+        method: 'post',
+        url: `${store.API_URL}/communities/${articleId.value}/comment/`,
+        data: {
+          content: commentContent.value,
+        },
+        headers: {
+          Authorization: `Token ${token}`,
+        },
       })
-      .catch((error) => {
-        console.log(error)
-      })
+        .then((response) => {
+          article.value = store.getArticle(articleId.value)
+          console.log('댓글 작성 완료')
+        })
+        .catch((error) => {
+          console.log(error)
+        })
 
-    commentContent.value = ''
+      commentContent.value = ''
+    }
   }
 }
 
@@ -299,7 +300,6 @@ onMounted(() => {
   border: none;
   border-radius: 10px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-
 }
 
 hr {

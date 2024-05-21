@@ -1,9 +1,11 @@
 <template>
-  <h1 @click="viewChart">GRAPH</h1>
-  <div class="col">
-    <div class="graph-item chart-container">
-      <!-- <Line :data="chartData" :options="chartOptions" /> -->
-      <canvas ref="chartCanvas"></canvas>
+  <!-- <h1 @click="viewChart">GRAPH</h1> -->
+  <div>
+    <h3>GRAPH</h3>
+    <div class="col">
+      <div class="graph-item chart-container">
+        <canvas ref="chartCanvas"></canvas>
+      </div>
     </div>
   </div>
 </template>
@@ -12,7 +14,6 @@
 import axios from 'axios'
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useExchangeStore } from '@/stores/exchange'
-import { Line } from 'vue-chartjs'
 import {
   Chart as ChartJS,
   Title,
@@ -26,7 +27,6 @@ import {
 
 const exchangeStore = useExchangeStore()
 
-const selectedCurrency = ref(null)
 const selectedCurrencyName = ref(null)
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale)
@@ -102,26 +102,28 @@ const updateChart = () => {
   createChart()
 }
 
-onBeforeUnmount(destroyChart)
+onBeforeUnmount(() => {
+  destroyChart()
+  exchangeStore.updateChartTrigger = 0
+
+})
 
 // 감시
 watch(
-  () => exchangeStore.selectedCurrent,
+  () => exchangeStore.updateChartTrigger,
   (newChartCurrent) => {
-    exchangeStore.selectedChartCurrent = newChartCurrent
-    if (exchangeStore.selectedChartCurrent !== -1) {
+    console.log(newChartCurrent)
+    if (exchangeStore.updateChartTrigger) {
       selectedCurrencyName.value = exchangeStore.selectedCurrentName
-      viewChart()
+      return viewChart()
     }
   }
 )
 
-const viewChart = async () => {
-  exchangeStore.selectedChartCurrent = exchangeStore.selectedCurrent
-
+const viewChart = () => {
   if (exchangeStore.selectedChartCurrent !== -1) {
     try {
-      const chartDatas = await exchangeStore.getChartData() // Assuming getChartData() is an async function
+      const chartDatas = exchangeStore.chartData
 
       chartData.value.labels = chartDatas['data_list_date']
       chartData.value.datasets[0].data = chartDatas['data_list_rate']
