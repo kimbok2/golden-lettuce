@@ -3,8 +3,16 @@
     <h1 class="text-center mb-4">내 프로필 수정</h1>
     <div class="text-center my-3">
       <img
+        v-if="!imageUpdated"
         :src="apiUrl + profileImageUrl"
-        alt="이미지없음"
+        alt="프로필 이미지 없음"
+        class="img-thumbnail rounded-circle"
+        style="width: 120px; height: 120px; object-fit: cover"
+      />
+      <img
+        v-else
+        :src="profileImageUrl"
+        alt="프로필 이미지 없음"
         class="img-thumbnail rounded-circle"
         style="width: 120px; height: 120px; object-fit: cover"
       />
@@ -68,7 +76,6 @@
             v-model.trim="address"
             id="address"
             class="form-control"
-            required
           />
         </div>
       </div>
@@ -243,6 +250,7 @@ const creditScore = ref(null);
 const apiUrl = "http://127.0.0.1:8000";
 const profileImage = ref(null); // 파일 객체를 저장할 ref
 const profileImageUrl = ref(null); // 이미지 URL을 저장할 ref
+const imageUpdated = ref(false);
 const store = useUserStore();
 const router = useRouter();
 
@@ -273,9 +281,12 @@ onMounted(() => {
 
 const onFileChange = (event) => {
   const file = event.target.files[0];
+  // console.log(file);
+  console.log(file.name);
   if (file) {
     profileImage.value = file;
     profileImageUrl.value = URL.createObjectURL(file);
+    imageUpdated.value = true;
   }
 };
 
@@ -291,7 +302,7 @@ const updateProfile = async () => {
     formData.append("deposit_period", depositPeriod.value);
   if (savingPeriod.value) formData.append("saving_period", savingPeriod.value);
   if (creditScore.value) formData.append("credit_score", creditScore.value);
-  if (profileImage.value) formData.append("profile_image", profileImage.value);
+  if (profileImage.value) formData.append("profile_img", profileImage.value);
 
   try {
     const response = await axios.put(
