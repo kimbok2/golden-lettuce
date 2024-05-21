@@ -15,7 +15,8 @@
               <!-- 댓글 작성자 -->
               <!-- 댓글 작성자 프로필 이미지 // 수정 필요 // 현재는 기본 이미지로 돼있음-->
               <img
-                src="@/assets/userdefault.png"
+              :src="comment.user?.profile_img ? apiUrl + comment.user.profile_img : '@/assets/userdefault.png'"
+
                 alt="Logo"
                 width="50"
                 height="50"
@@ -24,7 +25,7 @@
               <div class="ms-3">
                 <p class="fw-bolder comment-username">
                   <!-- 댓글 작성자 -->
-                  <span>{{ comment.user.username }}</span>
+                  <span>{{ comment.user.nickname }}</span>
                 </p>
                 <!-- 댓글 박스 -->
                 <div class="comment-content">
@@ -57,7 +58,7 @@
             <form
               v-show="replyFormVisible[comment.id]"
               @submit.prevent="createReply(comment.id)"
-              class="border rounded-0 p-3 inline-block"
+              class="border rounded-0 p-3 inline-block mt-3"
               style="width: 100%"
             >
               <!-- 라벨. 접속한 유저의 아이디 출력 -->
@@ -65,7 +66,7 @@
                 <label for="comment-content" class="fw-bolder">{{ username }}</label>
               </p>
               <input
-                class="w-100 border border-0"
+                class="w-100 comment-input-box"
                 type="text"
                 id="comment-content"
                 placeholder="댓글을 남겨보세요"
@@ -83,14 +84,14 @@
                   <!-- 댓글 작성자 프로필 이미지 // 수정 필요 // 현재는 기본 이미지로 돼있음-->
                   <div class="d-flex">
                     <img
-                      src="@/assets/userdefault.png"
+                      :src="reply.user?.profile_img ? apiUrl + reply.user.profile_img : '@/assets/userdefault.png'"
                       alt="Logo"
                       width="50"
                       height="50"
                       class="d-inline-block align-text-top border rounded-circle"
                     />
                     <div class="ms-3">
-                      <p class="fw-bolder comment-username">{{ reply.user.username }}</p>
+                      <p class="fw-bolder comment-username">{{ reply.user.nickname }}</p>
                       <span class="comment-content">{{ reply.content }}</span>
                       <template v-if="username === reply.user.username">
                         <!-- 대댓글 삭제 버튼 -->
@@ -127,7 +128,7 @@
       <input
         ref="commentTextArea"
         @focus="checkLogin"
-        class="w-100 border border-0"
+        class="w-100 comment-input-box"
         type="text"
         id="comment-content"
         placeholder="댓글을 남겨보세요"
@@ -147,6 +148,7 @@ import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
 import axios from 'axios'
 
+const apiUrl = "http://127.0.0.1:8000";
 const route = useRoute()
 const router = useRouter()
 const store = useCommunityStore()
@@ -277,7 +279,7 @@ watch(
 onMounted(() => {
   articleId.value = route.params.id
   article.value = store.getArticle(articleId.value)
-  username.value = userStore.name
+  username.value = userStore.userInfo.nickname
 })
 </script>
 
@@ -288,6 +290,16 @@ onMounted(() => {
 
 .comment-content {
   margin: 0;
+}
+
+.comment-input-box {
+  padding: 10px;
+  margin-bottom: 15px;
+
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+
 }
 
 hr {

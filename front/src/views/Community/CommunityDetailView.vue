@@ -1,33 +1,39 @@
 <template>
-  <div v-if="article" class="text-start p-3 rounded-0">
+  <div v-if="article" class="text-start m-3 p-3 rounded-0">
     <p class="text-end">
       <button class="btn btn-secondary" @click="goBack">> {{ article.category }}</button>
     </p>
     <!-- 제목 바 -->
     <div>
       <h1>{{ article.title }}</h1>
-      <img
-        src="@/assets/userdefault.png"
-        alt="Logo"
-        width="50"
-        height="50"
-        class="d-inline-block align-text-top border rounded-circle"
-      />
-      <span class="ms-3 fw-bolder">{{ article.user.username }}</span>
-      <!-- 게시글 작성일, 게시글 수정일 표시 -->
-      <div class="text-end">
-        <span>작성 : {{ formattedDate(article.created_at) + ' ' + formattedTime(article.created_at) }}</span>
-        <span> | </span>
-        <span>수정 : {{ formattedDate(article.updated_at) + ' ' + formattedTime(article.updated_at) }}</span>
+      <div class="mt-3 d-flex justify-content-between">
+        <div>
+          <img
+            :src="article.user?.profile_img ? apiUrl + article.user.profile_img : '@/assets/userdefault.png'"
+            alt="Logo"
+            width="50"
+            height="50"
+            class="d-inline-block align-text-top border rounded-circle"
+          />
+          <span class="ms-3 fw-bolder">{{ article.user.nickname }}</span>
+        </div>
+        <!-- 게시글 작성일, 게시글 수정일 표시 -->
+        <div class="text-end">
+          <p>최초 작성일 : {{ formattedDate(article.created_at) + ' ' + formattedTime(article.created_at) }}</p>
+          <p v-if="article.created_at !== article.updated_at">
+            <span>수정됨 : {{ formattedDate(article.updated_at) + ' ' + formattedTime(article.updated_at) }}</span>
+          </p>
+          <p v-else> </p>
+        </div>
       </div>
     </div>
     <hr />
     <!-- 내용 박스 -->
-    <div class="article-content-box">
-      <p>{{ article.content }}</p>
+    <div class="article-content-box px-3">
+      {{ article.content }}
     </div>
     <!-- 게시글 수정 / 삭제 버튼 -->
-    <p  v-if="username === article.user.username" class="text-end">
+    <p v-if="username === article.user.nickname" class="text-end">
       <RouterLink :to="{ name: 'community-update', params: { id: article.id } }">
         <button class="btn btn-primary" @click="updateArticle">게시글 수정</button>
       </RouterLink>
@@ -48,6 +54,8 @@ import { useUserStore } from '@/stores/user'
 import axios from 'axios'
 import Comment from '@/components/Comment.vue'
 
+const apiUrl = 'http://127.0.0.1:8000'
+
 const route = useRoute()
 const router = useRouter()
 const store = useCommunityStore()
@@ -56,6 +64,7 @@ const userStore = useUserStore()
 const articleId = ref(null)
 const article = ref(null)
 const username = ref(null)
+const user = ref(null)
 
 const goBack = function () {
   router.back()

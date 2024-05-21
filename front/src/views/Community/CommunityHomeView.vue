@@ -1,7 +1,30 @@
 <template>
   <div class="p-5">
     <p class="text-end">게시글 수 : {{ store.article_count }}</p>
-    <ul class="text-center ps-0 list-group">
+    <table class="table table-hover">
+      <thead>
+        <tr class="">
+          <th scope="col" class="col-category">카테고리</th>
+          <th scope="col" class="col-title">제목</th>
+          <th scope="col" class="col-user">작성자</th>
+          <th scope="col" class="col-date">작성일</th>
+          <th scope="col" class="col-views">조회 수</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="article in store.articles" :key="article.pk"
+        @click="toDetail({ name: 'community-detail', params: { id: article.id } })">
+          <th scope="row">{{ article.category }}</th>
+          <td class="text-start">
+            <span> {{ article.title }}</span> <span class="fw-bold text-danger"> [{{ article.comment_count }}]</span>
+          </td>
+          <th>{{ article.user.nickname }}</th>
+          <td>{{ formattedDate(article.created_at) }}</td>
+          <td>not yet</td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <ul class="text-center ps-0 list-group">
       <li class="list-group border rounded-0 fw-bolder">
         <div class="row my-3">
           <div class="col-2">카테고리</div>
@@ -19,16 +42,16 @@
               <span> {{ article.title }}</span>
               <span class="fw-bold text-danger"> [{{ article.comment_count }}]</span>
             </div>
-            <div class="col-1 fw-bolder">{{ article.user.username }}</div>
+            <div class="col-1 fw-bolder">{{ article.user.nickname }}</div>
             <div class="col-2">{{ formattedDate(article.created_at) }}</div>
             <div class="col-1">not yet</div>
           </div>
           <hr class="my-0" />
         </li>
       </template>
-    </ul>
+    </ul> -->
     <br />
-    
+
     <RouterLink v-if="userStore.isLogin" :to="{ name: 'community-create' }">
       <p class="text-end">
         <button class="btn btn-primary">게시글 작성</button>
@@ -67,4 +90,29 @@ onMounted(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.col-category {
+  width: 10%;
+}
+
+.col-title {
+  width: 50%;
+}
+
+.col-user {
+  width: 10%;
+}
+
+.col-date {
+  width: 10%;
+}
+
+.col-views {
+  width: 10%;
+}
+
+tbody > tr {
+  height: 75px;
+  vertical-align: middle;
+}
+</style>

@@ -1,0 +1,105 @@
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 700, 'GRAD' 200, 'opsz' 48;
+}
+
+/* :hover */
+
+
+.main-h1-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: 0.5s ease;
+}
+
+/* 네비게이션바 버튼의 hover 이벤트 */
+
+.nav-item {
+  transition: 0.5s ease !important;
+}
+
+.nav-item:hover {
+  transform: scale(1.2);
+}
+
+/* 로고의 hover 이벤트 */
+
+.logo-gl {
+  transition: 0.5s ease !important;
+}
+
+.logo-gl:hover {
+  transform: scale(1.2);
+}
+
+.main-h1-container:hover {
+  color: gold !important;
+  transform: scale(1.2);
+}
+
+.main-h1-container > .material-symbols-outlined {
+  font-size: 50px;
+  margin-left: 1rem;
+}
+
+h1 {
+  font-weight: 900 !important; /* 더 굵게 만들기 위해 font-weight 값을 900으로 설정 */
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
+
+.shake {
+  animation: shake 0.5s; /* 애니메이션 지속 시간 */
+  animation-iteration-count: 1; /* 애니메이션 반복 횟수 */
+}
+
+.btn {
+  white-space: nowrap !important;
+}
+
+.single-line-text {
+  white-space: nowrap;         /* 텍스트를 한 줄로 표시 */
+}
+
+.overflow-text {
+  overflow: hidden;            /* 넘치는 텍스트를 숨김 */
+  text-overflow: ellipsis;     /* 넘치는 텍스트를 줄임표(...)로 표시 */
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif !important;
+}

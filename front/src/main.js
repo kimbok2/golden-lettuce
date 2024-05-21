@@ -4,8 +4,8 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-// Font
-// import '@/assets/fonts.css';
+// Style
+import '@/assets/style.css';
 
 // Pinia Plugin Persisted State
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
