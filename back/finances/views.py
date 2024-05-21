@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from .models import *
 from .serializers import *
+from accounts.serializers import ProfileSerializer
 import requests
 
 # Create your views here.
@@ -301,9 +302,15 @@ def recommend_deposit(request):
     for i in range(5):
         product = DepositProduct.objects.get(pk=scores[i][1])
         recommend_list.append(product)
-    serializer = DepositListSerializer(recommend_list, many=True)
     
+    serialized_data = DepositListSerializer(recommend_list, many=True).data
+    
+    serializer = ProfileSerializer(instance = me, data={'deposit_recommend':serialized_data}, partial=True)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        
     return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
 
 @api_view(['GET'])
 def recommend_saving(request):
@@ -335,6 +342,9 @@ def recommend_saving(request):
     for i in range(5):
         product = SavingProduct.objects.get(pk=scores[i][1])
         recommend_list.append(product)
-    serializer = SavingListSerializer(recommend_list, many=True)
+    serialized_data = SavingListSerializer(recommend_list, many=True).data
+    serializer = ProfileSerializer(instance = me, data={'saving_recommend':serialized_data}, partial=True)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
     
     return Response(data=serializer.data, status=status.HTTP_200_OK)
