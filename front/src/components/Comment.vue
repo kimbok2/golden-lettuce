@@ -45,7 +45,11 @@
                 formattedDate(comment.created_at) + ' ' + formattedTime(comment.created_at)
               }}</span>
               <!-- 답글 작성 form 토글 버튼 -->
-              <button @click.prevent="toggleReplyForm(comment.id)" class="text-decoration-none text-secondary btn py-0">
+              <button
+                v-if="userStore.isLogin"
+                @click.prevent="toggleReplyForm(comment.id)"
+                class="text-decoration-none text-secondary btn py-0"
+              >
                 [답글 작성]
               </button>
             </div>
@@ -114,10 +118,15 @@
     <!-- 댓글 작성 창 -->
     <form @submit.prevent="createComment" class="border rounded-0 p-3">
       <!-- 라벨. 접속한 유저의 아이디 출력 -->
-      <p>
+      <p v-if="userStore.isLogin">
         <label for="comment-content" class="fw-bolder">{{ username }}</label>
       </p>
+      <p v-else>
+        <label for="comment-content" class="fw-bolder">댓글을 작성하려면 로그인해주세요.</label>
+      </p>
       <input
+        ref="commentTextArea"
+        @focus="checkLogin"
         class="w-100 border border-0"
         type="text"
         id="comment-content"
@@ -132,7 +141,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed, watch, ref } from 'vue'
+import { onMounted, computed, watch, ref, nextTick } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
@@ -147,8 +156,22 @@ const articleId = ref(null)
 const article = ref(null)
 const username = ref(null)
 
+// 댓글 및 대댓글 작성 컨텐츠
 const commentContent = ref(null)
 const replyContent = ref(null)
+
+// 댓글 작성 input창
+const commentTextArea = ref(null)
+
+const checkLogin = function () {
+  if (!userStore.isLogin) {
+    alert('로그인 후 이용해주세요.')
+    nextTick(() => {
+      console.log(commentTextArea.value)
+      commentTextArea.value.blur()
+    })
+  }
+}
 
 // 대댓글 작성 form 토글을 위한 변수 및 함수 선언
 const replyFormVisible = ref({})
@@ -173,25 +196,27 @@ const formattedTime = function (date) {
 }
 
 const createComment = function () {
-  axios({
-    method: 'post',
-    url: `${store.API_URL}/communities/${articleId.value}/comment/`,
-    data: {
-      content: commentContent.value,
-    },
-    headers: {
-      Authorization: `Token ${token}`,
-    },
-  })
-    .then((response) => {
-      article.value = store.getArticle(articleId.value)
-      console.log('댓글 작성 완료')
+  if (confirm('댓글을 작성하시겠습니까?')) {
+    axios({
+      method: 'post',
+      url: `${store.API_URL}/communities/${articleId.value}/comment/`,
+      data: {
+        content: commentContent.value,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+      },
     })
-    .catch((error) => {
-      console.log(error)
-    })
+      .then((response) => {
+        article.value = store.getArticle(articleId.value)
+        console.log('댓글 작성 완료')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
 
-  commentContent.value = ''
+    commentContent.value = ''
+  }
 }
 
 const deleteComment = function (commentId) {
@@ -216,31 +241,36 @@ const deleteComment = function (commentId) {
 }
 
 const createReply = function (commentId) {
-  axios({
-    method: 'post',
-    url: `${store.API_URL}/communities/${articleId.value}/comment/`,
-    data: {
-      parent_comment: commentId,
-      content: replyContent.value,
-    },
-    headers: {
-      Authorization: `Token ${token}`,
-    },
-  })
-    .then((response) => {
-      article.value = store.getArticle(articleId.value)
-      replyFormVisible.value[commentId] = !replyFormVisible.value[commentId]
-      console.log('대댓글 작성 완료')
+  if (confirm('댓글을 작성하시겠습니까?')) {
+    axios({
+      method: 'post',
+      url: `${store.API_URL}/communities/${articleId.value}/comment/`,
+      data: {
+        parent_comment: commentId,
+        content: replyContent.value,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+      },
     })
-    .catch((error) => {
-      console.log(error)
-    })
+      .then((response) => {
+        article.value = store.getArticle(articleId.value)
+        replyFormVisible.value[commentId] = !replyFormVisible.value[commentId]
+        console.log('대댓글 작성 완료')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
 
-  replyContent.value = ''
+    replyContent.value = ''
+  }
 }
 
-watch(() => store.article, (newArticle) => {
-    article.value = newArticle},
+watch(
+  () => store.article,
+  (newArticle) => {
+    article.value = newArticle
+  },
   { deep: true }
 )
 

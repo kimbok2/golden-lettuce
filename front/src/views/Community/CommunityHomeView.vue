@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-5">
     <p class="text-end">게시글 수 : {{ store.article_count }}</p>
     <ul class="text-center ps-0 list-group">
       <li class="list-group border rounded-0 fw-bolder">

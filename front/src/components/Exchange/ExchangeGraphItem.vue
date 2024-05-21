@@ -52,6 +52,28 @@ const chartData = ref({
 const chartOptions = ref({
   responsive: true,
   maintainAspectRatio: false,
+  scales: {
+    x: {
+      grid: {
+        display: false,
+      },
+      ticks: {
+        font: {
+          size: 14, // x축 글자 크기 조절
+        },
+      },
+    },
+    y: {
+      grid: {
+        display: false,
+      },
+      ticks: {
+        font: {
+          size: 14, // x축 글자 크기 조절
+        },
+      },
+    },
+  },
 })
 
 // 차트 인스턴스 선언
@@ -94,28 +116,12 @@ watch(
   }
 )
 
-// const viewChart = function () {
-//   if (exchangeStore.selectedChartCurrent !== -1) {
-//     const chartDatas = exchangeStore.getChartData()
-
-//     chartData.value.labels = chartDatas['data_list_date']
-//     chartData.value.datasets[0].data = chartDatas['data_list_rate']
-//     chartData.value.datasets[0].label = selectedCurrencyName.value
-
-//     if (chartData.value && chartData.value) {
-//       updateChart()
-//     }
-//   } else {
-//     console.error('Invalid selectedChartCurrent')
-//   }
-// }
-
 const viewChart = async () => {
   exchangeStore.selectedChartCurrent = exchangeStore.selectedCurrent
 
   if (exchangeStore.selectedChartCurrent !== -1) {
     try {
-      const chartDatas = await exchangeStore.getChartData()  // Assuming getChartData() is an async function
+      const chartDatas = await exchangeStore.getChartData() // Assuming getChartData() is an async function
 
       chartData.value.labels = chartDatas['data_list_date']
       chartData.value.datasets[0].data = chartDatas['data_list_rate']
@@ -130,8 +136,6 @@ const viewChart = async () => {
     console.error('Invalid selectedChartCurrent')
   }
 }
-
-
 </script>
 
 <style scoped>
@@ -140,7 +144,7 @@ const viewChart = async () => {
   height: 400px;
   width: 800px;
 
-  border: 1px solid #dee2e6;
-  border-radius: 25px;
+  /* border: 1px solid #dee2e6; */
+  /* border-radius: 25px; */
 }
 </style>

@@ -2,18 +2,28 @@
   <div class="text-start">
     <!-- 지도 검색창 -->
     <div class="map-search-box p-2">
-      <form class="d-flex" @submit.prevent="updateMapSearchKeyWord">
-        <input
-          class="form-control inline-block"
-          style="width: 400px"
-          type="text"
-          v-model="searchKeyWordInput"
-          placeholder="주소를 입력해주세요."
-          maxlength="20"
-        />
-        <button class="btn btn-secondary ms-2" type="submit">지도 검색</button>
-        {{ userAddress }}
-      </form>
+      <div class="d-flex flex-row justify-content-between">
+        <form class="d-flex" @submit.prevent="updateMapSearchKeyWord">
+          <input
+            class="form-control inline-block"
+            style="width: 400px"
+            type="text"
+            v-model="searchKeyWordInput"
+            placeholder="주소를 입력해주세요."
+            maxlength="20"
+          />
+          <select ref="selectBankTag" @change="selectBank" class="form-select ms-2" style="width: 150px">
+            <option value="">
+              <span class="text-secondary">전체</span>
+            </option>
+            <option v-for="bank in banks" :key="bank.id" :value="bank.keyword">
+              {{ bank.name }}
+            </option>
+          </select>
+          <button class="btn btn-secondary ms-2" type="submit">지도 검색</button>
+        </form>
+        <div></div>
+      </div>
       <div class="d-flex flex-row-reverse justify-content-end">
         <button
           class="btn btn-outline-secondary m-2 me-0"
@@ -32,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useMapStore } from '@/stores/map'
 import MapList from '@/components/Maps/MapList.vue'
@@ -46,6 +56,37 @@ const userAddress = userStore.userInfo.address
 const searchKeyWordInput = ref(null)
 const searchKeyWord = ref('은행')
 
+// 은행 목록 저장
+let i = 1
+const banks = [
+  { id: i++, name: '우리은행', keyword: '우리' },
+  { id: i++, name: '한국스탠다드차타드은행', keyword: '제일' },
+  { id: i++, name: '대구은행', keyword: '대구' },
+  { id: i++, name: '부산은행', keyword: '부산' },
+  { id: i++, name: '광주은행', keyword: '광주' },
+  { id: i++, name: '제주은행', keyword: '제주' },
+  { id: i++, name: '전북은행', keyword: '전북' },
+  { id: i++, name: '경남은행', keyword: '경남' },
+  { id: i++, name: '중소기업은행', keyword: '기업' },
+  { id: i++, name: '한국산업은행', keyword: '산업' },
+  { id: i++, name: '국민은행', keyword: '국민' },
+  { id: i++, name: '신한은행', keyword: '신한' },
+  { id: i++, name: '농협은행주식회사', keyword: '농협' },
+  { id: i++, name: '하나은행', keyword: '하나' },
+  { id: i++, name: '주식회사 케이뱅크', keyword: '케이뱅크' },
+  { id: i++, name: '수협은행', keyword: '수협' },
+  { id: i++, name: '주식회사 카카오뱅크', keyword: '카카오' },
+  { id: i++, name: '토스뱅크 주식회사', keyword: '토스' },
+]
+
+// 저장한 은행
+const selectBankTag = ref(null)
+
+// 은행 select 변경시
+const selectBank = function () {
+  mapStore.selectedBank = selectBankTag.value.value
+}
+
 // 검색 히스토리 관련
 let searchHistoryId = 0
 const searchHistoryList = ref([])
@@ -55,7 +96,7 @@ const searchHistoryList = ref([])
 const updateMapSearchKeyWord = function () {
   // 입력 필드가 비어있는지 확인
   if (!searchKeyWordInput.value) {
-    alert('검색어를 입력해주세요.')
+    alert('검색 주소를 입력해주세요.')
     return
   }
 
@@ -110,6 +151,11 @@ const setSearchKeyWord = function (searchHistoryItem) {
 onMounted(() => {
   searchKeyWordInput.value = userAddress
 })
+
+onUnmounted(() => {
+  mapStore.selectedBank = ''
+})
+
 </script>
 
 <style scoped>
