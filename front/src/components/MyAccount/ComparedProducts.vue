@@ -1,90 +1,115 @@
 <template>
   <div>
-    <h2 class="text-center mb-4">관심 있는 상품</h2>
-    <div class="text-center mb-3">
-      <button
-        @click="toggleType('deposit')"
-        :class="{ active: selectedType === 'deposit' }"
-        class="btn btn-outline-primary mx-1"
-      >
-        예금 상품
-      </button>
-      <button
-        @click="toggleType('saving')"
-        :class="{ active: selectedType === 'saving' }"
-        class="btn btn-outline-primary mx-1"
-      >
-        적금 상품
-      </button>
-    </div>
-    <div id="carouselCompare" class="carousel slide">
-      <div class="carousel-inner">
-        <div
-          v-for="(product, index) in products"
-          :key="product.id"
-          class="carousel-item"
-          :class="{ active: index === activeIndex }"
+    <h2 class="text-center mb-4">내 관심 상품</h2>
+    <div
+      class="d-flex justify-content-center mb-0 w-100 bg-white tab-container"
+      role="tablist"
+    >
+      <div class="flex-fill text-center" role="presentation">
+        <button
+          class="w-100 btn tab-button"
+          :class="{ active: selectedType === 'deposit' }"
+          id="deposit-tab"
+          @click="toggleType('deposit')"
+          type="button"
+          role="tab"
+          aria-controls="deposit-tab-pane"
+          :aria-selected="selectedType === 'deposit'"
         >
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">{{ product.fin_prdt_nm }}</h5>
-              <p class="card-text">{{ product.kor_co_nm }}</p>
-              <p class="card-text">
-                최고 한도:
-                {{
-                  product.max_limit
-                    ? formatNumber(product.max_limit) + "원"
-                    : "최고 한도가 없는 상품입니다."
-                }}
-              </p>
-              <p class="card-text">
-                저축 금리: {{ getInterestRate(product, "intr_rate") }}%
-              </p>
-              <p class="card-text">
-                최고 우대 금리: {{ getInterestRate(product, "intr_rate2") }}%
-              </p>
-              <RouterLink
-                :to="{
-                  name: 'products-detail',
-                  params: { id: product.id, type: selectedType },
-                }"
-                class="btn btn-primary"
-              >
-                상세 보기
-              </RouterLink>
+          예금 상품
+        </button>
+      </div>
+      <div class="flex-fill text-center" role="presentation">
+        <button
+          class="w-100 btn tab-button"
+          :class="{ active: selectedType === 'saving' }"
+          id="saving-tab"
+          @click="toggleType('saving')"
+          type="button"
+          role="tab"
+          aria-controls="saving-tab-pane"
+          :aria-selected="selectedType === 'saving'"
+        >
+          적금 상품
+        </button>
+      </div>
+    </div>
+    <div class="tab-content" id="productTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="carouselTabPane"
+        role="tabpanel"
+        aria-labelledby="carousel-tab"
+      >
+        <div id="carouselCompare" class="carousel slide no-top-border-radius">
+          <div class="carousel-inner" @click="handleCarouselClick">
+            <div
+              v-for="(product, index) in products"
+              :key="product.id"
+              class="carousel-item"
+              :class="{ active: index === activeIndex }"
+            >
+              <div class="card no-top-border-radius">
+                <div class="card-body">
+                  <h5 class="card-title">{{ product.fin_prdt_nm }}</h5>
+                  <p class="card-text">{{ product.kor_co_nm }}</p>
+                  <p class="card-text">
+                    {{
+                      product.max_limit
+                        ? "최고 한도:" + formatNumber(product.max_limit) + "원"
+                        : "최고 한도가 없는 상품입니다."
+                    }}
+                  </p>
+                  <p class="card-text">
+                    저축 금리: {{ getInterestRate(product, "intr_rate") }}%
+                  </p>
+                  <p class="card-text">
+                    최고 우대 금리:
+                    {{ getInterestRate(product, "intr_rate2") }}%
+                  </p>
+                  <RouterLink
+                    :to="{
+                      name: 'products-detail',
+                      params: { id: product.id, type: selectedType },
+                    }"
+                    class="btn btn-warning"
+                  >
+                    상세 보기
+                  </RouterLink>
+                </div>
+              </div>
             </div>
           </div>
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselCompare"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselCompare"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
         </div>
       </div>
-      <button
-        class="carousel-control-prev"
-        type="button"
-        data-bs-target="#carouselCompare"
-        data-bs-slide="prev"
-      >
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button
-        class="carousel-control-next"
-        type="button"
-        data-bs-target="#carouselCompare"
-        data-bs-slide="next"
-      >
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, watch } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useRouter, RouterLink } from "vue-router";
 
 const store = useUserStore();
-const router = useRouter();
 const selectedType = ref("deposit"); // 초기값을 'deposit'으로 설정
 const products = ref([]);
 const activeIndex = ref(0); // 활성 슬라이드 인덱스
@@ -125,9 +150,54 @@ const getInterestRate = (product, rateType) => {
   }
   return "N/A";
 };
+
+const handleCarouselClick = (event) => {
+  const carousel = document.getElementById("carouselCompare");
+  const rect = carousel.getBoundingClientRect();
+  const clickX = event.clientX - rect.left;
+  const third = rect.width / 3;
+
+  if (clickX < third) {
+    carousel.querySelector(".carousel-control-prev").click();
+  } else if (clickX > 2 * third) {
+    carousel.querySelector(".carousel-control-next").click();
+  }
+};
 </script>
 
 <style scoped>
+.tab-container {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.tab-button {
+  border: 1px solid transparent;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  border-bottom-left-radius: 0; /* 아래쪽 왼쪽 모서리 둥글지 않게 */
+  border-bottom-right-radius: 0; /* 아래쪽 오른쪽 모서리 둥글지 않게 */
+  margin-bottom: -1px;
+  color: rgba(151, 151, 88, 0.822); /* 클릭되지 않은 탭의 글씨 색 파랑 */
+  background-color: #fff; /* 탭 배경 흰색 */
+  border-bottom: 1px solid #dee2e6; /* 클릭되지 않은 탭의 아래쪽 보더 */
+}
+
+.tab-button.active {
+  color: #000; /* 클릭된 탭의 글씨 색 검정 */
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+  border-bottom-color: transparent; /* 클릭된 탭의 아래쪽 보더 투명 */
+}
+
+.tab-button:hover {
+  color: rgba(173, 173, 44, 0.822); /* 호버 시 글씨 색 파랑 */
+}
+
+.no-top-border-radius {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
 .carousel-container {
   position: relative;
   width: 100%;
@@ -156,6 +226,9 @@ const getInterestRate = (product, rateType) => {
 
 .carousel-item .card {
   height: 100%;
+  border-top: 0; /* 윗 부분에 border 없애기 */
+  border-top-left-radius: 0; /* 위쪽 왼쪽 모서리 둥글지 않게 */
+  border-top-right-radius: 0; /* 위쪽 오른쪽 모서리 둥글지 않게 */
 }
 
 .carousel-control-prev,
@@ -163,8 +236,8 @@ const getInterestRate = (product, rateType) => {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
+  background-color: transparent; /* 배경 투명 */
+  color: gray; /* 화살표 색깔 회색 */
   border: none;
   font-size: 2rem;
   cursor: pointer;
@@ -173,22 +246,31 @@ const getInterestRate = (product, rateType) => {
   height: 100%;
 }
 
-.carousel-control-prev {
-  left: 0;
-}
-
-.carousel-control-next {
-  right: 0;
-}
-
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-  background-size: 100%, 100%;
+  background-image: none; /* 기본 아이콘 이미지 제거 */
   border-radius: 10px;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+}
+
+.carousel-control-prev-icon::after {
+  content: "‹"; /* 화살표 기호 */
+  color: gray; /* 화살표 색깔 회색 */
+  font-size: 30px;
+  line-height: 30px;
+}
+
+.carousel-control-next-icon::after {
+  content: "›"; /* 화살표 기호 */
+  color: gray; /* 화살표 색깔 회색 */
+  font-size: 30px;
+  line-height: 30px;
 }
 
 .btn.active {
-  background-color: #007bff;
-  color: white;
+  background-color: white;
+  color: black;
 }
 </style>

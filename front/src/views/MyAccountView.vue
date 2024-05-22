@@ -5,7 +5,7 @@
       <span class="material-symbols-outlined"> inventory </span>
     </h1>
     <div class="my-container mt-4">
-      <div class="row mb-3">
+      <div class="row mb-3 d-flex justify-content-center">
         <div class="col-md-7 border mx-1 p-3 col-container">
           <ComparedProducts />
         </div>
@@ -13,30 +13,26 @@
           <CreditScore />
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-7 border mx-1 p-3 col-container">
+      <div class="row mb-3 d-flex justify-content-center">
+        <div class="col-md-6 border mx-1 p-3 col-container">
           <JoinProducts />
         </div>
-        <div class="col-md-4 border mx-1 p-3 col-container">
+        <div class="col-md-5 border mx-1 p-3 col-container">
           <RecommendProducts />
         </div>
       </div>
     </div>
-    <button @click="logOut" class="btn btn-primary mx-1">로그아웃</button>
   </div>
 </template>
 
 <script setup>
-import { useUserStore } from '@/stores/user'
-import ComparedProducts from '@/components/MyAccount/ComparedProducts.vue'
-import CreditScore from '@/components/MyAccount/CreditScore.vue'
-import JoinProducts from '@/components/MyAccount/JoinProducts.vue'
-import RecommendProducts from '@/components/MyAccount/RecommendProducts.vue'
+import { useUserStore } from "@/stores/user";
+import ComparedProducts from "@/components/MyAccount/ComparedProducts.vue";
+import CreditScore from "@/components/MyAccount/CreditScore.vue";
+import JoinProducts from "@/components/MyAccount/JoinProducts.vue";
+import RecommendProducts from "@/components/MyAccount/RecommendProducts.vue";
 
-const store = useUserStore()
-const logOut = function () {
-  store.logOut()
-}
+const store = useUserStore();
 </script>
 
 <style scoped>

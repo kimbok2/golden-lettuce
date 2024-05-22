@@ -79,10 +79,10 @@
         </div>
       </div>
       <div class="d-flex justify-content-center mt-3">
-        <button class="btn btn-primary mx-1" @click="goUpdate">
+        <button class="btn btn-warning mx-1" @click="goUpdate">
           프로필 정보 수정
         </button>
-        <button class="btn btn-primary mx-1" @click="goPasswordChange">
+        <button class="btn btn-warning mx-1" @click="goPasswordChange">
           비밀번호 변경
         </button>
       </div>

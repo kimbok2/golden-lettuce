@@ -1,8 +1,11 @@
 <template>
   <div class="container mt-4">
     <h3>
-      예금 희망 기간 :
-      {{ depositPeriod ? depositPeriod + "개월" : "희망 기간을 입력해주세요." }}
+      {{
+        depositPeriod
+          ? "예금 희망 기간 : " + depositPeriod + "개월"
+          : "예금 희망 기간을 입력해주세요."
+      }}
     </h3>
     <div class="form-group row align-items-center">
       <label for="term" class="col-sm-2 offset-3 col-form-label"
@@ -14,6 +17,9 @@
           v-model="depositPeriod"
           class="form-select form-select-sm"
         >
+          <option disabled value="null">
+            <span class="text-secondary">희망기간을 선택하세요</span>
+          </option>
           <option value="1">1개월</option>
           <option value="3">3개월</option>
           <option value="6">6개월</option>
@@ -49,7 +55,16 @@
             >{{ deposit.fin_prdt_nm }}</RouterLink
           >
         </div>
-        <div class="col-2 border-col">{{ deposit.kor_co_nm }}</div>
+        <div class="col-2 border-col">
+          <RouterLink
+            :to="{
+              name: 'bank-detail',
+              params: { id: deposit.bank },
+            }"
+            class="custom-link"
+            >{{ deposit.kor_co_nm }}</RouterLink
+          >
+        </div>
         <div class="col-2 border-col">
           {{
             deposit.max_limit
@@ -58,13 +73,25 @@
           }}
         </div>
         <div :class="['col-2 border-col', getRateClass(deposit, 'intr_rate')]">
-          {{ getInterestRate(deposit, "intr_rate") }}
+          {{
+            getInterestRate(deposit, "intr_rate")
+              ? getInterestRate(deposit, "intr_rate")
+              : "-"
+          }}
         </div>
         <div :class="['col-2 border-col', getRateClass(deposit, 'intr_rate2')]">
-          {{ getInterestRate(deposit, "intr_rate2") }}
+          {{
+            getInterestRate(deposit, "intr_rate2")
+              ? getInterestRate(deposit, "intr_rate2")
+              : "-"
+          }}
         </div>
         <div class="col-2 border-col">
-          {{ getInterestRate(deposit, "intr_rate_type_nm") }}
+          {{
+            getInterestRate(deposit, "intr_rate_type_nm")
+              ? getInterestRate(deposit, "intr_rate_type_nm")
+              : "-"
+          }}
         </div>
       </div>
     </div>

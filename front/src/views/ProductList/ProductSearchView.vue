@@ -212,7 +212,7 @@
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary">제출</button>
+        <button type="submit" class="btn btn-warning">제출</button>
       </form>
     </div>
     <hr />
@@ -223,7 +223,7 @@
         <li class="card rounded-0 py-1">
           <div class="row m-0">
             <div class="col-2"><b>담당 은행</b></div>
-            <div class="col-3"><b>상품명</b></div>
+            <div class="col-4"><b>상품명</b></div>
             <div class="col-6">
               <div class="row m-0">
                 <div class="col-2"><b>1개월</b></div>
@@ -234,18 +234,25 @@
                 <div class="col-2"><b>36개월</b></div>
               </div>
             </div>
-            <div class="col-1">
-              <b>고객 수</b>
-            </div>
           </div>
         </li>
         <div v-if="products">
           <div v-for="product in products" :key="product.id">
             <li class="card border border-0 border-bottom rounded-0">
               <div class="row m-0">
-                <div class="col-2">{{ product.kor_co_nm }}</div>
+                <div class="col-2">
+                  <RouterLink
+                    :to="{
+                      name: 'bank-detail',
+                      params: { id: product.bank },
+                    }"
+                    class="custom-link"
+                  >
+                    {{ product.kor_co_nm }}
+                  </RouterLink>
+                </div>
 
-                <div class="col-3">
+                <div class="col-4">
                   <RouterLink
                     :to="{
                       name: 'products-detail',
@@ -283,7 +290,6 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-1">{{ product.join_user_count }} 명</div>
               </div>
             </li>
           </div>

@@ -5,26 +5,39 @@
       <span class="material-symbols-outlined"> balance </span>
     </h1>
     <div class="compare-container mt-4">
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
+      <div
+        class="d-flex justify-content-center mb-0 w-100 bg-white tab-container"
+        role="tablist"
+      >
+        <div class="flex-fill text-center" role="presentation">
           <RouterLink
-            class="nav-link"
+            class="w-100 btn tab-button"
             :class="{ active: $route.name === 'compare' }"
             :to="{ name: 'compare' }"
+            id="deposit-tab"
+            type="button"
+            role="tab"
+            aria-controls="deposit-tab-pane"
+            :aria-selected="$route.name === 'compare'"
           >
             예금 비교
           </RouterLink>
-        </li>
-        <li class="nav-item">
+        </div>
+        <div class="flex-fill text-center" role="presentation">
           <RouterLink
-            class="nav-link"
+            class="w-100 btn tab-button"
             :class="{ active: $route.name === 'compare-saving' }"
             :to="{ name: 'compare-saving' }"
+            id="saving-tab"
+            type="button"
+            role="tab"
+            aria-controls="saving-tab-pane"
+            :aria-selected="$route.name === 'compare-saving'"
           >
             적금 비교
           </RouterLink>
-        </li>
-      </ul>
+        </div>
+      </div>
       <div class="tab-content mt-3">
         <RouterView />
       </div>
@@ -61,45 +74,35 @@ watch(
 </script>
 
 <style scoped>
-.compare-container {
-  max-width: 1000px;
-  padding: 20px;
+.tab-container {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.tab-button {
+  border: 1px solid transparent;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: -1px;
+  color: #868f08; /* 클릭되지 않은 탭의 글씨 색 파랑 */
+  background-color: #fff; /* 탭 배경 흰색 */
+  border-bottom: 1px solid #dee2e6; /* 클릭되지 않은 탭의 아래쪽 보더 */
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.tab-button.active {
+  color: #000; /* 클릭된 탭의 글씨 색 검정 */
   background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
-.container {
-  margin-top: 60px;
+  border-color: #dee2e6 #dee2e6 #fff;
+  border-bottom-color: transparent; /* 클릭된 탭의 아래쪽 보더 투명 */
 }
 
-.font-weight-bold {
-  font-weight: bold;
-}
-
-.mb-3 {
-  margin-bottom: 1rem;
-}
-
-.border {
-  border: 1px solid #ccc;
-}
-
-.bg-light {
-  background-color: #f8f9fa;
-}
-
-.py-2 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
-
-.text-success {
-  color: green;
-  font-weight: bolder;
-}
-
-.text-danger {
-  color: red;
-  font-weight: bolder;
+.tab-button:hover {
+  color: #939c1888; /* 호버 시 글씨 색 파랑 */
+  text-decoration: none;
 }
 </style>
