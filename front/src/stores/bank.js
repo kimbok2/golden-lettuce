@@ -10,30 +10,28 @@ export const useBankStore = defineStore(
 
     const bankDataFetched = ref(false)
 
+
     const fetchBankDatas = () => {
       if (bankDataFetched.value === false) {
         banks.value = []
 
-        for (let i = 1; i < 19; i++) {
-          axios
-            .get(`${API_URL}/finances/get_bank_map/${i}/`)
-            .then((response) => {
-              banks.value.push(response.data)
-            })
-            .then((response) => {
-              if (i == 18) {
-                bankDataFetched.value = true
-                console.log(bankDataFetched.value)
-              }
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-        }
-
-        console.log('bankStore', banks.value)
+        return axios
+          .get(`${API_URL}/finances/get_bank_map/`)
+          .then((response) => {
+            banks.value = response.data
+          })
+          .then((response) => {
+            bankDataFetched.value = true
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+          
       }
     }
+
+
+
     return { banks, bankDataFetched, fetchBankDatas }
   },
   { persist: true }

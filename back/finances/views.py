@@ -201,29 +201,31 @@ def get_bank_detail(request, id):
     return Response(serializer.data) 
 
 @api_view(['GET'])
-def get_bank_map(request, id):
-    bank = Bank.objects.get(pk=id)
+def get_bank_map(request):
     
-    deposit_products = bank.depositproduct_set.all()
-    top_deposit_product = deposit_products.annotate(join_user_count=Count('join_user')).order_by('-join_user_count').first()
-    print(top_deposit_product.join_user_count)
+    response_json = []
     
-    saving_products = bank.savingproduct_set.all()
-    top_saving_product = saving_products.annotate(join_user_count=Count('join_user')).order_by('-join_user_count').first()
+    for id in range(1, 19):
+        
+        bank = Bank.objects.get(pk=id)
 
-    
-    
-    response_json = {
-        'bank_id': id,
-        'top_deposit_product': 
-            { 'id': top_deposit_product.id,
-             'fin_prdt_nm': top_deposit_product.fin_prdt_nm,
-             'user_count': top_deposit_product.join_user_count},
-        'top_saving_product': 
-            {'id': top_saving_product.id, 
-             'fin_prdt_nm': top_saving_product.fin_prdt_nm,
-             'user_count': top_saving_product.join_user_count},
-    }
+        deposit_products = bank.depositproduct_set.all()
+        top_deposit_product = deposit_products.annotate(join_user_count=Count('join_user')).order_by('-join_user_count').first()
+
+        saving_products = bank.savingproduct_set.all()
+        top_saving_product = saving_products.annotate(join_user_count=Count('join_user')).order_by('-join_user_count').first()
+
+        response_json.append({
+            'bank_id': id,
+            'top_deposit_product': 
+                { 'id': top_deposit_product.id,
+                    'fin_prdt_nm': top_deposit_product.fin_prdt_nm,
+                    'user_count': top_deposit_product.join_user_count},
+            'top_saving_product': 
+                {'id': top_saving_product.id, 
+                    'fin_prdt_nm': top_saving_product.fin_prdt_nm,
+                    'user_count': top_saving_product.join_user_count},
+        })
     
     return Response(response_json)
 

@@ -47,16 +47,16 @@
                     class="ellipsis"
                     style=""
                     href=""
-                    @click.prevent="toDetail(bankInfos[bank.id]?.top_deposit_product.id, 'deposit')"
+                    @click.prevent="toDetail(bankInfos[bank.id-1]?.top_deposit_product.id, 'deposit')"
                   >
-                    {{ bankInfos[bank.id]?.top_deposit_product['fin_prdt_nm'] }}
+                    {{ bankInfos[bank.id-1]?.top_deposit_product['fin_prdt_nm'] }}
                   </a>
                 </button>
               </div>
               <div class="ps-2" style="width: 150px">
                 <button class="btn" style="width: 100px">
-                  <a class="ellipsis" href="" @click.prevent="toDetail(bankInfos[bank.id]?.top_saving_product.id, 'saving')">
-                    {{ bankInfos[bank.id]?.top_saving_product['fin_prdt_nm'] }}</a
+                  <a class="ellipsis" href="" @click.prevent="toDetail(bankInfos[bank.id-1]?.top_saving_product.id, 'saving')">
+                    {{ bankInfos[bank.id-1]?.top_saving_product['fin_prdt_nm'] }}</a
                   >
                 </button>
               </div>
@@ -121,7 +121,9 @@ const banks = [
   { id: i++, name: '토스뱅크 주식회사', keyword: '토스' },
 ]
 
-const bankInfos = ref(1)
+const bankInfos = computed(() => {
+  return bankStore.banks
+})
 const clickedBank = ref(null)
 const clickedBankList = ref(null)
 
@@ -130,15 +132,6 @@ const showTopProduct = function (bankListId) {
   clickedBankList.value = bankListId
   console.log(clickedBankList.value)
 }
-
-// 은행별 대표 상품이 다 로드되면 bankInfos를 변경해줌
-watch(
-  () => bankStore.bankDataFetched,
-  (newBoolean) => {
-    bankInfos.value = bankStore.banks
-    console.log(bankInfos.value)
-  }
-)
 
 // 지도 컨테이너
 const mapContainer = ref(null)
@@ -281,6 +274,7 @@ const initMap = () => {
 // Mount 훅에서 지도를 불러오는 동작 수행
 // 지도 script가 (kakao.maps) 로드돼있으면 initMap, 아니면 loadScript
 onMounted(() => {
+
   if (window.kakao?.maps) {
     console.log('onMount : 지도 Script가 이미 load되어 있음 -> initMap 함수 실행')
     initMap()
@@ -290,6 +284,7 @@ onMounted(() => {
   }
 
   bankStore.fetchBankDatas()
+
 })
 
 // Unmount 훅에서 클린업 작업 수행
@@ -300,6 +295,9 @@ onUnmounted(() => {
     kakao.maps.event.removeListener(mapObject.value, 'zoom_changed')
     mapObject.value = null
     console.log('onUnmounted : 지도 관련 리소스 해제 완료')
+
+    bankStore.banks = []
+    bankStore.bankDataFetched = false
   }
 
   if (kakaoMapScript.value) {
@@ -370,7 +368,6 @@ function placesSearchCB(data, status, pagination) {
         // 지도 출력 확인
         bankSearchList.value.push(data[i])
         displayMarker(data[i])
-        console.log(data[i])
       }
     }
 

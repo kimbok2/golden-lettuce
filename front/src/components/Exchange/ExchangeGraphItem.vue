@@ -1,7 +1,10 @@
 <template>
-  <div v-show="showCanvas" class=" chart-container">
+  <div v-show="showCanvas" class="chart-container">
     <div class="graph-item">
-        <h3>환율 그래프</h3>
+      <p class="text-end">
+        <button class="btn" @click="closeChart"><span class="material-symbols-outlined text-danger"> cancel </span></button>
+      </p>
+      <h3>환율 그래프</h3>
       <canvas ref="chartCanvas"></canvas>
     </div>
   </div>
@@ -103,6 +106,12 @@ const updateChart = () => {
   createChart()
 }
 
+const closeChart = function () {
+  destroyChart()
+  showCanvas.value = false
+  exchangeStore.updateChartTrigger = 0
+}
+
 onBeforeUnmount(() => {
   destroyChart()
   showCanvas.value = false
@@ -148,7 +157,7 @@ const viewChart = () => {
 
 canvas {
   width: 800px !important;
-  height: 400px !important; 
+  height: 400px !important;
 
   margin-bottom: 50px;
 }
@@ -158,7 +167,5 @@ canvas {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  
 }
 </style>
