@@ -19,4 +19,5 @@ urlpatterns = [
     path('compare_saving/<int:saving_id>/', views.compare_saving),
     path('recommend_deposit1/', views.recommend_deposit),
     path('recommend_saving1/', views.recommend_saving),
+    path('update_deposit_option/<int:option_id>/', views.update_deposit_option),
 ]

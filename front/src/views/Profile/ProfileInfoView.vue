@@ -106,6 +106,7 @@ const profileFields = {
   id: "회원번호",
   nickname: "닉네임",
   date_of_birth: "생년월일",
+  email: "이메일",
   address: "주소",
   budget: "보유자산",
   salary: "월 수입",

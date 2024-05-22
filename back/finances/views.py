@@ -230,17 +230,31 @@ def get_bank_map(request):
     
     return Response(response_json)
 
+# 예금 상품 조회
 @api_view(['GET'])
 def get_deposit_detail(request, id):
     product = DepositProduct.objects.get(pk=id)
     serializer = DepositDetailSerializer(product)
     return Response(serializer.data)
 
+# 적금 상품 조회
 @api_view(['GET'])
 def get_saving_detail(request, id):
     product = SavingProduct.objects.get(pk=id)
     serializer = SavingDetailSerializer(product)
     return Response(serializer.data)
+
+# 예금 옵션 수정
+@api_view(['PUT'])
+def update_deposit_option(request, option_id):
+    option = DepositOption.objects.get(pk=option_id)
+    if request.method == 'PUT':
+        serializer = DepositOptionSerializer(instance=option, data=request.data, partial = True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
 
 # 예금 상품 가입 및 해지
 @api_view(['POST', 'DELETE'])

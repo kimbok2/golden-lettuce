@@ -19,6 +19,7 @@ import ProfilePasswordChangeView from "@/views/Profile/ProfilePasswordChangeView
 // 상품 조회
 import ProductSearchView from "@/views/ProductList/ProductSearchView.vue";
 import ProductDetailView from "@/views/ProductList/ProductDetailView.vue";
+import ProductDetailUpdateView from "@/views/ProductList/ProductDetailUpdateView.vue";
 // 상품 비교
 import ProductCompareView from "@/views/ProductCompare/ProductCompareView.vue";
 import DepositCompareView from "@/views/ProductCompare/DepositCompareView.vue";
@@ -57,6 +58,11 @@ const router = createRouter({
           path: ":type/:id",
           name: "products-detail",
           component: ProductDetailView,
+        },
+        {
+          path: ":type/:id/update",
+          name: "products-update",
+          component: ProductDetailUpdateView,
         },
       ],
     },
