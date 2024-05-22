@@ -31,13 +31,11 @@
         />
         <span class="input-group-text d-flex justify-content-between" style="width: 90px">
           <span>{{ exchangeStore.currencies[selectedItemCurrent - 1]?.cur_unit }}</span>
-          <span
-            v-if="exchangeStore.currencies[selectedItemCurrent - 1]?.cur_unit"
-            class="material-symbols-outlined text-secondary"
-            @click="updateSelectedChartCurrent"
-          >
-            info
-          </span>
+          <button class="btn p-0 m-0">
+            <template v-if="exchangeStore.currencies[selectedItemCurrent - 1]?.cur_unit">
+              <span class="material-symbols-outlined text-secondary" @click="updateSelectedChartCurrent"> info </span>
+            </template>
+          </button>
         </span>
       </div>
     </div>
@@ -149,7 +147,6 @@ const infoMouseOver = function () {}
 // 정보 아이콘에 마우스아웃 이벤트 추가
 const infoMouseOut = function () {}
 
-// info 버튼을 누르면 그래프 및 환율 상세 정보 출력
 const updateSelectedChartCurrent = function () {
   new Promise((resolve) => {
     resolve((exchangeStore.selectedChartCurrent = selectedItemCurrent.value))
