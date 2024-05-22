@@ -26,13 +26,13 @@
 </template>
 
 <script setup>
-import { useUserStore } from "@/stores/user";
+// import { useUserStore } from "@/stores/user";
 import ComparedProducts from "@/components/MyAccount/ComparedProducts.vue";
 import CreditScore from "@/components/MyAccount/CreditScore.vue";
 import JoinProducts from "@/components/MyAccount/JoinProducts.vue";
 import RecommendProducts from "@/components/MyAccount/RecommendProducts.vue";
 
-const store = useUserStore();
+// const store = useUserStore();
 </script>
 
 <style scoped>
