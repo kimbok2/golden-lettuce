@@ -42,7 +42,15 @@
         <div class="product-details">
           <div class="detail-item">
             <h5 class="detail-title">담당 회사</h5>
-            <p class="detail-content">{{ product.kor_co_nm }}</p>
+            <p class="detail-content">
+              <RouterLink
+                :to="{ name: 'bank-detail', params: { id: product.bank } }"
+                class="custom-link"
+              >
+                <img :src="`/media/bank/${product.bank}.png`" alt="" />
+                {{ product.kor_co_nm }}
+              </RouterLink>
+            </p>
           </div>
           <div class="detail-item">
             <h5 class="detail-title">공시제출월</h5>
@@ -70,12 +78,16 @@
             <p class="detail-content">{{ product.join_way }}</p>
           </div>
           <div class="detail-item">
+            <h5 class="detail-title">가입 대상</h5>
+            <p class="detail-content">{{ product.join_member }}</p>
+          </div>
+          <div class="detail-item">
             <h5 class="detail-title">최고 한도</h5>
             <p class="detail-content">
               {{
                 product.max_limit
                   ? formatNumber(product.max_limit) + " 원"
-                  : "최고 한도 없음"
+                  : "최고 한도가 없는 상품입니다."
               }}
             </p>
           </div>
@@ -178,9 +190,9 @@ const joinProduct = (apiMethod) => {
     })
       .then((res) => {
         if (apiMethod === "post") {
-          alert("성공적으로 가입되었습니다.");
+          alert("성공적으로 가입되었어요.");
         } else {
-          alert("해지되었습니다.");
+          alert("해지가 완료되었어요.");
         }
         console.log("가입/해지");
         fetchProduct(); // 업데이트 후 데이터를 다시 가져옴
@@ -283,5 +295,12 @@ const formattedEndDate = (date) => {
 .table th,
 .table td {
   vertical-align: middle;
+}
+.custom-link {
+  color: inherit; /* 부모 요소의 색상 상속 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+.custom-link:hover {
+  color: gray; /* 호버 시 색상 변경 (원하는 색상으로 변경 가능) */
 }
 </style>

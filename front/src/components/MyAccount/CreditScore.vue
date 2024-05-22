@@ -2,12 +2,7 @@
   <div class="credit-score-container">
     <h2 class="text-center mb-4">내 신용 점수</h2>
 
-    <div v-if="userInfo.credit_score" class="text-center mb-3">
-      <DoughnutChart :score="userInfo.credit_score" />
-    </div>
-    <div v-else>
-      <p>신용점수를 입력해주세요.</p>
-    </div>
+    <DoughnutChart :score="userInfo.credit_score" />
   </div>
 </template>
 
