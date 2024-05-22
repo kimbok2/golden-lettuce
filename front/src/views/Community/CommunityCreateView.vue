@@ -1,29 +1,55 @@
 <template>
-  <div class="p-5 text-start">
+  <div class="m-3 p-3 text-start">
     <p class="text-end">
       <button class="btn btn-primary" @click="goBack">뒤로가기</button>
     </p>
     <form @submit.prevent="createArticle">
-      <!-- 카테고리 선택 -->
-    
-      <label for="category">카테고리 : </label>
-      <select v-model="category" id="category">
-        <option value="free">자유게시판</option>
-        <option value="faq">FAQ</option>
-        <option value="notice">공지사항</option>
-      </select>
       <br />
 
       <h1>
-          <textarea type="text" style="width: 100%; height: 50px; text-align: middle !important;" v-model.trim="title" id="title" placeholder="제목을 입력하세요" />
-        </h1>
+        <textarea
+          type="text"
+          style="width: 100%; height: 50px; text-align: middle !important"
+          v-model.trim="title"
+          id="title"
+          placeholder="제목을 입력하세요"
+        />
+      </h1>
+      <div class="mt-3 d-flex justify-content-between">
+        <div>
+          <img
+            :src="userStore.userInfo.profile_img ? apiUrl + userStore.userInfo.profile_img : '@/assets/userdefault.png'"
+            alt="Logo"
+            width="50"
+            height="50"
+            class="d-inline-block align-text-top border rounded-circle"
+          />
+          <div style="display: inline-flex;">
+            <span class="ms-3 fw-bolder">{{ userStore.userInfo.nickname }}</span>
+            <select class="ms-3" v-model="category" id="category">
+              <option value="free">자유게시판</option>
+              <option value="faq">FAQ</option>
+              <option value="notice">공지사항</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <br />
-
+      <hr />
+      <!-- 카테고리 선택 -->
       <!-- 내용 -->
-      <label for="content">내용 : </label>
-      <input type="text" v-model.trim="content" id="content" />
+      <textarea
+        type="text"
+        style="width: 100%; min-height: 100px"
+        v-model.trim="content"
+        id="content"
+        placeholder="내용을 입력하세요."
+      />
+      <hr />
       <br />
-      <input type="submit" value="게시글 작성" />
+      <p class="text-end">
+        <button class="btn btn-primary" type="submit">게시글 작성</button>
+      </p>
     </form>
   </div>
 </template>
@@ -35,6 +61,7 @@ import { useRouter } from 'vue-router'
 import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
 
+const apiUrl = 'http://127.0.0.1:8000'
 
 const goBack = function () {
   router.back()
@@ -78,13 +105,9 @@ const createArticle = function () {
 </script>
 
 <style scoped>
-
 textarea {
-
-border: none;
-border-radius: 10px;
-box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
-
-
 </style>
