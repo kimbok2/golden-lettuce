@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1 class="text-center mb-4">SignUpView</h1>
     <form @submit.prevent="signUp" class="mx-auto" style="max-width: 600px">
       <div class="form-group row align-items-center mb-3">
         <label
