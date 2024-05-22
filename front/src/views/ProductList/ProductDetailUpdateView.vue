@@ -86,20 +86,35 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th scope="col" class="text-center">번호</th>
-                  <th scope="col" class="text-center">저축기간</th>
-                  <th scope="col" class="text-center">저축 금리</th>
-                  <th scope="col" class="text-center">최고 우대 금리</th>
-                  <th scope="col" class="text-center">저축금리 유형</th>
+                  <th scope="col" class="text-center nowrap">번호</th>
+                  <th scope="col" class="text-center nowrap">저축기간</th>
+                  <th scope="col" class="text-center nowrap">저축 금리</th>
+                  <th scope="col" class="text-center nowrap">최고 우대 금리</th>
+                  <th scope="col" class="text-center nowrap">저축금리 유형</th>
+                  <th scope="col" class="text-center nowrap"></th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(option, index) in productOptions" :key="option.id">
                   <th scope="row" class="text-center">{{ index + 1 }}</th>
                   <td class="text-center">{{ option.save_trm }}</td>
-                  <td class="text-center">{{ option.intr_rate }}</td>
-                  <td class="text-center">{{ option.intr_rate2 }}</td>
-                  <td class="text-center">{{ option.intr_rate_type_nm }}</td>
+                  <td class="text-center">
+                    <input v-model="option.intr_rate" class="form-control" />
+                  </td>
+                  <td class="text-center">
+                    <input v-model="option.intr_rate2" class="form-control" />
+                  </td>
+                  <td class="text-center">
+                    {{ option.intr_rate_type_nm }}
+                  </td>
+                  <td class="text-center">
+                    <button
+                      class="btn btn-success"
+                      @click="updateOption(option.id, index)"
+                    >
+                      저장
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -124,6 +139,7 @@ const productType = ref(null);
 const productId = ref(null);
 const product = ref(null);
 const user = ref(null);
+const IsModified = ref(false);
 
 const fetchProduct = () => {
   axios({
@@ -170,10 +186,45 @@ const formattedEndDate = (date) => {
 };
 
 const doneUpdate = function () {
+  if (IsModified.value === true) {
+    sendEmail();
+  }
   router.push({
     name: "products-detail",
     params: { type: productType.value, id: productId.value },
   });
+};
+
+const sendEmail = function () {
+  axios({
+    method: "get",
+    url: `${store.API_URL}/finances/send_${productType.value}_email/${productId.value}/`,
+  })
+    .then((res) => {
+      alert("메일 전송 완료");
+    })
+    .catch((err) => {
+      console.log(err);
+      alert("메일 전송 실패");
+    });
+};
+
+const updateOption = (optionId, index) => {
+  console.log(optionId);
+  const option = productOptions.value[index];
+  axios({
+    method: "put",
+    url: `${store.API_URL}/finances/update_${productType.value}_option/${optionId}/`,
+    data: option,
+  })
+    .then(() => {
+      alert("옵션이 성공적으로 수정되었습니다.");
+      IsModified.value = true;
+    })
+    .catch((err) => {
+      console.log(err);
+      alert("옵션 수정 중 오류가 발생했습니다.");
+    });
 };
 </script>
 
@@ -222,6 +273,9 @@ const doneUpdate = function () {
 .table th,
 .table td {
   vertical-align: middle;
+}
+.nowrap {
+  white-space: nowrap;
 }
 .custom-link {
   color: inherit; /* 부모 요소의 색상 상속 */

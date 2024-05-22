@@ -10,6 +10,8 @@ from .models import *
 from .serializers import *
 from accounts.serializers import ProfileSerializer
 import requests
+from django.core.mail import EmailMessage
+
 
 # Create your views here.
 BASE_URL = 'http://finlife.fss.or.kr/finlifeapi/'
@@ -22,8 +24,12 @@ def save_bank(request):
     response = requests.get(url).json()
     baseList = response.get('result').get('baseList')
     for bank in baseList:
+        fin_co_no = bank.get('fin_co_no', '')
+        # 이미 존재하는 데이터인지 확인
+        if Bank.objects.filter(fin_co_no=fin_co_no).exists():
+            continue
         save_data = {
-            'fin_co_no' : bank.get('fin_co_no', ''),
+            'fin_co_no' : fin_co_no,
             'dcls_month' : bank.get('dcls_month', ''),
             'kor_co_nm' : bank.get('kor_co_nm', ''),
             'dcls_chrg_man' : bank.get('dcls_chrg_man', ''),
@@ -42,10 +48,18 @@ def save_deposit(request):
     response = requests.get(url).json()
     baseList = response.get('result').get('baseList')
     optionList = response.get('result').get('optionList')
+    existeds = []
     for product in baseList:
+        # 존재하는 지 검증
+        fin_prdt_cd = product.get('fin_prdt_cd')
+        deposit = DepositProduct.objects.filter(fin_prdt_cd=fin_prdt_cd).first()
+        if deposit:
+            existeds.append(deposit.id)
+            continue
         bank = Bank.objects.get(fin_co_no=product.get('fin_co_no'))
+        
         save_data = {
-            'fin_prdt_cd' : product.get('fin_prdt_cd'),
+            'fin_prdt_cd' : fin_prdt_cd,
             'fin_prdt_nm' : product.get('fin_prdt_nm', ''),
             'fin_co_no' : product.get('fin_co_no', ''),
             'kor_co_nm' : product.get('kor_co_nm', ''),
@@ -71,7 +85,7 @@ def save_deposit(request):
         product = DepositProduct.objects.get(fin_prdt_cd = option.get('fin_prdt_cd'),
                                              fin_co_no = option.get('fin_co_no'),
                                              dcls_month = option.get('dcls_month'))
-        if product:
+        if product.id not in existeds:
             save_data= {
                 'intr_rate' : option.get('intr_rate', -1),
                 'intr_rate2' : option.get('intr_rate2', -1),
@@ -82,6 +96,7 @@ def save_deposit(request):
             optionserializer = DepositOptionSerializer(data=save_data)
             if optionserializer.is_valid(raise_exception=True):
                 optionserializer.save(deposit_product=product)
+    
     return JsonResponse({'message':'save!'})
     
 @api_view(['GET'])
@@ -90,10 +105,17 @@ def save_saving(request):
     response = requests.get(url).json()
     baseList = response.get('result').get('baseList')
     optionList = response.get('result').get('optionList')
+    existeds = []
     for product in baseList:
+        # 존재하는 지 검증
+        fin_prdt_cd = product.get('fin_prdt_cd')
+        saving = SavingProduct.objects.filter(fin_prdt_cd=fin_prdt_cd).first()
+        if saving:
+            existeds.append(saving.id)
+            continue
         bank = Bank.objects.get(fin_co_no=product.get('fin_co_no'))
         save_data = {
-            'fin_prdt_cd' : product.get('fin_prdt_cd'),
+            'fin_prdt_cd' : fin_prdt_cd,
             'fin_prdt_nm' : product.get('fin_prdt_nm', ''),
             'fin_co_no' : product.get('fin_co_no', ''),
             'kor_co_nm' : product.get('kor_co_nm', ''),
@@ -118,7 +140,7 @@ def save_saving(request):
         product = SavingProduct.objects.get(fin_prdt_cd = option.get('fin_prdt_cd'),
                                              fin_co_no = option.get('fin_co_no'),
                                              dcls_month = option.get('dcls_month'))
-        if product:
+        if product.id not in existeds:
             save_data= {
                 'intr_rate' : option.get('intr_rate', -1),
                 'intr_rate2' : option.get('intr_rate2', -1),
@@ -131,6 +153,7 @@ def save_saving(request):
             optionserializer = SavingOptionSerializer(data=save_data)
             if optionserializer.is_valid(raise_exception=True):
                 optionserializer.save(saving_product=product)
+    
     return JsonResponse({'message':'save!'})
 
 @api_view(['GET'])
@@ -254,7 +277,15 @@ def update_deposit_option(request, option_id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
     
-    
+# 적금 옵션 수정
+@api_view(['PUT'])
+def update_saving_option(request, option_id):
+    option = SavingOption.objects.get(pk=option_id)
+    if request.method == 'PUT':
+        serializer = SavingOptionSerializer(instance=option, data=request.data, partial = True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 예금 상품 가입 및 해지
 @api_view(['POST', 'DELETE'])
@@ -316,31 +347,32 @@ def compare_saving(request, saving_id):
             saving.compare_user.remove(request.user)
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-# 각 상품의 적합도 점수 계산
+# 예금 추천 알고리즘
 @api_view(['GET'])
 def recommend_deposit(request):
     dp_cnt = 37
     me = get_object_or_404(get_user_model(), username=request.user.username)
-    max_year = 2010
-    min_year = 1950
-    max_budget = 1000000000
-    min_budget = 0
-    max_salary = 15000000
-    min_salary = 0
     me_year = me.date_of_birth.year
     me_salary = me.salary
     me_budget = me.budget
+    max_year = max(2010, me_year)
+    min_year = min(1950, me_year)
+    max_budget = max(1000000000, me_budget)
+    min_budget = 0
+    max_salary = max(15000000, me_salary)
+    min_salary = 0
     scores = [[0, i+1] for i in range(dp_cnt)]
     users = get_list_or_404(get_user_model())
     
     for user in users:
-        score = 100
-        score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
-        score *= abs(me_salary-user.salary)/(max_salary-min_salary)
-        score *= abs(me_budget-user.budget)/(max_budget-min_budget)
+        if (user.salary and user.budget) :
+            score = 100
+            score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
+            score *= abs(me_salary-user.salary)/(max_salary-min_salary)
+            score *= abs(me_budget-user.budget)/(max_budget-min_budget)
         
-        for deposit in user.join_deposit.all():
-            scores[deposit.id-1][0] += score
+            for deposit in user.join_deposit.all():
+                scores[deposit.id-1][0] += score
     
     scores.sort()
     recommend_list = []
@@ -356,7 +388,7 @@ def recommend_deposit(request):
         
     return Response(data=serializer.data, status=status.HTTP_200_OK)
     
-
+# 적금 추천 알고리즘
 @api_view(['GET'])
 def recommend_saving(request):
     sv_cnt = 64
@@ -394,3 +426,34 @@ def recommend_saving(request):
         serializer.save()
     
     return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+# 이메일 보내는 함수
+@api_view(['GET'])
+def send_deposit_email(request, product_id):
+    product = DepositProduct.objects.get(pk=product_id)
+    users = product.join_user.all()
+
+    for user in users:
+        if user.id > 10000 and user.email:
+            subject = f'{product.fin_prdt_nm} 상품 금리 변경 관련 안내'
+            to = [user.email]
+            from_email = 'goldenlettuce@naver.com'
+            message = f'{user.username} 고객님께서 가입하신 {product.fin_prdt_nm} 상품에 대한 금리 변동 내역이 있습니다.\n 자세한 사항은 금상추 홈페이지를 참고해주세요. \n -금상추 드림.'
+            EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+            
+    return Response(status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def send_saving_email(request, product_id):
+    product = SavingProduct.objects.get(pk=product_id)
+    users = product.join_user.all()
+
+    for user in users:
+        if user.id > 10000 and user.email:
+            subject = f'{product.fin_prdt_nm} 상품 금리 변경 관련 안내'
+            to = [user.email]
+            from_email = 'goldenlettuce@naver.com'
+            message = f'{user.username} 고객님께서 가입하신 {product.fin_prdt_nm} 상품에 대한 금리 변동 내역이 있습니다.\n 자세한 사항은 금상추 홈페이지를 참고해주세요. \n -금상추 드림.'
+            EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+            
+    return Response(status=status.HTTP_200_OK)

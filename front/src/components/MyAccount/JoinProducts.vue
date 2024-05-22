@@ -46,6 +46,7 @@
             <div v-if="!products.length" class="carousel-item active">
               <div class="card no-top-border-radius">
                 <div class="card-body vertical-align">
+                  <p>아직 가입 상품이 없어요...</p>
                   <p>가입 상품을 찾으러 가보시겠어요?</p>
                   <RouterLink :to="{ name: 'products' }" class="btn btn-warning"
                     >상품 찾으러 가기</RouterLink
