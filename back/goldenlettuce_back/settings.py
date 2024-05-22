@@ -146,13 +146,23 @@ WSGI_APPLICATION = 'goldenlettuce_back.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# MYSQL DB 연동
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'gold-lettuce', # DB Table Name
+#         'USER': 'root', # 사용자 ID
+#         'PASSWORD': 'rmatkdcnqlqjs1!', # 사용자 Password
+#         'HOST': '127.0.0.1', # MySQL 호스트
+#         'PORT': '3306',      # MySQL 포트 (기본값은 3306)
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 
 # Password validation

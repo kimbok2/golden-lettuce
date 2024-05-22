@@ -6,11 +6,11 @@ from collections import OrderedDict
 file = OrderedDict()
 
 N = 20000
-max_saving_id = 63
+max_saving_id = 64
 max_user_id = 10000
 unique_pairs = set()
 
-save_dir = './back/goldenlettuce_back/fixtures/saving_user_data.json'
+save_dir = './back/finances/fixtures/saving_user_data.json'
 
 with open(save_dir, 'w', encoding="utf-8") as f:
     f.write('[')

@@ -273,4 +273,7 @@ const handleCarouselClick = (event) => {
   background-color: white;
   color: black;
 }
+.carousel-inner {
+  min-height: 200px;
+}
 </style>

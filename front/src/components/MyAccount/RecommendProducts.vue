@@ -1,9 +1,23 @@
 <template>
   <div>
     <h2 class="text-center mb-4">상품 추천</h2>
-    <button v-if="!Isrecommended" @click="Recommend" class="btn btn-primary">
-      상품 추천 받기
-    </button>
+    <div v-if="Isloading">
+      <p class="text-center">
+        <span
+          class="material-symbols-outlined spin-move"
+          style="font-size: 50px"
+          >search</span
+        >
+        <br />
+        추천에는 약 30초가 소요돼요...
+      </p>
+    </div>
+    <div v-else-if="!Isrecommended">
+      <button @click="handleRecommendClick" class="btn btn-primary">
+        상품 추천 받기
+      </button>
+    </div>
+
     <div v-else>
       <div
         class="d-flex justify-content-center mb-0 w-100 bg-white tab-container"
@@ -130,18 +144,16 @@ import { ref, computed, watch, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 
 const store = useUserStore();
-const recomDeposits = ref([]);
-const recomSavings = ref([]);
 const products = ref([]);
 const selectedType = ref(null); // 처음 보이는 것은 예금
 const Isrecommended = ref(false); // 추천이 되었는지 여부
 const activeIndex = ref(0);
 const user = ref(null);
+const Isloading = ref(false);
 
 // Mount시 user에 추천 상품이 있는지 확인
 onMounted(() => {
   user.value = store.userInfo;
-  console.log(user.value);
   if (user.value.deposit_recommend !== null) {
     Isrecommended.value = true;
     selectedType.value = "deposit";
@@ -162,43 +174,47 @@ watch(
   { immediate: true } // 즉시 실행하여 초기값도 반영되도록 합니다.
 );
 
-const Recommend = function () {
-  if (user.value.budget && user.value.salary) {
-    alert("추천 중...(최대 30초까지 소요될 수 있습니다.)");
-    axios({
+const Recommend = async function () {
+  Isloading.value = true; // 로딩 상태 시작
+  try {
+    const depositResponse = await axios({
       method: "get",
       url: `${store.API_URL}/finances/recommend_deposit1/`,
       headers: {
         Authorization: `Token ${store.token}`,
       },
-    })
-      .then((response) => {
-        recomDeposits.value = response.data;
-        axios({
-          method: "get",
-          url: `${store.API_URL}/finances/recommend_saving1/`,
-          headers: {
-            Authorization: `Token ${store.token}`,
-          },
-        })
-          .then((res) => {
-            user.value = res.data;
-            Isrecommended.value = true;
-            selectedType.value = "deposit";
-            store.getUserInfo();
-            console.log(recomDeposits.value);
-            console.log(recomSavings.value);
-            alert("추천 성공");
-          })
-          .catch((error) => {
-            console.log(error);
-            alert("추천 실패. 잠시 후 다시 시도해 주세요.");
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("추천 실패. 잠시 후 다시 시도해 주세요.");
-      });
+    });
+    const savingResponse = await axios({
+      method: "get",
+      url: `${store.API_URL}/finances/recommend_saving1/`,
+      headers: {
+        Authorization: `Token ${store.token}`,
+      },
+    });
+
+    user.value = {
+      ...user.value,
+      deposit_recommend: depositResponse.data.deposit_recommend,
+      saving_recommend: savingResponse.data.saving_recommend,
+    };
+    console.log(user.value);
+    Isrecommended.value = true;
+    selectedType.value = "deposit";
+    store.getUserInfo();
+
+    alert("추천 성공");
+  } catch (error) {
+    console.log(error);
+    alert("추천 실패. 잠시 후 다시 시도해 주세요.");
+  } finally {
+    Isloading.value = false; // 로딩 상태 종료
+  }
+};
+
+const handleRecommendClick = () => {
+  if (user.value.budget && user.value.salary) {
+    Recommend();
+    Isloading.value = true;
   } else {
     alert("추천에 필요한 정보를 모두 입력해주세요.(예산, 월 수입)");
   }

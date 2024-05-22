@@ -302,7 +302,7 @@ def compare_saving(request, saving_id):
 # 각 상품의 적합도 점수 계산
 @api_view(['GET'])
 def recommend_deposit(request):
-    dp_cnt = 38
+    dp_cnt = 37
     me = get_object_or_404(get_user_model(), username=request.user.username)
     max_year = 2010
     min_year = 1950
@@ -342,28 +342,29 @@ def recommend_deposit(request):
 
 @api_view(['GET'])
 def recommend_saving(request):
-    sv_cnt = 63
+    sv_cnt = 64
     me = get_object_or_404(get_user_model(), username=request.user.username)
-    max_year = 2010
-    min_year = 1950
-    max_budget = 1000000000
-    min_budget = 0
-    max_salary = 15000000
-    min_salary = 0
     me_year = me.date_of_birth.year
     me_salary = me.salary
     me_budget = me.budget
+    max_year = max(2010, me_year)
+    min_year = min(1950, me_year)
+    max_budget = max(1000000000, me_budget)
+    min_budget = 0
+    max_salary = max(15000000, me_salary)
+    min_salary = 0
     scores = [[0, i+1] for i in range(sv_cnt)]
     users = get_list_or_404(get_user_model())
     
     for user in users:
-        score = 100
-        score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
-        score *= abs(me_salary-user.salary)/(max_salary-min_salary)
-        score *= abs(me_budget-user.budget)/(max_budget-min_budget)
-        
-        for saving in user.join_saving.all():
-            scores[saving.id-1][0] += score
+        if (user.salary and user.budget) :
+            score = 100
+            score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
+            score *= abs(me_salary-user.salary)/(max_salary-min_salary)
+            score *= abs(me_budget-user.budget)/(max_budget-min_budget)
+            
+            for saving in user.join_saving.all():
+                scores[saving.id-1][0] += score
     
     scores.sort()
     recommend_list = []
