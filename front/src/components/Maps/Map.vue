@@ -13,10 +13,10 @@
             maxlength="20"
           />
           <select ref="selectBankTag" @change="selectBank" class="form-select ms-2" style="width: 150px">
-            <option value="">
+            <option value="0">
               <span class="text-secondary">전체</span>
             </option>
-            <option v-for="bank in banks" :key="bank.id" :value="bank.keyword">
+            <option v-for="bank in banks" :key="bank.id" :value="bank.id">
               {{ bank.name }}
             </option>
           </select>
@@ -50,7 +50,8 @@ import MapList from '@/components/Maps/MapList.vue'
 const userStore = useUserStore()
 const mapStore = useMapStore()
 // 사용자 주소를 받아옴
-const userAddress = userStore.userInfo.address
+const userAddress = ref(null)
+// const userAddress = ref(userStore?.userInfo.address)
 
 // 검색 키워드 관련 반응형 변수
 const searchKeyWordInput = ref(null)
@@ -105,6 +106,7 @@ const updateMapSearchKeyWord = function () {
 
   if (!isDuplicate && searchKeyWordInput.value) {
     // 목록에 추가
+    console.log(searchKeyWordInput.value)
     searchHistoryList.value.push({
       id: searchHistoryId++,
       searchKeyWord: searchKeyWordInput.value,
@@ -149,19 +151,23 @@ const setSearchKeyWord = function (searchHistoryItem) {
 }
 
 onMounted(() => {
-  searchKeyWordInput.value = userAddress
+  if (userStore.userInfo) {
+    userAddress.value = userStore.userInfo.address
+  } else {
+    searchKeyWordInput.value = null
+  }
+
+  searchKeyWordInput.value = userAddress.value
 })
 
 onUnmounted(() => {
   mapStore.selectedBank = ''
 })
-
 </script>
 
 <style scoped>
 .map-search-box {
   width: 1000px;
   min-height: 125px;
-
 }
 </style>

@@ -54,7 +54,9 @@ onMounted(() => {
 
 .exchange-box {
   width: 900px;
-  min-height: 200px;
+
+  margin-bottom: 30px;
+  /* min-height: 200px; */
 
   /* border: 1px solid #dee2e6; */
 }

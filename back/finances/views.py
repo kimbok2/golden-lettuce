@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
+from django.db.models import Count
 from .models import *
 from .serializers import *
 from accounts.serializers import ProfileSerializer
@@ -197,7 +198,34 @@ def get_saving_products(request, period, option, banks):
 def get_bank_detail(request, id):
     bank = Bank.objects.get(pk=id)
     serializer = BankSerializer(bank)
-    return Response(serializer.data)
+    return Response(serializer.data) 
+
+@api_view(['GET'])
+def get_bank_map(request, id):
+    bank = Bank.objects.get(pk=id)
+    
+    deposit_products = bank.depositproduct_set.all()
+    top_deposit_product = deposit_products.annotate(join_user_count=Count('join_user')).order_by('-join_user_count').first()
+    print(top_deposit_product.join_user_count)
+    
+    saving_products = bank.savingproduct_set.all()
+    top_saving_product = saving_products.annotate(join_user_count=Count('join_user')).order_by('-join_user_count').first()
+
+    
+    
+    response_json = {
+        'bank_id': id,
+        'top_deposit_product': 
+            { 'id': top_deposit_product.id,
+             'fin_prdt_nm': top_deposit_product.fin_prdt_nm,
+             'user_count': top_deposit_product.join_user_count},
+        'top_saving_product': 
+            {'id': top_saving_product.id, 
+             'fin_prdt_nm': top_saving_product.fin_prdt_nm,
+             'user_count': top_saving_product.join_user_count},
+    }
+    
+    return Response(response_json)
 
 @api_view(['GET'])
 def get_deposit_detail(request, id):
