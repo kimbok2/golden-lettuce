@@ -3,39 +3,142 @@
   <div class="d-flex">
     <!-- 지도 그림 태그 -->
     <div id="map" ref="mapContainer" style="width: 600px; height: 600px"></div>
-
     <!-- 은행 리스트 태그 -->
-    <ul v-if="bankSearchList" class="list-group overflow-y-scroll border rounded-0" style="height: 600px; width: 400px">
-      <template v-for="bank in bankSearchList" :key="`${bank.id}`">
-        <li class="list-group-item p-0" style="min-height: 175px">
-          <div class="bg-primary-subtle py-1 px-3" style="min-height: 50px">
-            <!-- 은행 이름 -->
-            <p class="fw-bold m-0">{{ bank.place_name }}</p>
-            <!-- 은행까지의 거리 -->
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="text-primary"> {{ bank?.distance }} km</span>
-              <!-- 은행 전화번호 -->
-              <span v-show="bank.phone" class="text-body-tertiary">{{ bank.phone }}</span>
+    <div>
+      <ul class="overflow-y-scroll border rounded-0 p-0" style="height: 600px; width: 400px">
+        <template v-for="bank in bankSearchList" :key="`${bank.bankSearchListId}`">
+          <li class="list-group-item p-0" style="min-height: 70px">
+            <div class="bg-primary-subtle py-1 ps-2" style="min-height: 50px">
+              <!-- 은행 이름 -->
+              <p class="fw-bold m-0 d-flex flex-row justify-content-between">
+                <span>{{ bank.place_name }}</span>
+                <button class="btn p-0 mx-2"><span
+                  @click.prevent="showTopProduct(bank.bankSearchListId)"
+                  class="material-symbols-outlined text-body-tertiary text-decoration-none"
+                >
+                  featured_play_list
+                </span></button>
+                
+              </p>
+              <!-- 은행까지의 거리 -->
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-primary"> {{ bank?.distance }} km</span>
+                <!-- 은행 전화번호 -->
+                <span v-show="bank.phone" class="text-body-tertiary">{{ bank.phone }}</span>
+              </div>
             </div>
-          </div>
-          <hr />
+            <div
+              v-if="clickedBankList === bank.bankSearchListId"
+              class="d-flex flex-row align-items-center"
+              style="height: 75px"
+            >
+              <div class="row align-items-center" style="width: 125px">
+                <span class="material-symbols-outlined col-1" style="margin-left: 3px; margin-right: 3px">
+                  subdirectory_arrow_right
+                </span>
+                <div class="col-9" style="border-right: 1px solid">
+                  <span class="single-line-text">추천 상품</span>
+                  <span class="single-line-text">바로 가기</span>
+                </div>
+              </div>
+              <div class="ps-2" style="width: 150px">
+                <button class="btn" style="width: 100px">
+                  <a
+                    class="ellipsis"
+                    style=""
+                    href=""
+                    @click.prevent="toDetail(bankInfos[bank.id]?.top_deposit_product.id, 'deposit')"
+                  >
+                    {{ bankInfos[bank.id]?.top_deposit_product['fin_prdt_nm'] }}
+                  </a>
+                </button>
+              </div>
+              <div class="ps-2" style="width: 150px">
+                <button class="btn" style="width: 100px">
+                  <a class="ellipsis" href="" @click.prevent="toDetail(bankInfos[bank.id]?.top_saving_product.id, 'saving')">
+                    {{ bankInfos[bank.id]?.top_saving_product['fin_prdt_nm'] }}</a
+                  >
+                </button>
+              </div>
+            </div>
+          </li>
+        </template>
+        <li v-if="bankSearchList.length <= 0" class="fade-in text-center">
+          <p class="text-center p-5">지금 지도에서 은행을 검색중이에요</p>
+          <p><span class="text-center material-symbols-outlined spin-move" style="font-size: 50px"> search </span></p>
+          <p class="text-center p-5">검색이 너무 오래 진행되면 새로운 검색어 혹은 은행으로 검색해주세요.</p>
         </li>
-      </template>
-    </ul>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useMapStore } from '@/stores/map'
+import { useBankStore } from '@/stores/bank'
 
 const API_KEY_MAP = import.meta.env.VITE_API_KEY_MAP
 const mapScriptSrc = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${API_KEY_MAP}&libraries=services`
 
+// 디테일로 보내주는 라우터
+const router = useRouter()
+
+const toDetail = function (productId, productType) {
+  router.push({
+    name: 'products-detail',
+    params: { id: productId, type: productType },
+  })
+}
+
 // mapStore 선언
 const mapStore = useMapStore()
 const userStore = useUserStore()
+const bankStore = useBankStore()
+
+// 은행 목록 저장
+let i = 1
+const banks = [
+  { id: i++, name: '우리은행', keyword: '우리' },
+  { id: i++, name: '한국스탠다드차타드은행', keyword: '제일은행' },
+  { id: i++, name: '대구은행', keyword: '대구은행' },
+  { id: i++, name: '부산은행', keyword: '부산은행' },
+  { id: i++, name: '광주은행', keyword: '광주은행' },
+  { id: i++, name: '제주은행', keyword: '제주은행' },
+  { id: i++, name: '전북은행', keyword: '전북은행' },
+  { id: i++, name: '경남은행', keyword: '경남은행' },
+  { id: i++, name: '중소기업은행', keyword: '기업' },
+  { id: i++, name: '한국산업은행', keyword: '산업' },
+  { id: i++, name: '국민은행', keyword: '국민은행' },
+  { id: i++, name: '신한은행', keyword: '신한은행' },
+  { id: i++, name: '농협은행주식회사', keyword: '농협' },
+  { id: i++, name: '하나은행', keyword: '하나은행' },
+  { id: i++, name: '주식회사 케이뱅크', keyword: '케이뱅크' },
+  { id: i++, name: '수협은행', keyword: '수협' },
+  { id: i++, name: '주식회사 카카오뱅크', keyword: '카카오' },
+  { id: i++, name: '토스뱅크 주식회사', keyword: '토스' },
+]
+
+const bankInfos = ref(1)
+const clickedBank = ref(null)
+const clickedBankList = ref(null)
+
+const showTopProduct = function (bankListId) {
+  // clickedBank.value = bankId
+  clickedBankList.value = bankListId
+  console.log(clickedBankList.value)
+}
+
+// 은행별 대표 상품이 다 로드되면 bankInfos를 변경해줌
+watch(
+  () => bankStore.bankDataFetched,
+  (newBoolean) => {
+    bankInfos.value = bankStore.banks
+    console.log(bankInfos.value)
+  }
+)
 
 // 지도 컨테이너
 const mapContainer = ref(null)
@@ -53,14 +156,14 @@ const mapLevel = ref(5)
 // 지도 검색 인자에 전달할 키워드
 const searchKeyWordDefault = ref('은행')
 const searchKeyWordInput = computed(() => mapStore.searchKeyWord)
-const selectedBank = ref('')
+const selectedBankName = ref('')
 
 // mapStore의 선택 은행이 변경됨을 감시하는 함수
 watch(
-  () => mapStore.selectedBank,
+  () => mapStore.selectedBankName,
   (newBank) => {
     initMap()
-    selectedBank.value = newBank
+    selectedBankName.value = newBank
   }
 )
 
@@ -69,6 +172,7 @@ watch(
   mapCenter,
   (newMapCenter) => {
     searchCurrentMap()
+    bankSearchList.value = []
     console.log('지도 중심 위도 / 경도 : ', mapCenter.value)
     console.log(bankSearchList.value)
   },
@@ -80,6 +184,7 @@ watch(
   mapLevel,
   (newMapLevel) => {
     searchCurrentMap()
+    bankSearchList.value = []
     console.log('mapLevel : ', mapLevel.value)
   },
   { deep: true }
@@ -108,7 +213,7 @@ const loadScript = function () {
 
     script.onload = function () {
       kakao.maps.load(() => {
-        if (userStore.userInfo.address) {
+        if (userStore.userInfo?.address) {
           console.log(userStore.userInfo.address)
           const geocoder = new kakao.maps.services.Geocoder()
 
@@ -183,6 +288,8 @@ onMounted(() => {
     console.log('onMount : 지도 Script가 load되어있지 않음 -> loadScript 함수 실행')
     loadScript()
   }
+
+  bankStore.fetchBankDatas()
 })
 
 // Unmount 훅에서 클린업 작업 수행
@@ -207,6 +314,8 @@ onUnmounted(() => {
     delete window.kakao
     console.log('onUnmounted : window.kakao 객체 제거 완료')
   }
+
+  bankStore.bankDataFetched = false
 })
 
 // 현재 위치 및 검색어를 받아서 지도를 불러올 함수
@@ -234,7 +343,7 @@ const searchKeyWordMap = () => {
       }
       initMap()
     } else {
-      alert('주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.')
+      alert('주소 검색에 실패했어요.\n올바른 주소를 입력해주세요.\n예시) 대전광역시 유성구 ')
     }
   })
 }
@@ -244,25 +353,40 @@ function placesSearchCB(data, status, pagination) {
   console.log(`placesSearchCB 함수 호출 : ${status}`)
   if (status === kakao.maps.services.Status.OK) {
     bankSearchList.value = []
+    clickedBankList.value = ''
     for (let i = 0; i < data.length; i++) {
       if (
         // 조건문으로 ATM, 365 제거
         data[i].place_name.includes('ATM') ||
         data[i].place_name.includes('365') ||
-        !data[i].place_name.includes(selectedBank.value)
+        !data[i].place_name.includes(selectedBankName.value)
       ) {
       } else {
+        // 거리를 계산해서 data[i]에 거리 데이터 추가
         const distance = getDistance(mapCenter.value.y, mapCenter.value.x, data[i].y, data[i].x)
         data[i]['distance'] = parseFloat(distance.toFixed(2)).toString()
+        checkValidBank(data[i])
+        data[i]['bankSearchListId'] = i
         // 지도 출력 확인
         bankSearchList.value.push(data[i])
         displayMarker(data[i])
+        console.log(data[i])
       }
     }
 
     bankSearchList.value = bankSearchList.value.sort((a, b) => {
       return a.distance - b.distance
     })
+  }
+}
+
+// 은행 data를 입력받아서 해당 은행의 id를 객체에 추가해주는 함수
+const checkValidBank = function (bankDataObject) {
+  for (let i = 0; i < 19; i++) {
+    if (bankDataObject['category_name'].includes(banks[i]?.keyword)) {
+      bankDataObject['id'] = banks[i]['id']
+      return
+    }
   }
 }
 
@@ -332,5 +456,13 @@ function deg2rad(deg) {
 <style scoped>
 hr {
   margin-top: 0;
+}
+
+.ellipsis {
+  display: inline-block;
+  max-width: 125px; /* 원하는 최대 너비로 설정 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

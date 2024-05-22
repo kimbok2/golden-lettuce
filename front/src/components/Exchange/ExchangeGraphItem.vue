@@ -1,13 +1,8 @@
 <template>
-  <!-- <h1 @click="viewChart">GRAPH</h1> -->
-  <div v-show="showCanvas">
-    <div class="col">
-      <div class="graph-item chart-container">
-        <div>
-          <h3>환율 그래프</h3>
-        </div>
-        <canvas ref="chartCanvas"></canvas>
-      </div>
+  <div v-show="showCanvas" class=" chart-container">
+    <div class="graph-item">
+        <h3>환율 그래프</h3>
+      <canvas ref="chartCanvas"></canvas>
     </div>
   </div>
 </template>
@@ -148,7 +143,22 @@ const viewChart = () => {
 
 <style scoped>
 .graph-item {
-  height: 400px;
   width: 800px;
+}
+
+canvas {
+  width: 800px !important;
+  height: 400px !important; 
+
+  margin-bottom: 50px;
+}
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  
 }
 </style>

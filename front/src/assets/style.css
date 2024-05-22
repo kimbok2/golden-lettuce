@@ -110,3 +110,28 @@ h5 {
 body {
   font-family: 'Noto Sans KR', sans-serif !important;
 }
+
+
+/* 검색 아이콘의 스핀 이벤트 */
+@keyframes spinAndMove {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(20px, 0) rotate(90deg);
+  }
+  50% {
+    transform: translate(20px, 20px) rotate(180deg);
+  }
+  75% {
+    transform: translate(0, 20px) rotate(270deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
+}
+
+.spin-move {
+  display: inline-block;
+  animation: spinAndMove 2s infinite;
+}

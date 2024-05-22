@@ -30,6 +30,23 @@ class BankSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bank
         fields = '__all__'
+        
+# 은행 시리얼라이저
+class BankMapSerializer(serializers.ModelSerializer):
+    
+    # class DepositListSerializer(serializers.ModelSerializer):
+    #     class Meta:
+    #         model = DepositProduct
+    #         fields = '__all__'
+            
+    # class SavingListSerializer(serializers.ModelSerializer):
+    #     class Meta:
+    #         model = SavingProduct
+    #         fields = '__all__'
+    
+    class Meta:
+        model = Bank
+        fields = '__all__'
 
 # 예금 옵션 시리얼라이저
 class DepositOptionSerializer(serializers.ModelSerializer):

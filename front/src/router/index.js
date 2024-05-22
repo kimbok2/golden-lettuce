@@ -146,7 +146,6 @@ const router = createRouter({
 // 로그인 없이 접근 가능한 name 정의
 const freeAccessNames = [
   "home",
-  "compare",
   "products",
   "community",
   "community-detail",
@@ -165,11 +164,11 @@ router.beforeEach((to, from) => {
   // 비로그인 유저에 대해 로그인 필수 페이지 진입시 login alert 창을 띄워주고,
   // 로그인 페이지로 redirect
   if (!freeAccessNames.includes(to.name) && !isLogin) {
-    alert("로그인이 필요합니다.");
+    alert("로그인이 필요한 서비스에요");
     router.push({ name: "login" });
   }
   if (loginBlockAccessNames.includes(to.name) && isLogin) {
-    alert("이미 로그인된 사용자입니다.");
+    alert("이미 로그인된 사용자에요");
     next(false);
   }
 });
