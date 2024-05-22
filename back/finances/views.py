@@ -215,6 +215,7 @@ def get_bank_map(request):
         saving_products = bank.savingproduct_set.all()
         top_saving_product = saving_products.annotate(join_user_count=Count('join_user')).order_by('-join_user_count').first()
 
+
         response_json.append({
             'bank_id': id,
             'top_deposit_product': 

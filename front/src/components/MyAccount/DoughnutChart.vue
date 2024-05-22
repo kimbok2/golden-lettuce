@@ -5,8 +5,8 @@
   <div v-if="userInfo?.credit_score" class="text-center mb-3">
     <Doughnut :data="chartData" :options="chartOptions" />
   </div>
-  <div v-else class="d-flex justify-content-center align-items-center">
-    <a>더 많은 상품을 추천받으시려면 내 정보를 입력해주세요</a>
+  <div v-else class="d-flex justify-content-center align-items-center" style="min-height: 120px;">
+    <div>더 많은 상품을 추천받으시려면 내 정보를 입력해주세요</div>
   </div>
 </template>
 

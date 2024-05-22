@@ -11,6 +11,15 @@
   transition: 0.5s ease;
 }
 
+
+.sub-col {
+  transition: 0.5s ease;
+}
+
+.sub-col:hover {
+  transform: scale(1.2);
+}
+
 /* 네비게이션바 버튼의 hover 이벤트 */
 
 .nav-item {
