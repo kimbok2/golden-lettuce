@@ -4,7 +4,7 @@
       <p class="text-end">
         <button class="btn" @click="closeChart"><span class="material-symbols-outlined text-danger"> cancel </span></button>
       </p>
-      <h3>환율 그래프</h3>
+      <h3>{{ selectedCurrencyName }}</h3>
       <canvas ref="chartCanvas"></canvas>
     </div>
   </div>
@@ -40,7 +40,7 @@ const chartData = ref({
   labels: [],
   datasets: [
     {
-      label: selectedCurrencyName.value,
+      // label: selectedCurrencyName.value,
       backgroundColor: '#f87979',
       borderColor: '#f87979',
       data: [],
@@ -54,6 +54,11 @@ const chartData = ref({
 const chartOptions = ref({
   responsive: true,
   maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false, // legend 값 숨기기
+    },
+  },
   scales: {
     x: {
       reverse: true,
@@ -137,7 +142,7 @@ const viewChart = () => {
 
       chartData.value.labels = chartDatas['data_list_date']
       chartData.value.datasets[0].data = chartDatas['data_list_rate']
-      chartData.value.datasets[0].label = selectedCurrencyName.value
+      // chartData.value.datasets[0].label = selectedCurrencyName.value
 
       updateChart()
       console.log(chartData.value)

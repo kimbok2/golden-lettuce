@@ -1,27 +1,11 @@
 <template>
-  <div class="text-start card p-3 rounded-0">
+  <div class="p-5 text-start">
+    <p class="text-end">
+      <button class="btn btn-primary" @click="goBack">뒤로가기</button>
+    </p>
     <form @submit.prevent="createArticle">
       <!-- 카테고리 선택 -->
-
-      <!-- 제목 바 -->
-      <!-- <div>
-        <h1>{{ article.title }}</h1>
-        <img
-          src="@/assets/userdefault.png"
-          alt="Logo"
-          width="50"
-          height="50"
-          class="d-inline-block align-text-top border rounded-circle"
-        />
-        <span class="fw-bolder">{{ article.user.nickname }}</span> -->
-        <!-- 게시글 작성일, 게시글 수정일 표시 -->
-        <!-- <div class="text-end">
-          <span>작성 : {{ formattedDate(article.created_at) + ' ' + formattedTime(article.created_at) }}</span>
-          <span> | </span>
-          <span>수정 : {{ formattedDate(article.updated_at) + ' ' + formattedTime(article.updated_at) }}</span>
-        </div>
-      </div> -->
-      
+    
       <label for="category">카테고리 : </label>
       <select v-model="category" id="category">
         <option value="free">자유게시판</option>
@@ -30,9 +14,9 @@
       </select>
       <br />
 
-      <!-- 제목 -->
-      <label for="title">제목 : </label>
-      <input type="text" v-model.trim="title" id="title" />
+      <h1>
+          <textarea type="text" style="width: 100%; height: 50px; text-align: middle !important;" v-model.trim="title" id="title" placeholder="제목을 입력하세요" />
+        </h1>
       <br />
 
       <!-- 내용 -->
@@ -50,6 +34,11 @@ import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
+
+
+const goBack = function () {
+  router.back()
+}
 
 // 제목과 내용 : input 태그에 v-model로 양방향 바인딩
 const title = ref(null)
@@ -88,4 +77,14 @@ const createArticle = function () {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+
+textarea {
+
+border: none;
+border-radius: 10px;
+box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+
+</style>

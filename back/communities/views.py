@@ -13,7 +13,7 @@ from .serializers import ArticleListSerializer, ArticleSerializer, CommentSerial
 def article_list(request):
     # GET 요청을 받으면 게시글 목록 반환
     if request.method == 'GET':
-        articles = Article.objects.annotate(comment_count=Count('comments'))
+        articles = Article.objects.annotate(comment_count=Count('comments')).order_by('-created_at')
         serializer = ArticleListSerializer(articles, many=True)
         return Response(serializer.data)
     # POST 요청을 받으면 게시글 작성

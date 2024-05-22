@@ -29,7 +29,7 @@
               <RouterLink :to="{ name: 'maps' }" class="text-decoration-none text-black">
                 <div class="sub-col">
                   <h5>은행 지도</h5>
-                  <img src="@/assets/mainpage_map_img.png" alt="#" style="width: 150px; border-radius: 25px" />
+                  <img src="@/assets/mainpage_map_img.png" alt="#" style="width: 95%; border-radius: 25px" />
                 </div>
               </RouterLink>
             </div>
@@ -37,15 +37,20 @@
               <div class="sub-col">
                 <RouterLink :to="{ name: 'user' }" class="text-decoration-none text-black">
                   <h5>나의 정보</h5>
-                  <template v-if="store.userInfo">
+                  <template v-if="store.userInfo.credit_score">
                     <DoughnutChart :score="userInfo.credit_score" />
                   </template>
-                  <div class="d-flex align-items-center justify-content-center" style="height: 150px;">
-                    <div style="margin-bottom: 50px;">
-                      로그인이<br />
-                      필요한 서비스에요
+                  <template v-else-if="store.userInfo">
+                    <DoughnutChart :score="userInfo.credit_score" />
+                  </template>
+                  <template v-else>
+                    <div class="d-flex align-items-center justify-content-center" style="height: 150px">
+                      <div style="margin-bottom: 50px">
+                        로그인이<br />
+                        필요한 서비스에요
+                      </div>
                     </div>
-                  </div>
+                  </template>
                 </RouterLink>
               </div>
             </div>

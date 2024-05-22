@@ -1,33 +1,52 @@
 <template>
-  <div>
-    <h1>CommunityUpdateView</h1>
-    <button class="btn btn-primary" @click="goBack">뒤로가기</button>
+  <div class="p-5 text-start">
+    <p class="text-end">
+      <button class="btn btn-primary" @click="goBack">뒤로가기</button>
+    </p>
     <form @submit.prevent="updateArticle">
+      <div>
+        <h1>
+          <textarea type="text" style="width: 100%; height: 50px; text-align: middle !important;" v-model.trim="title" id="title" placeholder="제목을 입력하세요" />
+        </h1>
+        <div class="mt-3 d-flex justify-content-between">
+          <div>
+            <img
+              :src="article.user?.profile_img ? apiUrl + article.user.profile_img : '@/assets/userdefault.png'"
+              alt="Logo"
+              width="50"
+              height="50"
+              class="d-inline-block align-text-top border rounded-circle"
+            />
+            <span class="ms-3 fw-bolder">{{ article.user.nickname }}</span>
+          </div>
+          <!-- 게시글 작성일, 게시글 수정일 표시 -->
+          <!-- <div class="text-end">
+            <p>최초 작성일 : {{ formattedDate(article.created_at) + ' ' + formattedTime(article.created_at) }}</p>
+            <p v-if="article.created_at !== article.updated_at">
+              <span>수정됨 : {{ formattedDate(article.updated_at) + ' ' + formattedTime(article.updated_at) }}</span>
+            </p>
+            <p v-else></p>
+          </div> -->
+        </div>
+      </div>
+      <hr />
       <!-- 카테고리 선택 -->
-
-      <label for="category">카테고리 : </label>
-      <select v-model="category" id="category">
+      <!-- <select v-model="category" id="category">
         <option value="free">자유게시판</option>
         <option value="faq">FAQ</option>
         <option value="notice">공지사항</option>
-      </select>
+      </select> -->
       <br />
 
-      <!-- 제목 -->
-      <label for="title">제목 : </label>
-      <input type="text" v-model.trim="title" id="title" />
       <br />
-
       <!-- 내용 -->
-      <label for="content">내용 : </label>
-      <input type="text" v-model.trim="content" id="content" />
+      <textarea type="text" style="width: 100%; min-height: 100px;"  v-model.trim="content" id="content" placeholder="댓글을 입력하세요" />
       <br />
+      <p class="text-end">
+        <button class="btn btn-primary" @click="updateArticle">게시글 수정</button>
+        <button class="btn btn-primary ms-2" @click="deleteArticle">게시글 삭제</button>
+      </p>
     </form>
-    <p>
-      <button class="btn btn-primary" @click="updateArticle">게시글 수정</button>
-      <span> / </span>
-      <button class="btn btn-primary" @click="deleteArticle">게시글 삭제</button>
-    </p>
   </div>
 </template>
 
@@ -36,6 +55,8 @@ import { onMounted, computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCommunityStore } from '@/stores/community'
 import axios from 'axios'
+
+const apiUrl = 'http://127.0.0.1:8000'
 
 const title = ref(null)
 const content = ref(null)
@@ -97,4 +118,13 @@ onMounted(() => {
     (content.value = store.article.content)
 })
 </script>
-<style scoped></style>
+<style scoped>
+
+textarea {
+
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+</style>
