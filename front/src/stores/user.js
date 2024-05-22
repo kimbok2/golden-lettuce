@@ -75,7 +75,7 @@ export const useUserStore = defineStore(
           router.push({ name: "home" });
         })
         .then((response) => {
-          getUserInfo()
+          getUserInfo();
         })
         .catch((error) => {
           alert("아이디 혹은 비밀번호를 잘못 입력하셨습니다.");
@@ -84,10 +84,9 @@ export const useUserStore = defineStore(
     };
 
     const logOut = function () {
-
       console.log(token.value);
 
-      if (confirm('로그아웃 하시겠습니까?')) {
+      if (confirm("로그아웃 하시겠습니까?")) {
         axios({
           method: "post",
           url: `${API_URL}/accounts/logout/`,
@@ -98,11 +97,11 @@ export const useUserStore = defineStore(
           .then((response) => {
             name.value = null;
             token.value = null; // 토큰 값 삭제
+            userInfo.value = null;
             router.push({ name: "login" }); // 로그인 페이지로 리다이렉션
           })
           .catch((err) => console.log(err));
       }
-      
     };
 
     const getUserInfo = function () {
