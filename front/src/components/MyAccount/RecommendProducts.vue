@@ -9,11 +9,13 @@
           >search</span
         >
         <br />
+        <br />
         추천에는 약 30초가 소요돼요...
       </p>
     </div>
-    <div v-else-if="!Isrecommended">
-      <button @click="handleRecommendClick" class="btn btn-primary">
+    <div v-else-if="!Isrecommended" class="vertical-align">
+      <p>{{ user?.nickname }} 회원님께 맞는 상품을 추천해드려요.</p>
+      <button @click="handleRecommendClick" class="btn btn-warning">
         상품 추천 받기
       </button>
     </div>
@@ -216,7 +218,7 @@ const handleRecommendClick = () => {
     Recommend();
     Isloading.value = true;
   } else {
-    alert("추천에 필요한 정보를 모두 입력해주세요.(예산, 월 수입)");
+    alert("추천에 필요한 정보를 모두 입력해주세요.(보유 자산, 월 수입)");
   }
 };
 
@@ -365,6 +367,13 @@ const handleCarouselClick = (event) => {
   color: black;
 }
 .card-body {
+  height: 310px;
+}
+.vertical-align {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   height: 310px;
 }
 </style>

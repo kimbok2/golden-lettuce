@@ -20,4 +20,7 @@ urlpatterns = [
     path('recommend_deposit1/', views.recommend_deposit),
     path('recommend_saving1/', views.recommend_saving),
     path('update_deposit_option/<int:option_id>/', views.update_deposit_option),
+    path('update_saving_option/<int:option_id>/', views.update_saving_option),
+    path('send_deposit_email/<int:product_id>/', views.send_deposit_email),
+    path('send_saving_email/<int:product_id>/', views.send_saving_email),
 ]

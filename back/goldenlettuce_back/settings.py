@@ -211,3 +211,11 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'goldenlettuce@naver.com'
+EMAIL_HOST_PASSWORD = 'rmatkdcn12!'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

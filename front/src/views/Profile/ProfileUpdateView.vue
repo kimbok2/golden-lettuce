@@ -243,7 +243,7 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-block mt-3">
+      <button type="submit" class="btn btn-warning btn-block mt-3">
         프로필 정보 저장
       </button>
     </form>
