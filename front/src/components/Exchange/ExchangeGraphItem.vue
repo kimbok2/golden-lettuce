@@ -1,6 +1,6 @@
 <template>
   <!-- <h1 @click="viewChart">GRAPH</h1> -->
-  <div>
+  <div v-show="showCanvas">
     <div class="col">
       <div class="graph-item chart-container">
         <div>
@@ -30,6 +30,8 @@ import {
 const exchangeStore = useExchangeStore()
 
 const selectedCurrencyName = ref(null)
+
+const showCanvas = ref(false)
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale)
 // 차트 캔버스 선언
@@ -90,6 +92,7 @@ const destroyChart = () => {
 }
 
 const createChart = () => {
+  showCanvas.value = true
   if (chartCanvas.value) {
     const ctx = chartCanvas.value.getContext('2d')
     destroyChart()
@@ -107,6 +110,7 @@ const updateChart = () => {
 
 onBeforeUnmount(() => {
   destroyChart()
+  showCanvas.value = false
   exchangeStore.updateChartTrigger = 0
 })
 

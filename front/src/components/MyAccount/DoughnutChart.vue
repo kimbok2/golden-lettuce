@@ -128,7 +128,7 @@ const animateText = (start, end, duration) => {
   const startTime = performance.now()
   const step = (currentTime) => {
     const progress = Math.min((currentTime - startTime) / duration, 1)
-    chartOptions.value.plugins.centerText.text = `${Math.floor(progress * (end - start) + start)}점`
+    chartOptions.value.plugins.centerText.text = `${Math.floor(progress * (end - start) + start)} 점`
     if (progress < 1) {
       animationFrameId = requestAnimationFrame(step)
     }
@@ -139,7 +139,7 @@ const animateText = (start, end, duration) => {
 // 컴포넌트가 마운트될 때 애니메이션을 초기화합니다.
 onMounted(() => {
   animateChart(0, props.score, 1000) // 0에서 props.score까지 1초 동안 애니메이션합니다.
-  animateText(0, props.score, 1000) // 텍스트를 0에서 props.score까지 1초 동안 애니메이션합니다.
+  // animateText(0, props.score, 1000) // 텍스트를 0에서 props.score까지 1초 동안 애니메이션합니다.
 })
 
 // 컴포넌트가 언마운트될 때 애니메이션 프레임을 취소합니다.
