@@ -36,6 +36,7 @@ else:
 # 환경 변수 읽기
 try:
     API_KEY_EXCHANGE = env('API_KEY_EXCHANGE')
+    API_KEY_OPENAI = env('API_KEY_OPENAI')
 except Exception as exc:
     error_msg = 'Set the API_KEY_EXCHANGE environment variable'
     raise ImproperlyConfigured(error_msg) from exc
@@ -57,6 +58,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'accounts',
+    'chatbot',
     'communities',
     'exchanges',
     'finances',

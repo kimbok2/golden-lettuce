@@ -37,11 +37,11 @@
               <div class="sub-col">
                 <RouterLink :to="{ name: 'user' }" class="text-decoration-none text-black">
                   <h5>나의 정보</h5>
-                  <template v-if="store.userInfo.credit_score">
-                    <DoughnutChart :score="userInfo.credit_score" />
+                  <template v-if="store?.userInfo?.credit_score">
+                    <DoughnutChart :score="store?.userInfo?.credit_score" />
                   </template>
-                  <template v-else-if="store.userInfo">
-                    <DoughnutChart :score="userInfo.credit_score" />
+                  <template v-else-if="store?.userInfo">
+                    <DoughnutChart :score="store?.userInfo?.credit_score" />
                   </template>
                   <template v-else>
                     <div class="d-flex align-items-center justify-content-center" style="height: 150px">

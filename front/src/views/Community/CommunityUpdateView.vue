@@ -1,5 +1,5 @@
 <template>
-  <div class="p-5 text-start">
+  <div class="m-3 p-3 text-start">
     <p class="text-end">
       <button class="btn btn-primary" @click="goBack">뒤로가기</button>
     </p>
@@ -19,29 +19,15 @@
             />
             <span class="ms-3 fw-bolder">{{ article.user.nickname }}</span>
           </div>
-          <!-- 게시글 작성일, 게시글 수정일 표시 -->
-          <!-- <div class="text-end">
-            <p>최초 작성일 : {{ formattedDate(article.created_at) + ' ' + formattedTime(article.created_at) }}</p>
-            <p v-if="article.created_at !== article.updated_at">
-              <span>수정됨 : {{ formattedDate(article.updated_at) + ' ' + formattedTime(article.updated_at) }}</span>
-            </p>
-            <p v-else></p>
-          </div> -->
         </div>
       </div>
       <hr />
-      <!-- 카테고리 선택 -->
-      <!-- <select v-model="category" id="category">
-        <option value="free">자유게시판</option>
-        <option value="faq">FAQ</option>
-        <option value="notice">공지사항</option>
-      </select> -->
       <br />
-
       <br />
       <!-- 내용 -->
-      <textarea type="text" style="width: 100%; min-height: 100px;"  v-model.trim="content" id="content" placeholder="댓글을 입력하세요" />
+      <textarea type="text" style="width: 100%; min-height: 100px;"  v-model.trim="content" id="content" placeholder="내용을 입력하세요." />
       <br />
+      <br>
       <p class="text-end">
         <button class="btn btn-primary" @click="updateArticle">게시글 수정</button>
         <button class="btn btn-primary ms-2" @click="deleteArticle">게시글 삭제</button>

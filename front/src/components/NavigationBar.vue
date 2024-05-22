@@ -1,14 +1,22 @@
 <template>
   <nav class="fixed-top row" style="background-color: #ffcd39">
     <RouterLink to="/" class="col-1 d-flex align-items-center justify-content-center">
-      <img src="@/assets/LOGO_GL.png" alt="Logo" style="height: 100px" class="logo-gl"/>
+      <img src="@/assets/LOGO_GL.png" alt="Logo" style="height: 100px" class="logo-gl" />
     </RouterLink>
     <div class="col-10">
       <div class="d-flex justify-content-between align-items-center pe-2" id="navbarNav" style="height: 50px">
         <div></div>
         <div>
           <div class="input-group mt-4">
-            <input class="form-control text-center" type="text" style="width: 500px" placeholder="금상추와 대화하기" />
+            <input
+              class="form-control text-center"
+              type="text"
+              style="width: 500px"
+              placeholder="금상추와 대화하기"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasWithBothOptions"
+              aria-controls="offcanvasWithBothOptions"
+            />
             <span class="material-symbols-outlined ms-3" style="font-size: 50px"> chat </span>
           </div>
         </div>
@@ -52,11 +60,14 @@
       </div>
     </div>
   </nav>
+
+  <Chat />
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
+import Chat from '@/components/Chat.vue'
 
 const userStore = useUserStore()
 
@@ -111,11 +122,9 @@ onMounted(() => {
   border-radius: 20px !important;
 }
 
-
 .material-symbols-outlined {
   color: #333;
 }
-
 
 .material-symbols-outlined:hover {
   color: #ffffff;
