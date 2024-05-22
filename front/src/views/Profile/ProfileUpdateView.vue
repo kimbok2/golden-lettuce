@@ -60,6 +60,24 @@
           />
         </div>
       </div>
+      <div class="form-group row align-items-center mb-3">
+        <label
+          for="email"
+          class="col-sm-4 col-form-label text-right font-weight-bold"
+          >이메일</label
+        >
+        <div class="col-sm-1 d-flex justify-content-center">
+          <div class="border-right" style="height: 2rem"></div>
+        </div>
+        <div class="col-sm-7">
+          <input
+            type="email"
+            v-model.trim="email"
+            id="email"
+            class="form-control"
+          />
+        </div>
+      </div>
 
       <div class="form-group row align-items-center mb-3">
         <label
@@ -246,6 +264,7 @@ const savingAble = ref(null);
 const depositPeriod = ref(null);
 const savingPeriod = ref(null);
 const address = ref(null);
+const email = ref(null);
 const creditScore = ref(null);
 const apiUrl = "http://127.0.0.1:8000";
 const profileImage = ref(null); // 파일 객체를 저장할 ref
@@ -264,13 +283,14 @@ onMounted(() => {
   })
     .then((response) => {
       dateOfBirth.value = response.data.date_of_birth;
+      address.value = response.data.address;
+      email.value = response.data.email;
       budget.value = response.data.budget;
       salary.value = response.data.salary;
       depositAble.value = response.data.deposit_able;
       savingAble.value = response.data.saving_able;
       depositPeriod.value = response.data.deposit_period;
       savingPeriod.value = response.data.saving_period;
-      address.value = response.data.address;
       creditScore.value = response.data.credit_score;
       profileImageUrl.value = response.data.profile_img;
     })
@@ -292,7 +312,30 @@ const onFileChange = (event) => {
 
 const updateProfile = async () => {
   const formData = new FormData();
+  // 음이 아닌 정수인지 확인하는 유틸리티 함수
+  const isNonNegativeInteger = (value) => {
+    return Number.isInteger(value) && value >= 0;
+  };
+
+  // 필수 유효성 검사
+  if (budget.value && !isNonNegativeInteger(Number(budget.value))) {
+    alert("보유자산은 음이 아닌 정수여야 합니다.");
+    return;
+  }
+  if (salary.value && !isNonNegativeInteger(Number(salary.value))) {
+    alert("월급은 음이 아닌 정수여야 합니다.");
+    return;
+  }
+  if (depositAble.value && !isNonNegativeInteger(Number(depositAble.value))) {
+    alert("예금 가능액은 음이 아닌 정수여야 합니다.");
+    return;
+  }
+  if (savingAble.value && !isNonNegativeInteger(Number(savingAble.value))) {
+    alert("적금 가능액은 음이 아닌 정수여야 합니다.");
+    return;
+  }
   if (dateOfBirth.value) formData.append("date_of_birth", dateOfBirth.value);
+  if (email.value) formData.append("email", email.value);
   if (address.value) formData.append("address", address.value);
   if (budget.value) formData.append("budget", budget.value);
   if (salary.value) formData.append("salary", salary.value);
@@ -319,6 +362,14 @@ const updateProfile = async () => {
     router.push({ name: "profile" });
   } catch (err) {
     console.log(err);
+    let messages = "";
+    for (const field in err.response.data) {
+      if (err.response.data.hasOwnProperty(field)) {
+        // 각 필드의 오류 메시지를 messages 문자열에 추가
+        messages += `${field} : ${err.response.data[field]}\n`;
+      }
+    }
+    alert(messages);
   }
 };
 </script>

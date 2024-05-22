@@ -47,8 +47,9 @@ class ProfileSerializer(serializers.ModelSerializer):
                   'deposit_period', 'saving_period','credit_score',
                   'join_deposit', 'join_saving', 'compare_deposit',
                   'compare_saving', 'profile_img','nickname',
-                  'deposit_recommend', 'saving_recommend',)
-        read_only_fields = ('id', 'username','nickname',)
+                  'deposit_recommend', 'saving_recommend','email',
+                  'is_superuser')
+        read_only_fields = ('id', 'username','nickname', 'is_superuser',)
     
 # 전체 프로필 정보를 수정, 조회, 삭제할 serializer
 class UserInfoSerializer(serializers.ModelSerializer):

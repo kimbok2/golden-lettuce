@@ -8,40 +8,8 @@
             >가입자 수 : {{ product.join_user_count }}명</span
           >
           <div>
-            <button
-              v-if="user?.is_superuser"
-              class="btn btn-primary mx-2"
-              @click="goUpdate"
-            >
-              정보 수정하기
-            </button>
-            <button
-              v-if="!isUserJoined"
-              @click="joinProduct('post')"
-              class="btn btn-primary mx-2"
-            >
-              가입하기
-            </button>
-            <button
-              v-else
-              @click="joinProduct('delete')"
-              class="btn btn-danger mx-2"
-            >
-              해지하기
-            </button>
-            <button
-              v-if="!isUserCompared"
-              @click="compareProduct('post')"
-              class="btn btn-outline-primary mx-2"
-            >
-              비교 등록
-            </button>
-            <button
-              v-else
-              @click="compareProduct('delete')"
-              class="btn btn-outline-danger mx-2"
-            >
-              비교 해제
+            <button class="btn btn-primary mx-2" @click="doneUpdate">
+              수정 완료
             </button>
           </div>
         </div>
@@ -182,63 +150,6 @@ const formatNumber = (value) => {
   return new Intl.NumberFormat().format(value);
 };
 
-const joinProduct = (apiMethod) => {
-  const joinOrNot = ref(null);
-  if (apiMethod === "post") {
-    joinOrNot.value = window.confirm("가입하시겠습니까?");
-  } else {
-    joinOrNot.value = window.confirm("정말 해지하시겠습니까?");
-  }
-  if (joinOrNot.value === true) {
-    axios({
-      method: apiMethod,
-      url: `${store.API_URL}/finances/join_${productType.value}/${productId.value}/`,
-      headers: {
-        Authorization: `Token ${store.token}`,
-      },
-    })
-      .then((res) => {
-        if (apiMethod === "post") {
-          alert("성공적으로 가입되었어요.");
-        } else {
-          alert("해지가 완료되었어요.");
-        }
-        console.log("가입/해지");
-        fetchProduct(); // 업데이트 후 데이터를 다시 가져옴
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-};
-
-const compareProduct = (apiMethod) => {
-  axios({
-    method: apiMethod,
-    url: `${store.API_URL}/finances/compare_${productType.value}/${productId.value}/`,
-    headers: {
-      Authorization: `Token ${store.token}`,
-    },
-  })
-    .then((res) => {
-      console.log("비교/해제");
-      fetchProduct(); // 업데이트 후 데이터를 다시 가져옴
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
-const isUserJoined = computed(() => {
-  return product.value && product.value.join_user.includes(store.userInfo.id);
-});
-
-const isUserCompared = computed(() => {
-  return (
-    product.value && product.value.compare_user.includes(store.userInfo.id)
-  );
-});
-
 const productOptions = computed(() => {
   if (route.params.type === "deposit") {
     return product.value ? product.value.depositoption_set : [];
@@ -258,9 +169,9 @@ const formattedEndDate = (date) => {
   return formattedDate(date, "공시 종료일 정보 없음");
 };
 
-const goUpdate = function () {
+const doneUpdate = function () {
   router.push({
-    name: "products-update",
+    name: "products-detail",
     params: { type: productType.value, id: productId.value },
   });
 };

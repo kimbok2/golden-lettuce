@@ -115,3 +115,9 @@ class SavingDetailSerializer(serializers.ModelSerializer):
         model = SavingProduct
         fields = '__all__'
         read_only_fields = ('bank', )
+
+# 예금 옵션 수정 시리얼라이저
+class DepositOptionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DepositOption
+        fields = '__all__'
