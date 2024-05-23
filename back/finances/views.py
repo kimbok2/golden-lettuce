@@ -11,16 +11,16 @@ from .serializers import *
 from accounts.serializers import ProfileSerializer
 import requests
 from django.core.mail import EmailMessage
-
+from django.conf import settings
 
 # Create your views here.
 BASE_URL = 'http://finlife.fss.or.kr/finlifeapi/'
 
-API_KEY='b5c8f98021e7c5f65ecd69ba1a050e5e'
+API_KEY_FINANCE=settings.API_KEY_FINANCE
 
 @api_view(['GET'])
 def save_bank(request):
-    url = BASE_URL + f'companySearch.json?auth={API_KEY}&topFinGrpNo=020000&pageNo=1'
+    url = BASE_URL + f'companySearch.json?auth={API_KEY_FINANCE}&topFinGrpNo=020000&pageNo=1'
     response = requests.get(url).json()
     baseList = response.get('result').get('baseList')
     for bank in baseList:
@@ -44,7 +44,7 @@ def save_bank(request):
 
 @api_view(['GET'])
 def save_deposit(request):
-    url = BASE_URL + f'depositProductsSearch.json?auth={API_KEY}&topFinGrpNo=020000&pageNo=1'
+    url = BASE_URL + f'depositProductsSearch.json?auth={API_KEY_FINANCE}&topFinGrpNo=020000&pageNo=1'
     response = requests.get(url).json()
     baseList = response.get('result').get('baseList')
     optionList = response.get('result').get('optionList')
@@ -101,7 +101,7 @@ def save_deposit(request):
     
 @api_view(['GET'])
 def save_saving(request):
-    url = BASE_URL + f'savingProductsSearch.json?auth={API_KEY}&topFinGrpNo=020000&pageNo=1'
+    url = BASE_URL + f'savingProductsSearch.json?auth={API_KEY_FINANCE}&topFinGrpNo=020000&pageNo=1'
     response = requests.get(url).json()
     baseList = response.get('result').get('baseList')
     optionList = response.get('result').get('optionList')
@@ -432,13 +432,21 @@ def recommend_saving(request):
 def send_deposit_email(request, product_id):
     product = DepositProduct.objects.get(pk=product_id)
     users = product.join_user.all()
-
+    bank = Bank.objects.get(fin_co_no = product.fin_co_no)
     for user in users:
         if user.id > 10000 and user.email:
             subject = f'{product.fin_prdt_nm} 상품 금리 변경 관련 안내'
             to = [user.email]
             from_email = 'goldenlettuce@naver.com'
-            message = f'{user.username} 고객님께서 가입하신 {product.fin_prdt_nm} 상품에 대한 금리 변동 내역이 있습니다.\n 자세한 사항은 금상추 홈페이지를 참고해주세요. \n -금상추 드림.'
+            intro = f'{user.username} 고객님께, \n\n'
+            greeting = f'{user.username} 고객님 안녕하세요? 금상추 서비스에요.\n'
+            body1 = f'고객님께서 가입하신 {product.fin_prdt_nm} 상품에 대한 금리 변동 내역이 확인되어 안내드려요.\n'
+            body2 = '자세한 내용은 금상추 홈페이지와 담당 은행 홈페이지를 참고해주세요.\n'
+            body3 = f'담당 은행 홈페이지 : {bank.homp_url}\n'
+            closing = '항상 금상추를 사랑해주시는 고객님께 진심으로 감사드려요.\n\n'
+            finish = '금상추 드림.\n'
+            
+            message = intro + greeting + body1 + body2 + body3 + closing + finish
             EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
             
     return Response(status=status.HTTP_200_OK)
@@ -447,13 +455,22 @@ def send_deposit_email(request, product_id):
 def send_saving_email(request, product_id):
     product = SavingProduct.objects.get(pk=product_id)
     users = product.join_user.all()
-
+    bank = Bank.objects.get(fin_co_no=product.fin_co_no)
     for user in users:
         if user.id > 10000 and user.email:
             subject = f'{product.fin_prdt_nm} 상품 금리 변경 관련 안내'
             to = [user.email]
             from_email = 'goldenlettuce@naver.com'
-            message = f'{user.username} 고객님께서 가입하신 {product.fin_prdt_nm} 상품에 대한 금리 변동 내역이 있습니다.\n 자세한 사항은 금상추 홈페이지를 참고해주세요. \n -금상추 드림.'
+            intro = f'{user.username} 고객님께, \n\n'
+            greeting = f'{user.username} 고객님 안녕하세요? 금상추 서비스에요.\n'
+            body1 = f'고객님께서 가입하신 {product.fin_prdt_nm} 상품에 대한 금리 변동 내역이 확인되어 안내드려요.\n'
+            body2 = '자세한 내용은 금상추 홈페이지와 담당 은행 홈페이지를 참고해주세요.\n'
+            body3 = f'담당 은행 홈페이지 : {bank.homp_url}\n'
+            closing = '항상 금상추를 사랑해주시는 고객님께 진심으로 감사드려요.\n\n'
+            finish = '금상추 드림.\n'
+            
+            message = intro + greeting + body1 + body2 + body3 + closing + finish
+            
             EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
             
     return Response(status=status.HTTP_200_OK)
