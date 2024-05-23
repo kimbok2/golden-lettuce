@@ -1,3 +1,4 @@
+import os
 import requests
 import logging
 import time
@@ -11,7 +12,17 @@ from communities.models import Article, Comment
 from exchanges.models import Current, ExchangeRate
 from finances.models import Bank, DepositProduct, SavingProduct, DepositOption, SavingOption
 
+# ERD.md 파일 경로 설정
+ERD_FILE_PATH = os.path.join(settings.BASE_DIR, 'docs', 'ERD.md')
+
 API_KEY_OPENAI = settings.API_KEY_OPENAI
+
+
+# ERD.md 파일 읽기
+def read_erd_file():
+    with open(ERD_FILE_PATH, 'r', encoding='utf-8') as file:
+        return file.read()
+
 # Create your views here.
 
 User = get_user_model()
@@ -35,7 +46,7 @@ def get_exchange_rate_data():
     currents = Current.objects.all().values('cur_unit', 'cur_nm')
     current_data = list(currents)
     
-    exchange_rates = ExchangeRate.objects.all().values('current_id', 'date', 'ttb', 'tts', 'deal_bas_r', 'bkpr')
+    exchange_rates = ExchangeRate.objects.all().values('current_id', 'date', 'ttb', 'tts', 'deal_bas_r')
     exchange_rate_data = list(exchange_rates)
     
     return {'currents': current_data, 'exchange_rates': exchange_rate_data}
@@ -44,10 +55,10 @@ def get_bank_data():
     banks = Bank.objects.all().values('kor_co_nm', 'cal_tel')
     bank_data = list(banks)
     
-    deposit_products = DepositProduct.objects.all().values('fin_prdt_nm', 'join_deny', 'max_limit')
+    deposit_products = DepositProduct.objects.all().values('fin_prdt_nm', 'kor_co_nm')
     deposit_product_data = list(deposit_products)
     
-    saving_products = SavingProduct.objects.all().values('fin_prdt_nm', 'join_deny', 'max_limit')
+    saving_products = SavingProduct.objects.all().values('fin_prdt_nm', 'kor_co_nm')
     saving_product_data = list(saving_products)
     
     deposit_options = DepositOption.objects.all().values('intr_rate', 'intr_rate2', 'save_trm')
@@ -76,7 +87,7 @@ def get_combined_data(message):
     elif any(keyword in message.lower() for keyword in ['bank', '은행']):
         return get_bank_data()
     else:
-        return {'message': 'No specific data requested.'}
+        return {'message': '다른 질문을 해주세요.'}
 
 @csrf_exempt
 def chat(request):
@@ -95,6 +106,8 @@ def chat(request):
         try:
             response = send_request_to_openai(combined_message)
             
+            print('#######', response, '#######')
+            
             return JsonResponse({'response': response['choices'][0]['message']['content']})
         
         except requests.exceptions.RequestException as e:
@@ -106,30 +119,39 @@ def chat(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-def send_request_to_openai(combined_message, retries=3, delay=5):
+def send_request_to_openai(combined_message, retries=3, delay=1):
     """
     OpenAI API에 요청을 보내는 함수입니다. 429 오류 발생 시 재시도 로직을 포함합니다.
     """
-    for i in range(retries):
-        try:
-            response = requests.post(
-                'https://api.openai.com/v1/chat/completions',
-                headers={
-                    'Authorization': f'Bearer {API_KEY_OPENAI}',
-                    'Content-Type': 'application/json',
-                },
-                json={
-                    'model': 'gpt-4',
-                    'messages': [{'role': 'user', 'content': combined_message}],
-                    'max_tokens': 150,
-                }
-            )
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.HTTPError as e:
-            if response.status_code == 429:
-                logger.warning(f"429 Too Many Requests. Retrying in {delay} seconds...")
-                time.sleep(delay)
-            else:
-                raise e
-    raise requests.exceptions.RequestException(f"Failed to connect to OpenAI API after {retries} attempts.")
+    
+    # ERD 파일 읽기
+    erd_content = read_erd_file()
+    
+    try:
+        response = requests.post(
+            'https://api.openai.com/v1/chat/completions',
+            headers={
+                'Authorization': f'Bearer {API_KEY_OPENAI}',
+                'Content-Type': 'application/json',
+            },
+            json={
+                'model': 'gpt-4o',
+                    # {'role': 'system', 'content': f'유저 질문에 대한 정보는 장고 모델의 내용을 참고해서 데이터를 DB에서 직접 찾아서 답변해줘. / {erd_content}'},
+                'messages': [
+                    {'role': "system", "content": "우리 프로젝트 이름은 금상추야. 너의 이름도 금상추라고 알고 있어줘."},
+                    {'role': "system", "content": "너는 금상추 프로젝트 서비스에 도움이 되는 유능한 조수야."},
+                    {'role': 'system', 'content': f'유저 질문에 대한 정보는 장고 모델의 내용을 참고해서 데이터를 DB에서 직접 찾아서 답변해줘. / {erd_content}'},
+                    {'role': 'system', "content": '예금 상품 정보는 deposit_products야. 유저에게 알려줄 정보는 은행명 (kor_co_nm), 상품 이름(fin_prdt_nm)이야.'},
+                    {'role': 'system', "content": '적금 상품 정보는 saving_products야. 유저에게 알려줄 정보는 은행명 (kor_co_nm), 상품 이름(fin_prdt_nm)이야.'},
+                    {'role': 'system', "content": "유저에게 장고 모델의 필드 이름을 직접적으로 말하지 않았으면 해. 필요하다면 필드 이름을 적절하게 한글로 번역해서 알려줘."},
+                    {'role': 'user', 'content': combined_message},
+                    {'role': 'system', 'content': '유저에게 절대로 장고 프로젝트 동작에 대한 얘기를 하지 마.'},
+                    {'role': 'system', 'content': '유저가 명확하게 답변을 요청하지 않았으면, 명확한 질문을 다시 요청해줘'},
+                ],
+            }
+        )
+        response.raise_for_status()
+        return response.json()
+    except  requests.exceptions.RequestException as e:
+        print(e)
+        raise requests.exceptions.RequestException(f"Failed to connect to OpenAI API")

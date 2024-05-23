@@ -5,22 +5,23 @@
     data-bs-scroll="true"
     tabindex="-1"
     id="offcanvasWithBothOptions"
+    ref="offcanvas"
     aria-labelledby="offcanvasWithBothOptionsLabel"
   >
     <div class="offcanvas-header">
+      <h1 class="text-center mt-3 ms-5">
+        <div>
+          금상추 봇
+          <span class="material-symbols-outlined shake" style="font-size: 50px"> robot_2 </span>
+          <img class="bot-logo shake" src="@/assets/LOGO_LITE.png" alt="" />
+        </div>
+      </h1>
       <button class="btn" type="button" data-bs-dismiss="offcanvas" aria-label="Close">
         <span style="color: crimson; font-size: 50px" class="material-symbols-outlined"> cancel </span>
       </button>
     </div>
-    <div class="offcanvas-body">
+    <div class="offcanvas-body" ref="offcanvasBody">
       <div style="margin-top: 0px">
-        <h1 class="text-center">
-          <div>
-            금상추 봇
-            <span class="material-symbols-outlined shake" style="font-size: 50px"> robot_2 </span>
-            <img class="bot-logo shake" src="@/assets/LOGO_LITE.png" alt="" />
-          </div>
-        </h1>
         <div class="chat-container">
           <div class="messages">
             <div v-for="(msg, index) in messages" :key="index" :class="['message', msg.sender]">
@@ -38,16 +39,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 
 const message = ref('')
 const messages = ref([])
+
+const offcanvas = ref(null)
+const offcanvasBody = ref(null)
 
 const sendMessage = async () => {
   if (message.value.trim() === '') return
 
   // Add user message to messages array
   messages.value.push({ sender: 'user', content: message.value })
+  scrollToBottom()
 
   // Send message to Django backend
   try {
@@ -67,6 +72,14 @@ const sendMessage = async () => {
   } finally {
     // Clear the input field
     message.value = ''
+    scrollToBottom()
+  }
+}
+
+const scrollToBottom = async () => {
+  await nextTick()
+  if (offcanvasBody.value) {
+    offcanvasBody.value.scrollTop = offcanvasBody.value.scrollHeight
   }
 }
 </script>
