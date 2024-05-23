@@ -108,19 +108,17 @@ def chat(request):
             response = send_request_to_openai(combined_message)
             chat_response = response['choices'][0]['message']['content']
             
-            # user_message = '{"role": "user", "content": ' + message + '}'
-            # system_message = '{"role": "system", "content": ' + chat_response + '}'
+            print('유저==========', response)
+            print('챗봇==========', chat_response)
             
-            # print('유저': )
+            conversation = Conversation(
+                user_message=message,
+                system_message=chat_response,
+                bot_response='OK',
+            )
+            conversation.save()
             
-            # conversation = Conversation(
-            #     user_message=message,
-            #     system_message=chat_response,
-            #     bot_response={"role": "system", "content": "우리 프로젝트 이름은 금상추야. 너의 이름도 금상추라고 알고 있어줘."},
-            # )
-            # conversation.save()
-            
-            print('#######', response, '#######')
+            # print('#######', response, '#######')
             
             return JsonResponse({'response': response['choices'][0]['message']['content']})
         
@@ -140,7 +138,18 @@ def send_request_to_openai(combined_message, retries=3, delay=1):
     
     # ERD 파일 읽기
     erd_content = read_erd_file()
+
+    conversations = Conversation.objects.all()
+    previous_prompts = []
     
+    if conversations:
+        for conversation in conversations:
+            previous_prompts.append({"role": 'user', "content": conversation.user_message})
+            previous_prompts.append({"role": 'user', "content": conversation.system_message})
+            
+        print(conversations.count())
+        print(previous_prompts)
+        
     try:
         response = requests.post(
             'https://api.openai.com/v1/chat/completions',
@@ -150,16 +159,15 @@ def send_request_to_openai(combined_message, retries=3, delay=1):
             },
             json={
                 'model': 'gpt-4o',
-                    # {'role': 'system', 'content': f'유저 질문에 대한 정보는 장고 모델의 내용을 참고해서 데이터를 DB에서 직접 찾아서 답변해줘. / {erd_content}'},
                 'messages': [
                     {'role': "system", "content": "우리 프로젝트 이름은 금상추야. 너의 이름도 금상추라고 알고 있어줘."},
                     {'role': "system", "content": "너는 금상추 프로젝트 서비스에 도움이 되는 유능한 조수야."},
-                    {'role': 'system', 'content': f'유저 질문에 대한 정보는 장고 모델의 내용을 참고해서 데이터를 DB에서 직접 찾아서 답변해줘. / {erd_content}'},
+                    # {'role': 'system', 'content': f'유저 질문에 대한 정보는 장고 모델의 내용을 참고해서 데이터를 DB에서 직접 찾아서 답변해줘. / {erd_content}'},
                     {'role': 'system', 'content': '유저에게 절대로 장고 프로젝트 동작에 대한 얘기를 하지 마.'},
-                    {'role': 'system', "content": "유저에게 장고 모델의 필드 이름을 직접적으로 말하지 않았으면 해. 필요하다면 필드 이름을 적절하게 한글로 번역해서 알려줘."},
-                    {'role': 'user', 'content': combined_message},
-                    {'role': 'system', 'content': '유저가 명확하게 답변을 요청하지 않았으면, 명확한 질문을 다시 요청해줘'},
-                ],
+                    {'role': 'system', 'content': '유저가 상품을 추천해달라고 했으면 장고의 예금, 적금 상품 중 fin_prdt_nm에 있는 값을 반환해줘야해.'},
+                    {'role': 'system', "content": "유저에게 장고 모델의 필드 이름을 직접적으로 말하지 않았으면 해. 필요하다면 필드 이름을 적절하게 한글로 번역해서 알려줘."}
+                ] + previous_prompts + [{'role': 'user', 'content': combined_message},
+                    {'role': 'system', 'content': '유저가 명확하게 답변을 요청하지 않았으면, 명확한 질문을 다시 요청해줘'}],
             }
         )
         response.raise_for_status()
