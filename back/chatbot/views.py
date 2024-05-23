@@ -141,11 +141,9 @@ def send_request_to_openai(combined_message, retries=3, delay=1):
                     {'role': "system", "content": "우리 프로젝트 이름은 금상추야. 너의 이름도 금상추라고 알고 있어줘."},
                     {'role': "system", "content": "너는 금상추 프로젝트 서비스에 도움이 되는 유능한 조수야."},
                     {'role': 'system', 'content': f'유저 질문에 대한 정보는 장고 모델의 내용을 참고해서 데이터를 DB에서 직접 찾아서 답변해줘. / {erd_content}'},
-                    {'role': 'system', "content": '예금 상품 정보는 deposit_products야. 유저에게 알려줄 정보는 은행명 (kor_co_nm), 상품 이름(fin_prdt_nm)이야.'},
-                    {'role': 'system', "content": '적금 상품 정보는 saving_products야. 유저에게 알려줄 정보는 은행명 (kor_co_nm), 상품 이름(fin_prdt_nm)이야.'},
+                    {'role': 'system', 'content': '유저에게 절대로 장고 프로젝트 동작에 대한 얘기를 하지 마.'},
                     {'role': 'system', "content": "유저에게 장고 모델의 필드 이름을 직접적으로 말하지 않았으면 해. 필요하다면 필드 이름을 적절하게 한글로 번역해서 알려줘."},
                     {'role': 'user', 'content': combined_message},
-                    {'role': 'system', 'content': '유저에게 절대로 장고 프로젝트 동작에 대한 얘기를 하지 마.'},
                     {'role': 'system', 'content': '유저가 명확하게 답변을 요청하지 않았으면, 명확한 질문을 다시 요청해줘'},
                 ],
             }
