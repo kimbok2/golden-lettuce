@@ -11,11 +11,11 @@
           <h3>주 기능<span class="material-symbols-outlined ms-2"> category </span></h3>
           <div class="row g-3 m-3">
             <div class="min-col">
-              <h3>금상추가 추천하는 은행별 Best 예금</h3>
+              <h3>금상추가 추천하는 은행별 BEST 예금</h3>
               <BestDeposit/>
             </div>
             <div class="min-col">
-              <h3>금상추가 추천하는 은행별 Best 적금</h3>
+              <h3>금상추가 추천하는 은행별 BEST 적금</h3>
               <BestSaving/>
             </div>
             <div class="min-col">
