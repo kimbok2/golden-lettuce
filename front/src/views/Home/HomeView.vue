@@ -11,9 +11,13 @@
           <h3>주 기능<span class="material-symbols-outlined ms-2"> category </span></h3>
           <div class="row g-3 m-3">
             <div class="min-col">
-              <h3>금상추 이용자를 위한 Best 추천 상품</h3>
+              <h3>금상추가 추천하는 은행별 Best 예금</h3>
+              <BestDeposit/>
             </div>
-            <div class="min-col"></div>
+            <div class="min-col">
+              <h3>금상추가 추천하는 은행별 Best 적금</h3>
+              <BestSaving/>
+            </div>
             <div class="min-col">
               <h3>금상추 커뮤니티</h3>
             </div>
@@ -72,7 +76,8 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useUserStore } from '@/stores/user'
 import DoughnutChart from '@/components/MyAccount/DoughnutChart.vue'
-
+import BestDeposit from '@/components/BestDeposit.vue';
+import BestSaving from '@/components/BestSaving.vue';
 const store = useUserStore()
 const userInfo = computed(() => store.userInfo)
 
@@ -111,7 +116,7 @@ onBeforeUnmount(() => {
 }
 
 .min-col {
-  height: 300px;
+  height: 310px;
 
   padding: 20px;
 

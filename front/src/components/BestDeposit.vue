@@ -1,39 +1,5 @@
 <template>
   <div>
-    <h2 class="text-center mb-4">내 관심 상품</h2>
-    <div
-      class="d-flex justify-content-center mb-0 w-100 bg-white tab-container"
-      role="tablist"
-    >
-      <div class="flex-fill text-center" role="presentation">
-        <button
-          class="w-100 btn tab-button"
-          :class="{ active: selectedType === 'deposit' }"
-          id="deposit-tab"
-          @click="toggleType('deposit')"
-          type="button"
-          role="tab"
-          aria-controls="deposit-tab-pane"
-          :aria-selected="selectedType === 'deposit'"
-        >
-          예금 상품
-        </button>
-      </div>
-      <div class="flex-fill text-center" role="presentation">
-        <button
-          class="w-100 btn tab-button"
-          :class="{ active: selectedType === 'saving' }"
-          id="saving-tab"
-          @click="toggleType('saving')"
-          type="button"
-          role="tab"
-          aria-controls="saving-tab-pane"
-          :aria-selected="selectedType === 'saving'"
-        >
-          적금 상품
-        </button>
-      </div>
-    </div>
     <div class="tab-content" id="productTabContent">
       <div
         class="tab-pane fade show active"
@@ -41,13 +7,13 @@
         role="tabpanel"
         aria-labelledby="carousel-tab"
       >
-        <div id="carouselCompare" class="carousel slide no-top-border-radius">
+        <div id="carouselDeposit" class="carousel slide no-top-border-radius">
           <div class="carousel-inner" @click="handleCarouselClick">
-            <div v-if="!products.length" class="carousel-item active">
+            <div v-if="!bankInfos.length" class="carousel-item active">
               <div class="card no-top-border-radius">
                 <div class="card-body vertical-align">
-                  <p>아직 관심 상품이 없어요...</p>
-                  <p>관심 상품을 찾으러 가보시겠어요?</p>
+                  <p>아무도 상품에 가입하지 않았어요...</p>
+                  <p>가입할 상품을 찾으러 가보시겠어요?</p>
                   <RouterLink :to="{ name: 'products' }" class="btn btn-warning"
                     >상품 찾으러 가기</RouterLink
                   >
@@ -55,33 +21,30 @@
               </div>
             </div>
             <div
-              v-for="(product, index) in products"
-              :key="product.id"
+              v-for="(bank, index) in bankInfos"
+              :key="bank.id"
               class="carousel-item"
               :class="{ active: index === activeIndex }"
             >
               <div class="card no-top-border-radius">
-                <div class="card-body">
-                  <h5 class="card-title">{{ product.fin_prdt_nm }}</h5>
-                  <p class="card-text">{{ product.kor_co_nm }}</p>
+                <div class="card-body vertical-align">
+                  
+                  <h4 class="card-title">
+                    <RouterLink :to="{name : 'bank-detail', params : {id : bank.bank_id} }"
+                    class="custom-link">
+                    <img :src="`/media/bank/${bank.bank_id}.png`" alt="이미지">
+                    {{ bank.bank_name }}</RouterLink>
+                </h4>
+                  <h6 class="card-text">{{ bank.top_deposit_product.fin_prdt_nm }}</h6>
+                  <p class="card-text">가입자 수 : {{ bank.top_deposit_product.user_count }}명</p>
                   <p class="card-text">
-                    {{
-                      product.max_limit
-                        ? "최고 한도:" + formatNumber(product.max_limit) + "원"
-                        : "최고 한도가 없는 상품입니다."
-                    }}
+                    
                   </p>
-                  <p class="card-text">
-                    저축 금리: {{ getInterestRate(product, "intr_rate") }}%
-                  </p>
-                  <p class="card-text">
-                    최고 우대 금리:
-                    {{ getInterestRate(product, "intr_rate2") }}%
-                  </p>
+                 
                   <RouterLink
                     :to="{
                       name: 'products-detail',
-                      params: { id: product.id, type: selectedType },
+                      params: { id: bank.top_deposit_product.id, type: 'deposit' },
                     }"
                     class="btn btn-warning"
                   >
@@ -94,7 +57,7 @@
           <button
             class="carousel-control-prev"
             type="button"
-            data-bs-target="#carouselCompare"
+            data-bs-target="#carouselDeposit"
             data-bs-slide="prev"
           >
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -103,7 +66,7 @@
           <button
             class="carousel-control-next"
             type="button"
-            data-bs-target="#carouselCompare"
+            data-bs-target="#carouselDeposit"
             data-bs-slide="next"
           >
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
@@ -116,54 +79,53 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-import { useUserStore } from "@/stores/user";
+import { ref, watch, computed, onMounted, onUnmounted } from "vue";
+import { useBankStore } from "@/stores/bank";
 import { useRouter, RouterLink } from "vue-router";
 
-const store = useUserStore();
-const selectedType = ref("deposit"); // 초기값을 'deposit'으로 설정
-const products = ref([]);
+const bankStore = useBankStore()
 const activeIndex = ref(0); // 활성 슬라이드 인덱스
 
-// watch를 사용하여 selectedType이 변경될 때마다 제품 목록을 업데이트합니다.
-watch(
-  selectedType,
-  () => {
-    if (selectedType.value === "deposit") {
-      products.value = store.userInfo.compare_deposit || [];
-    } else if (selectedType.value === "saving") {
-      products.value = store.userInfo.compare_saving || [];
-    }
-    activeIndex.value = 0; // 슬라이드 인덱스를 초기화합니다.
-  },
-  { immediate: true } // 즉시 실행하여 초기값도 반영되도록 합니다.
-);
+// 은행 목록 저장
+let i = 1
+const banks = [
+  { id: i++, name: '우리은행', keyword: '우리' },
+  { id: i++, name: '한국스탠다드차타드은행', keyword: '제일은행' },
+  { id: i++, name: '대구은행', keyword: '대구은행' },
+  { id: i++, name: '부산은행', keyword: '부산은행' },
+  { id: i++, name: '광주은행', keyword: '광주은행' },
+  { id: i++, name: '제주은행', keyword: '제주은행' },
+  { id: i++, name: '전북은행', keyword: '전북은행' },
+  { id: i++, name: '경남은행', keyword: '경남은행' },
+  { id: i++, name: '중소기업은행', keyword: '기업' },
+  { id: i++, name: '한국산업은행', keyword: '산업' },
+  { id: i++, name: '국민은행', keyword: '국민은행' },
+  { id: i++, name: '신한은행', keyword: '신한은행' },
+  { id: i++, name: '농협은행주식회사', keyword: '농협' },
+  { id: i++, name: '하나은행', keyword: '하나은행' },
+  { id: i++, name: '주식회사 케이뱅크', keyword: '케이뱅크' },
+  { id: i++, name: '수협은행', keyword: '수협' },
+  { id: i++, name: '주식회사 카카오뱅크', keyword: '카카오' },
+  { id: i++, name: '토스뱅크 주식회사', keyword: '토스' },
+]
 
-const toggleType = (type) => {
-  selectedType.value = type;
-};
+const bankInfos = computed(() => {
+  return bankStore.banks.map(bank => {
+    const bankInfo = banks.find(b => b.id === bank.bank_id);
+    return {
+      ...bank,
+      bank_name: bankInfo ? bankInfo.name : "알 수 없음"
+    };
+  });
+});
 
-const formatNumber = (value) => {
-  if (typeof value !== "number") return "";
-  return new Intl.NumberFormat().format(value);
-};
-
-// 특정 금리를 반환하는 함수
-const getInterestRate = (product, rateType) => {
-  let options;
-  if (selectedType.value === "deposit") {
-    options = product.depositoption_set;
-  } else if (selectedType.value === "saving") {
-    options = product.savingoption_set;
-  }
-  if (options && options.length > 0) {
-    return options[0][rateType]; // 예를 들어 첫 번째 옵션을 사용
-  }
-  return "N/A";
-};
+// 진입 시 bank 데이터 불러오기
+onMounted(() => {
+    bankStore.fetchBankDatas()
+})
 
 const handleCarouselClick = (event) => {
-  const carousel = document.getElementById("carouselCompare");
+  const carousel = document.getElementById("carouselDeposit");
   const rect = carousel.getBoundingClientRect();
   const clickX = event.clientX - rect.left;
   const third = rect.width / 3;
@@ -204,11 +166,6 @@ const handleCarouselClick = (event) => {
   color: rgba(173, 173, 44, 0.822); /* 호버 시 글씨 색 파랑 */
 }
 
-.no-top-border-radius {
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-}
-
 .carousel-container {
   position: relative;
   width: 100%;
@@ -237,9 +194,6 @@ const handleCarouselClick = (event) => {
 
 .carousel-item .card {
   height: 100%;
-  border-top: 0; /* 윗 부분에 border 없애기 */
-  border-top-left-radius: 0; /* 위쪽 왼쪽 모서리 둥글지 않게 */
-  border-top-right-radius: 0; /* 위쪽 오른쪽 모서리 둥글지 않게 */
 }
 
 .carousel-control-prev,
@@ -288,12 +242,19 @@ const handleCarouselClick = (event) => {
   min-height: 200px;
 }
 .card-body {
-  height: 310px;
+  height: 220px;
 }
 .vertical-align {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.custom-link {
+  color: inherit; /* 부모 요소의 색상 상속 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+.custom-link:hover {
+  color: gray; /* 호버 시 색상 변경 (원하는 색상으로 변경 가능) */
 }
 </style>
