@@ -195,7 +195,7 @@ def get_deposit_products(request, period, option, banks):
             unique_products.append(product)
             seen.add(product.id)
     serializer = DepositListSerializer(unique_products, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def get_saving_products(request, period, option, banks):
@@ -215,13 +215,14 @@ def get_saving_products(request, period, option, banks):
             unique_products.append(product)
             seen.add(product.id)
     serializer = SavingListSerializer(unique_products, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
+# 은행 상세 조회
 @api_view(['GET'])
 def get_bank_detail(request, id):
     bank = Bank.objects.get(pk=id)
     serializer = BankSerializer(bank)
-    return Response(serializer.data) 
+    return Response(serializer.data, status=status.HTTP_200_OK) 
 
 @api_view(['GET'])
 def get_bank_map(request):
@@ -251,21 +252,21 @@ def get_bank_map(request):
                     'user_count': top_saving_product.join_user_count},
         })
     
-    return Response(response_json)
+    return Response(response_json, status=status.HTTP_200_OK)
 
 # 예금 상품 조회
 @api_view(['GET'])
 def get_deposit_detail(request, id):
     product = DepositProduct.objects.get(pk=id)
     serializer = DepositDetailSerializer(product)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 적금 상품 조회
 @api_view(['GET'])
 def get_saving_detail(request, id):
     product = SavingProduct.objects.get(pk=id)
     serializer = SavingDetailSerializer(product)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 예금 옵션 수정
 @api_view(['PUT'])
@@ -296,7 +297,7 @@ def join_deposit(request, deposit_id):
             pass
         else:
             deposit.join_user.add(request.user)
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_201_CREATED)
     elif request.method == 'DELETE':
         if request.user in deposit.join_user.all():
             deposit.join_user.remove(request.user)
@@ -311,7 +312,7 @@ def join_saving(request, saving_id):
             pass
         else:
             saving.join_user.add(request.user)
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_201_CREATED)
     elif request.method == 'DELETE':
         if request.user in saving.join_user.all():
             saving.join_user.remove(request.user)
@@ -326,7 +327,7 @@ def compare_deposit(request, deposit_id):
             pass
         else:
             deposit.compare_user.add(request.user)
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_201_CREATED)
     elif request.method == 'DELETE':
         if request.user in deposit.compare_user.all():
             deposit.compare_user.remove(request.user)
@@ -341,7 +342,7 @@ def compare_saving(request, saving_id):
             pass
         else:
             saving.compare_user.add(request.user)
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_201_CREATED)
     elif request.method == 'DELETE':
         if request.user in saving.compare_user.all():
             saving.compare_user.remove(request.user)
@@ -349,6 +350,7 @@ def compare_saving(request, saving_id):
 
 # 예금 추천 알고리즘
 @api_view(['GET'])
+@permission_classes(['IsAuthenticated'])
 def recommend_deposit(request):
     dp_cnt = 37
     me = get_object_or_404(get_user_model(), username=request.user.username)
