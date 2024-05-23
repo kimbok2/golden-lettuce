@@ -110,7 +110,7 @@
 |    예금상세1     |        <img src='./README_IMG/예금상세1.JPG' alt='예금상세1' width=1000>        |
 |    예금상세2     |        <img src='./README_IMG/예금상세2.JPG' alt='예금상세2' width=1000>        |
 |    예적금수정    |       <img src='./README_IMG/예적금수정.JPG' alt='예적금수정' width=1000>       |
-| 예적금수정이메일 | <img src='./README_IMG/예적금수정이메일.JPG' alt='예적금수정이메일' width=1000> |
+| 예적금수정이메일 | <img src='./README_IMG/예적금수정이메일.png' alt='예적금수정이메일' width=1000> |
 |    적금상세1     |        <img src='./README_IMG/적금상세1.JPG' alt='적금상세1' width=1000>        |
 |    적금상세2     |        <img src='./README_IMG/적금상세2.JPG' alt='적금상세2' width=1000>        |
 |     예금비교     |         <img src='./README_IMG/예금비교.JPG' alt='예금비교' width=1000>         |
