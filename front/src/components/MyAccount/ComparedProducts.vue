@@ -116,7 +116,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useRouter, RouterLink } from "vue-router";
 
@@ -124,6 +124,25 @@ const store = useUserStore();
 const selectedType = ref("deposit"); // 초기값을 'deposit'으로 설정
 const products = ref([]);
 const activeIndex = ref(0); // 활성 슬라이드 인덱스
+
+// onMounted 사용 유저 정보 갱신
+onMounted(() => {
+  store.getUserInfo()
+})
+
+// watch를 사용하여 userInfo가 변경될 때마다 제품 목록을 업데이트합니다.
+watch(
+  () => store.userInfo,
+  (newUserInfo) => {
+    if (selectedType.value === "deposit") {
+      products.value = newUserInfo.join_deposit || [];
+    } else if (selectedType.value === "saving") {
+      products.value = newUserInfo.join_saving || [];
+    }
+    activeIndex.value = 0; // 슬라이드 인덱스를 초기화합니다.
+  },
+  { immediate: true, deep: true } // 즉시 실행하여 초기값도 반영되도록 하고, deep 옵션 추가
+);
 
 // watch를 사용하여 selectedType이 변경될 때마다 제품 목록을 업데이트합니다.
 watch(

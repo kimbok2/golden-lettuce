@@ -16,7 +16,7 @@ class User(AbstractUser):
     deposit_period = models.IntegerField(blank=True, null=True) # 예금 예치 기간
     saving_period = models.IntegerField(blank=True, null=True) # 적금 예치 기간
     deposit_recommend = models.JSONField(blank=True, null=True) # 예금 추천 상품
-    saving_recommend = models.JSONField(blank=True, null=True) # 예금 추천 상품
+    saving_recommend = models.JSONField(blank=True, null=True) # 적금 추천 상품
     is_superuser = models.BooleanField(default=False) # 관리자여부
     
 class CustomAccountAdapter(DefaultAccountAdapter):
