@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'accounts',
     'chatbot',
     'communities',
+    'django_extensions',
     'exchanges',
     'finances',
     'maps',
