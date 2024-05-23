@@ -6,7 +6,7 @@ import axios from 'axios'
 export const useCommunityStore = defineStore(
   'community',
   () => {
-    const API_URL = 'https://kgarrry.pythonanywhere.com'
+    const API_URL = 'http://127.0.0:8000'
 
     const router = useRouter()
 

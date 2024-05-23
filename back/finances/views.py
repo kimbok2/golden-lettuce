@@ -225,7 +225,7 @@ def get_bank_detail(request, id):
 
 @api_view(['GET'])
 def get_bank_map(request):
-    
+    print('==========')
     response_json = []
     
     for id in range(1, 19):

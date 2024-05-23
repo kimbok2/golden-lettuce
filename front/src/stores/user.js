@@ -10,7 +10,7 @@ export const useUserStore = defineStore(
     const name = ref(null);
     // 유저의 모든 정보를 담을 변수
     const userInfo = ref(null);
-    const API_URL = "https://kgarrry.pythonanywhere.com";
+    const API_URL = "http://127.0.0:8000";
     const token = ref(null);
     const userSearchMapInfo = ref([]);
     const isLogin = computed(() => {
