@@ -9,13 +9,20 @@
       <!-- 댓글 리스트  -->
       <ul class="list-group">
         <template v-for="comment in article.comments" :key="comment.id">
-          <li v-if="comment?.parent_comment === null" class="list-group-item border border-0 rounded-0">
+          <li
+            v-if="comment?.parent_comment === null"
+            class="list-group-item border border-0 rounded-0"
+          >
             <!-- 댓글 정보 -->
             <div class="d-flex">
               <!-- 댓글 작성자 -->
               <!-- 댓글 작성자 프로필 이미지 // 수정 필요 // 현재는 기본 이미지로 돼있음-->
               <img
-                :src="comment.user?.profile_img ? apiUrl + comment.user.profile_img : '@/assets/userdefault.png'"
+                :src="
+                  comment.user?.profile_img
+                    ? apiUrl + comment.user.profile_img
+                    : '@/assets/userdefault.png'
+                "
                 alt="Logo"
                 width="50"
                 height="50"
@@ -33,7 +40,10 @@
                   <template v-if="username === comment.user.username">
                     <!-- 댓글 삭제 버튼 -->
                     <span>
-                      <button @click.prevent="deleteComment(comment.id)" class="btn text-danger p-0 ms-2">
+                      <button
+                        @click.prevent="deleteComment(comment.id)"
+                        class="btn text-danger p-0 ms-2"
+                      >
                         <span class="material-symbols-outlined"> close </span>
                       </button>
                     </span>
@@ -44,7 +54,9 @@
             <!-- 대댓글 작성 -->
             <div>
               <span class="text-secondary">{{
-                formattedDate(comment.created_at) + ' ' + formattedTime(comment.created_at)
+                formattedDate(comment.created_at) +
+                " " +
+                formattedTime(comment.created_at)
               }}</span>
               <!-- 답글 작성 form 토글 버튼 -->
               <button
@@ -64,7 +76,9 @@
             >
               <!-- 라벨. 접속한 유저의 아이디 출력 -->
               <p>
-                <label for="comment-content" class="fw-bolder">{{ username }}</label>
+                <label for="comment-content" class="fw-bolder">{{
+                  username
+                }}</label>
               </p>
               <input
                 class="w-100 comment-input-box"
@@ -80,25 +94,40 @@
             <!-- 대댓글 리스트 -->
             <template v-if="comment.replies">
               <ul>
-                <li v-for="reply in comment.replies" :key="reply.id" class="list-group-item border border-0 rounded-0">
+                <li
+                  v-for="reply in comment.replies"
+                  :key="reply.id"
+                  class="list-group-item border border-0 rounded-0"
+                >
                   <hr />
                   <!-- 댓글 작성자 프로필 이미지 // 수정 필요 // 현재는 기본 이미지로 돼있음-->
                   <div class="d-flex">
                     <img
-                      :src="reply.user?.profile_img ? apiUrl + reply.user.profile_img : '@/assets/userdefault.png'"
+                      :src="
+                        reply.user?.profile_img
+                          ? apiUrl + reply.user.profile_img
+                          : '@/assets/userdefault.png'
+                      "
                       alt="Logo"
                       width="50"
                       height="50"
                       class="d-inline-block align-text-top border rounded-circle"
                     />
                     <div class="ms-3">
-                      <p class="fw-bolder comment-username">{{ reply.user.nickname }}</p>
+                      <p class="fw-bolder comment-username">
+                        {{ reply.user.nickname }}
+                      </p>
                       <span class="comment-content">{{ reply.content }}</span>
                       <template v-if="username === reply.user.username">
                         <!-- 대댓글 삭제 버튼 -->
                         <span>
-                          <button @click.prevent="deleteComment(reply.id)" class="btn text-danger p-0 ms-2">
-                            <span class="material-symbols-outlined"> close </span>
+                          <button
+                            @click.prevent="deleteComment(reply.id)"
+                            class="btn text-danger p-0 ms-2"
+                          >
+                            <span class="material-symbols-outlined">
+                              close
+                            </span>
                           </button>
                         </span>
                       </template>
@@ -106,7 +135,9 @@
                   </div>
                   <div>
                     <span class="text-secondary">{{
-                      formattedDate(reply.created_at) + ' ' + formattedTime(reply.created_at)
+                      formattedDate(reply.created_at) +
+                      " " +
+                      formattedTime(reply.created_at)
                     }}</span>
                   </div>
                 </li>
@@ -126,7 +157,9 @@
         <label for="comment-content" class="fw-bolder">{{ username }}</label>
       </p>
       <p v-else>
-        <label for="comment-content" class="fw-bolder">댓글을 작성하려면 로그인해주세요.</label>
+        <label for="comment-content" class="fw-bolder"
+          >댓글을 작성하려면 로그인해주세요.</label
+        >
       </p>
       <input
         ref="commentTextArea"
@@ -145,66 +178,66 @@
 </template>
 
 <script setup>
-import { onMounted, computed, watch, ref, nextTick } from 'vue'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
-import { useCommunityStore } from '@/stores/community'
-import { useUserStore } from '@/stores/user'
-import axios from 'axios'
+import { onMounted, computed, watch, ref, nextTick } from "vue";
+import { useRoute, useRouter, RouterLink } from "vue-router";
+import { useCommunityStore } from "@/stores/community";
+import { useUserStore } from "@/stores/user";
+import axios from "axios";
 
-const apiUrl = 'http://127.0.0.1:8000'
-const route = useRoute()
-const router = useRouter()
-const store = useCommunityStore()
-const userStore = useUserStore()
+const apiUrl = "http://127.0.0.1:8000";
+const route = useRoute();
+const router = useRouter();
+const store = useCommunityStore();
+const userStore = useUserStore();
 
-const articleId = ref(null)
-const article = ref(null)
-const username = ref(null)
+const articleId = ref(null);
+const article = ref(null);
+const username = ref(null);
 
 // 댓글 및 대댓글 작성 컨텐츠
-const commentContent = ref(null)
-const replyContent = ref(null)
+const commentContent = ref(null);
+const replyContent = ref(null);
 
 // 댓글 작성 input창
-const commentTextArea = ref(null)
+const commentTextArea = ref(null);
 
 const checkLogin = function () {
   if (!userStore.isLogin) {
-    alert('로그인 후 이용해주세요.')
+    alert("로그인 후 이용해주세요.");
     nextTick(() => {
-      console.log(commentTextArea.value)
-      commentTextArea.value.blur()
-    })
+      console.log(commentTextArea.value);
+      commentTextArea.value.blur();
+    });
   }
-}
+};
 
 // 대댓글 작성 form 토글을 위한 변수 및 함수 선언
-const replyFormVisible = ref({})
+const replyFormVisible = ref({});
 const toggleReplyForm = function (commentId) {
-  replyFormVisible.value[commentId] = !replyFormVisible.value[commentId]
-}
+  replyFormVisible.value[commentId] = !replyFormVisible.value[commentId];
+};
 
-const token = userStore.token
+const token = userStore.token;
 
 const comment_count = computed(() => {
   // article에 달린 댓글 (comments)가 없으면 0을 반환,
   // 댓글이 있는 경우 댓글의 수를 세서 반환함
-  return article.value.comments ? article.value.comments.length : 0
-})
+  return article.value.comments ? article.value.comments.length : 0;
+});
 
 const formattedDate = function (date) {
-  return date.substring(0, 10)
-}
+  return date.substring(0, 10);
+};
 
 const formattedTime = function (date) {
-  return date.substring(11, 19)
-}
+  return date.substring(11, 19);
+};
 
 const createComment = function () {
   if (commentContent.value) {
-    if (confirm('댓글을 작성하시겠습니까?')) {
+    if (confirm("댓글을 작성하시겠습니까?")) {
       axios({
-        method: 'post',
+        method: "post",
         url: `${store.API_URL}/communities/${articleId.value}/comment/`,
         data: {
           content: commentContent.value,
@@ -214,43 +247,43 @@ const createComment = function () {
         },
       })
         .then((response) => {
-          article.value = store.getArticle(articleId.value)
-          console.log('댓글 작성 완료')
+          article.value = store.getArticle(articleId.value);
+          console.log("댓글 작성 완료");
         })
         .catch((error) => {
-          console.log(error)
-        })
+          console.log(error);
+        });
 
-      commentContent.value = ''
+      commentContent.value = "";
     }
   }
-}
+};
 
 const deleteComment = function (commentId) {
-  if (confirm('댓글을 삭제하시겠습니까?')) {
+  if (confirm("댓글을 삭제하시겠습니까?")) {
     axios({
-      method: 'delete',
+      method: "delete",
       url: `${store.API_URL}/communities/comment/${commentId}/`,
       headers: {
         Authorization: `Token ${token}`,
       },
     })
       .then((response) => {
-        article.value = store.getArticle(articleId.value)
-        console.log('댓글 삭제 완료')
+        article.value = store.getArticle(articleId.value);
+        console.log("댓글 삭제 완료");
       })
       .catch((error) => {
-        console.log(error)
-      })
+        console.log(error);
+      });
 
-    commentContent.value = ''
+    commentContent.value = "";
   }
-}
+};
 
 const createReply = function (commentId) {
-  if (confirm('댓글을 작성하시겠습니까?')) {
+  if (confirm("댓글을 작성하시겠습니까?")) {
     axios({
-      method: 'post',
+      method: "post",
       url: `${store.API_URL}/communities/${articleId.value}/comment/`,
       data: {
         parent_comment: commentId,
@@ -261,31 +294,31 @@ const createReply = function (commentId) {
       },
     })
       .then((response) => {
-        article.value = store.getArticle(articleId.value)
-        replyFormVisible.value[commentId] = !replyFormVisible.value[commentId]
-        console.log('대댓글 작성 완료')
+        article.value = store.getArticle(articleId.value);
+        replyFormVisible.value[commentId] = !replyFormVisible.value[commentId];
+        console.log("대댓글 작성 완료");
       })
       .catch((error) => {
-        console.log(error)
-      })
+        console.log(error);
+      });
 
-    replyContent.value = ''
+    replyContent.value = "";
   }
-}
+};
 
 watch(
   () => store.article,
   (newArticle) => {
-    article.value = newArticle
+    article.value = newArticle;
   },
   { deep: true }
-)
+);
 
 onMounted(() => {
-  articleId.value = route.params.id
-  article.value = store.getArticle(articleId.value)
-  username.value = userStore.userInfo.username
-})
+  articleId.value = route.params.id;
+  article.value = store.getArticle(articleId.value);
+  username.value = userStore.userInfo.username;
+});
 </script>
 
 <style scoped>

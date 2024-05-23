@@ -1,41 +1,44 @@
-import { ref, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { defineStore } from 'pinia'
-import axios from 'axios'
+import { ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { defineStore } from "pinia";
+import axios from "axios";
 
 export const useCommunityStore = defineStore(
-  'community',
+  "community",
   () => {
-    const API_URL = 'http://127.0.0.1:8000'
+    const API_URL = "http://127.0.0.1:8000";
 
-    const router = useRouter()
+
+    const router = useRouter();
 
     const categoryOptions = {
-      notice: '공지사항',
-      faq: 'FAQ',
-      free: '자유게시판',
-    }
+      notice: "공지사항",
+      faq: "FAQ",
+      free: "자유게시판",
+    };
 
-    const article = ref([])
-    const articles = ref([])
+
+    const article = ref([]);
+    const articles = ref([]);
+
     const mainArticles = ref([])
     const article_count = computed(() => {
-      return articles.value.length
-    })
+      return articles.value.length;
+    });
 
     const getArticleList = function () {
       axios({
-        method: 'get',
+        method: "get",
         url: `${API_URL}/communities/`,
       })
         .then((response) => {
-          articles.value = response.data
-          router.push({ name: 'community' })
+          articles.value = response.data;
+          router.push({ name: "community" });
         })
         .catch((error) => {
-          console.log(error)
-        })
-    }
+          console.log(error);
+        });
+    };
 
 
     const getFiveArticleList = function (category) {
@@ -53,19 +56,21 @@ export const useCommunityStore = defineStore(
 
     const getArticle = function (articleId) {
       axios({
-        method: 'get',
+        method: "get",
         url: `${API_URL}/communities/${articleId}`,
       })
         .then((response) => {
+
           console.log(response)
           article.value = response.data
         })
         .catch((error) => {
-          console.log(error)
-        })
-    }
+          console.log(error);
+        });
+    };
+
 
     return { article, mainArticles, articles, article_count, API_URL, categoryOptions, getFiveArticleList, getArticle, getArticleList }
   },
   { persist: true }
-)
+);

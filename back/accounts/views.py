@@ -8,7 +8,7 @@ from .models import *
 from .serializers import *
 
 # Create your views here.
-# 유저 프로필(GET O, POST? PUT? DELETE?)
+# 유저 프로필(GET, PUT)
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
 def profile(request, username):
@@ -18,7 +18,7 @@ def profile(request, username):
         user = get_object_or_404(get_user_model(), username=username)
         if request.method == 'GET':
             serializer = ProfileSerializer(user)
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         elif request.method == 'PUT':
             print(request.data)
             serializer = ProfileSerializer(instance=user, data=request.data, partial=True)
@@ -35,7 +35,7 @@ def userinfo(request, username):
         # 회원정보 조회(프로필이랑 겹침)
         if request.method == 'GET':
             serializer = UserInfoSerializer(user)
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         # 회원정보 수정
         elif request.method == 'PUT':
             serializer = UserInfoSerializer(instance = user, data=request.data, partial=True)
