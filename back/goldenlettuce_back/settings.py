@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'accounts',
     'chatbot',
     'communities',
+    'django_extensions',
     'exchanges',
     'finances',
     'maps',
@@ -221,5 +222,5 @@ EMAIL_HOST = 'smtp.naver.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'goldenlettuce@naver.com'
-EMAIL_HOST_PASSWORD = 'rmatkdcn12!'
+EMAIL_HOST_PASSWORD = NAVER_PASSWORD
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
