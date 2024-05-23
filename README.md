@@ -72,24 +72,33 @@
 <img src='./README_IMG/메인페이지.JPG' alt='메인페이지' width=1000> 
 <img src='./README_IMG/메인페이지입력후.JPG' alt='메인페이지입력후' width=1000> 
 
+- 공통적으로 모든 페이지 상, 하단에 내비게이션 바를 구현해서 각 기능으로 이동할 수 있도록 구현하였습니다.
+- 메인 페이지에 각 은행별 가입자 수가 가장 많은 상품을 출력해 로그인 하지 않은 사용자도 공통 BEST 상품을 추천받을 수 있습니다.
+- 또 주변 은행, 내 상품 정보, 환율 계산기, 커뮤니티를 미리 볼 수 있는 컴포넌트를 구성하였습니다.
+
 
 ### 2️⃣ 회원 커스터마이징
 <img src='./README_IMG/회원가입.JPG' alt='회원가입' width=1000> 
 <img src='./README_IMG/로그인.JPG' alt='로그인' width=1000> 
 
-### 3️⃣ 예적금 금리 조회
-<img src='./README_IMG/예금상품검색.JPG' alt='예금상품검색' width=1000> 
-<img src='./README_IMG/적금상품검색.JPG' alt='적금상품검색' width=1000> 
-<img src='./README_IMG/예금상세1.JPG' alt='예금상세1' width=1000> 
-<img src='./README_IMG/예금상세2.JPG' alt='예금상세2' width=1000> 
-<img src='./README_IMG/예적금수정.JPG' alt='예적금수정' width=1000> 
-<img src='./README_IMG/예적금수정이메일.JPG' alt='예적금수정이메일' width=1000> 
-<img src='./README_IMG/적금상세1.JPG' alt='적금상세1' width=1000> 
-<img src='./README_IMG/적금상세2.JPG' alt='적금상세2' width=1000> 
-<img src='./README_IMG/예금비교.JPG' alt='예금비교' width=1000> 
-<img src='./README_IMG/적금비교.png' alt='적금비교' width=1000> 
-<img src='./README_IMG/은행.JPG' alt='은행' width=1000> 
+- 회원가입 시 비밀번호 8글자 확인, 비밀번호 확인과 일치 여부를 출력하여 사용자가 에러 메시지를 통해 잘못된 부분을 확인할 수 있도록 하였습니다.
+- 로그인 실패 시 에러 메시지를 띄워 아이디와 비밀번호를 재확인하도록 하였습니다.
 
+### 3️⃣ 예적금 금리 조회
+
+| 내용 | 이미지 |
+|:---:|:---:|
+|예금상품검색 |<img src='./README_IMG/예금상품검색.JPG' alt='예금상품검색' width=1000>  |
+|적금상품검색 |<img src='./README_IMG/적금상품검색.JPG' alt='적금상품검색' width=1000>  |
+|예금상세1 |<img src='./README_IMG/예금상세1.JPG' alt='예금상세1' width=1000>  |
+|예금상세2 |<img src='./README_IMG/예금상세2.JPG' alt='예금상세2' width=1000>  |
+|예적금수정 |<img src='./README_IMG/예적금수정.JPG' alt='예적금수정' width=1000>  |
+|예적금수정이메일 |<img src='./README_IMG/예적금수정이메일.JPG' alt='예적금수정이메일' width=1000>  |
+|적금상세1 |<img src='./README_IMG/적금상세1.JPG' alt='적금상세1' width=1000>  |
+|적금상세2 |<img src='./README_IMG/적금상세2.JPG' alt='적금상세2' width=1000>  |
+|예금비교 |<img src='./README_IMG/예금비교.JPG' alt='예금비교' width=1000>  |
+|적금비교 | <img src='./README_IMG/적금비교.png' alt='적금비교' width=1000> |
+|은행 상세 페이지|<img src='./README_IMG/은행.JPG' alt='은행' width=1000> |
 
 ### 4️⃣ 환율 계산기
 <img src='./README_IMG/환율계산.JPG' alt='환율계산' width=1000> 
@@ -117,7 +126,7 @@
 
 ### 9️⃣ 챗봇
 <img src='./README_IMG/챗봇.JPG' alt='챗봇' width=1000> 
-![Alt text](image.png)
+
 ### 🔟
 
 ## 기타(느낀 점, 후기 등)
