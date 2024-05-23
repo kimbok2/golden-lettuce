@@ -18,14 +18,20 @@
       <div class="mt-3 d-flex justify-content-between">
         <div>
           <img
-            :src="userStore.userInfo.profile_img ? apiUrl + userStore.userInfo.profile_img : '@/assets/userdefault.png'"
+            :src="
+              userStore.userInfo.profile_img
+                ? apiUrl + userStore.userInfo.profile_img
+                : '@/assets/userdefault.png'
+            "
             alt="Logo"
             width="50"
             height="50"
             class="d-inline-block align-text-top border rounded-circle"
           />
-          <div style="display: inline-flex;">
-            <span class="ms-3 fw-bolder">{{ userStore.userInfo.nickname }}</span>
+          <div style="display: inline-flex">
+            <span class="ms-3 fw-bolder">{{
+              userStore.userInfo.nickname
+            }}</span>
             <select class="ms-3" v-model="category" id="category">
               <option value="free">자유게시판</option>
               <option value="faq">FAQ</option>
@@ -55,32 +61,32 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
-import { useCommunityStore } from '@/stores/community'
-import { useUserStore } from '@/stores/user'
+import { ref } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { useCommunityStore } from "@/stores/community";
+import { useUserStore } from "@/stores/user";
 
-const apiUrl = 'http://127.0.0:8000'
+const apiUrl = "http://127.0.0.1:8000";
 
 const goBack = function () {
-  router.back()
-}
+  router.back();
+};
 
 // 제목과 내용 : input 태그에 v-model로 양방향 바인딩
-const title = ref(null)
-const content = ref(null)
-const category = ref('free')
+const title = ref(null);
+const content = ref(null);
+const category = ref("free");
 
-const store = useCommunityStore()
-const userStore = useUserStore()
-const router = useRouter()
+const store = useCommunityStore();
+const userStore = useUserStore();
+const router = useRouter();
 
-const token = userStore.token
+const token = userStore.token;
 
 const createArticle = function () {
   axios({
-    method: 'post',
+    method: "post",
     url: `${store.API_URL}/communities/`,
     data: {
       title: title.value,
@@ -92,16 +98,16 @@ const createArticle = function () {
     },
   })
     .then((response) => {
-      console.log('게시글 작성 성공')
-      router.push({ name: 'community' })
+      console.log("게시글 작성 성공");
+      router.push({ name: "community" });
     })
     .catch((error) => {
-      console.log(error)
-    })
+      console.log(error);
+    });
 
-  title.value = ''
-  content.value = ''
-}
+  title.value = "";
+  content.value = "";
+};
 </script>
 
 <style scoped>
