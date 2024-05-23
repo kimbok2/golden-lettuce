@@ -23,15 +23,28 @@ def article_list(request):
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def main_article_list(request, article_category):
+    # GET 요청을 받으면 게시글 목록 반환
+    if request.method == 'GET':
+        articles = Article.objects.filter(category=article_category).order_by('-created_at')[:5]
+        serializer = ArticleListSerializer(articles, many=True)
+        return Response(serializer.data)
+    # POST 요청을 받으면 게시글 작성
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 @api_view(['GET', 'DELETE', 'PUT'])
 def article_detail(request, article_pk):
 
+    print('---', article_pk)
     article = Article.objects.get(pk=article_pk)    # 단일 게시글 조회
     # GET 요청을 받으면 단일 게시글의 정보 반환
     if request.method == 'GET':
         serializer = ArticleSerializer(article)
+        print(serializer)
         return Response(serializer.data)
     # DELETE 요청을 받으면 게시글 삭제
     elif request.method == 'DELETE':
