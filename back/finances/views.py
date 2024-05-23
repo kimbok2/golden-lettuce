@@ -372,6 +372,7 @@ def recommend_deposit(request):
             score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
             score *= abs(me_salary-user.salary)/(max_salary-min_salary)
             score *= abs(me_budget-user.budget)/(max_budget-min_budget)
+            score = 100 - score
         
             for deposit in user.join_deposit.all():
                 scores[deposit.id-1][0] += score
@@ -413,6 +414,7 @@ def recommend_saving(request):
             score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
             score *= abs(me_salary-user.salary)/(max_salary-min_salary)
             score *= abs(me_budget-user.budget)/(max_budget-min_budget)
+            score = 100 - score
             
             for saving in user.join_saving.all():
                 scores[saving.id-1][0] += score
