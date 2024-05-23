@@ -84,14 +84,28 @@
   3. 세 개의 가중치를 곱한 후 (100-가중치 반영 점수)를 계산
   4. 각 상품마다 가입자의 점수 총합 계산. 예.적금 상위 5개 상품을 추천 상품으로 제시
 
+```python
+
+    for user in users:
+        if (user.salary and user.budget) :
+            score = 100
+            score *= abs(me_year-user.date_of_birth.year)/(max_year-min_year)
+            score *= abs(me_salary-user.salary)/(max_salary-min_salary)
+            score *= abs(me_budget-user.budget)/(max_budget-min_budget)
+            score = 100 - score
+            
+            for saving in user.join_saving.all():
+                scores[saving.id-1][0] += score
+```
+
 ## 서비스 대표 기능들에 대한 설명
 
 ### 1️⃣ 메인 페이지
 
 |                내용                |                                     이미지                                      |
 | :--------------------------------: | :-----------------------------------------------------------------------------: |
-|             메인페이지             |       <img src='./README_IMG/메인페이지.JPG' alt='메인페이지' width=1000>       |
-| 메인페이지 <br> (개인정보 입력 후) | <img src='./README_IMG/메인페이지입력후.JPG' alt='메인페이지입력후' width=1000> |
+|             메인페이지             |       <img src='./README_IMG/메인페이지.JPG' alt='메인페이지' width=600>       |
+| 메인페이지 <br> (개인정보 입력 후) | <img src='./README_IMG/메인페이지입력후.JPG' alt='메인페이지입력후' width=600> |
 
 - 공통적으로 모든 페이지 상, 하단에 내비게이션 바를 구현해서 각 기능으로 이동할 수 있도록 구현하였습니다.
 - 메인 페이지에 각 은행별 가입자 수가 가장 많은 상품을 출력해 로그인 하지 않은 사용자도 공통 BEST 상품을 추천받을 수 있습니다.
@@ -101,8 +115,8 @@
 
 |   내용   |                             이미지                              |
 | :------: | :-------------------------------------------------------------: |
-| 회원가입 | <img src='./README_IMG/회원가입.JPG' alt='회원가입' width=1000> |
-|  로그인  |   <img src='./README_IMG/로그인.JPG' alt='로그인' width=1000>   |
+| 회원가입 | <img src='./README_IMG/회원가입.JPG' alt='회원가입' width=600> |
+|  로그인  |   <img src='./README_IMG/로그인.JPG' alt='로그인' width=600>   |
 
 - 회원가입 시 비밀번호 8글자 확인, 비밀번호 확인과 일치 여부를 출력하여 사용자가 에러 메시지를 통해 잘못된 부분을 확인할 수 있도록 하였습니다.
 - 로그인 실패 시 에러 메시지를 띄워 아이디와 비밀번호를 재확인하도록 하였습니다.
@@ -111,17 +125,17 @@
 
 |       내용       |                                     이미지                                      |
 | :--------------: | :-----------------------------------------------------------------------------: |
-|   예금상품검색   |     <img src='./README_IMG/예금상품검색.JPG' alt='예금상품검색' width=1000>     |
-|   적금상품검색   |     <img src='./README_IMG/적금상품검색.JPG' alt='적금상품검색' width=1000>     |
-|    예금상세1     |        <img src='./README_IMG/예금상세1.JPG' alt='예금상세1' width=1000>        |
-|    예금상세2     |        <img src='./README_IMG/예금상세2.JPG' alt='예금상세2' width=1000>        |
-|    예적금수정    |       <img src='./README_IMG/예적금수정.JPG' alt='예적금수정' width=1000>       |
-| 예적금수정이메일 | <img src='./README_IMG/예적금수정이메일.png' alt='예적금수정이메일' width=1000> |
-|    적금상세1     |        <img src='./README_IMG/적금상세1.JPG' alt='적금상세1' width=1000>        |
-|    적금상세2     |        <img src='./README_IMG/적금상세2.JPG' alt='적금상세2' width=1000>        |
-|     예금비교     |         <img src='./README_IMG/예금비교.JPG' alt='예금비교' width=1000>         |
-|     적금비교     |         <img src='./README_IMG/적금비교.png' alt='적금비교' width=1000>         |
-| 은행 상세 페이지 |             <img src='./README_IMG/은행.JPG' alt='은행' width=1000>             |
+|   예금상품검색   |     <img src='./README_IMG/예금상품검색.JPG' alt='예금상품검색' width=600>     |
+|   적금상품검색   |     <img src='./README_IMG/적금상품검색.JPG' alt='적금상품검색' width=600>     |
+|    예금상세1     |        <img src='./README_IMG/예금상세1.JPG' alt='예금상세1' width=600>        |
+|    예금상세2     |        <img src='./README_IMG/예금상세2.JPG' alt='예금상세2' width=600>        |
+|    예적금수정    |       <img src='./README_IMG/예적금수정.JPG' alt='예적금수정' width=600>       |
+| 예적금수정이메일 | <img src='./README_IMG/예적금수정이메일.png' alt='예적금수정이메일' width=600> |
+|    적금상세1     |        <img src='./README_IMG/적금상세1.JPG' alt='적금상세1' width=600>        |
+|    적금상세2     |        <img src='./README_IMG/적금상세2.JPG' alt='적금상세2' width=600>        |
+|     예금비교     |         <img src='./README_IMG/예금비교.JPG' alt='예금비교' width=600>         |
+|     적금비교     |         <img src='./README_IMG/적금비교.png' alt='적금비교' width=600>         |
+| 은행 상세 페이지 |             <img src='./README_IMG/은행.JPG' alt='은행' width=600>             |
 
 - 옵션 선택을 통해 예금, 적금 상품 검색을 진행할 수 있습니다.
 - 옵션의 종류로는 저축 기간, 정렬, 은행이 있고 정렬은 라디오 버튼으로 하나의 값을, 저축 기간과 은행은 0개 이상의 값을 선택할 수 있습니다. 하나도 선택하지 없는 경우에는 전체 선택으로 간주하고 검색을 진행합니다.
@@ -138,8 +152,8 @@
 
 |         내용          |                              이미지                               |
 | :-------------------: | :---------------------------------------------------------------: |
-| 환율계산(with 그래프) |  <img src='./README_IMG/환율계산.JPG' alt='환율계산' width=1000>  |
-|  환율계산(with 다수)  | <img src='./README_IMG/환율계산2.JPG' alt='환율계산2' width=1000> |
+| 환율계산(with 그래프) |  <img src='./README_IMG/환율계산.JPG' alt='환율계산' width=600>  |
+|  환율계산(with 다수)  | <img src='./README_IMG/환율계산2.JPG' alt='환율계산2' width=600> |
 
 - 환율 계산 페이지에서는 각각의 통화를 선택하여 환율을 계산할 수 있습니다.
 - 또한, 우측 i 버튼을 클릭하여 최근 환율 추세 그래프를 확인할 수 있도록 구현하였습니다.
@@ -149,8 +163,8 @@
 
 |         내용         |                                 이미지                                  |
 | :------------------: | :---------------------------------------------------------------------: |
-|      근처 은행       |     <img src='./README_IMG/주변은행.JPG' alt='주변은행' width=1000>     |
-| 근처 은행(with 상품) | <img src='./README_IMG/주변은행상품.JPG' alt='주변은행상품' width=1000> |
+|      근처 은행       |     <img src='./README_IMG/주변은행.JPG' alt='주변은행' width=600>     |
+| 근처 은행(with 상품) | <img src='./README_IMG/주변은행상품.JPG' alt='주변은행상품' width=600> |
 
 - 근처 은행 검색 페이지에서는 사용자가 입력한 주소, 없다면 삼성화재 대전 연수원 기준 근처 은행을 검색합니다.
 - 출력되는 정보로는 해당 지점명, 전화번호, 입력 위치로부터의 거리가 출력됩니다.
@@ -161,10 +175,10 @@
 
 |     내용      |                                   이미지                                    |
 | :-----------: | :-------------------------------------------------------------------------: |
-| 커뮤니티 메인 |       <img src='./README_IMG/커뮤니티.JPG' alt='커뮤니티' width=1000>       |
-|  게시글 생성  |   <img src='./README_IMG/커뮤니티생성.JPG' alt='커뮤니티생성' width=1000>   |
-| 댓글, 대댓글  | <img src='./README_IMG/커뮤니티댓댓글.JPG' alt='커뮤니티댓댓글' width=1000> |
-|  관리자 권한  | <img src='./README_IMG/커뮤니티관리자.JPG' alt='커뮤니티관리자' width=1000> |
+| 커뮤니티 메인 |       <img src='./README_IMG/커뮤니티.JPG' alt='커뮤니티' width=600>       |
+|  게시글 생성  |   <img src='./README_IMG/커뮤니티생성.JPG' alt='커뮤니티생성' width=600>   |
+| 댓글, 대댓글  | <img src='./README_IMG/커뮤니티댓댓글.JPG' alt='커뮤니티댓댓글' width=600> |
+|  관리자 권한  | <img src='./README_IMG/커뮤니티관리자.JPG' alt='커뮤니티관리자' width=600> |
 
 - 커뮤니티 메인에는 커뮤니티의 게시글과 해당 게시글의 댓글 수 작성자 작성일을 확인할 수 있도록 구현하였습니다.
 - 로그인한 사용자는 자유게시판과 FAQ에 게시글을 생성할 수 있으며, 게시글 작성자는 자신의 게시글을 수정/삭제할 수 있습니다.
@@ -175,10 +189,10 @@
 
 |       내용       |                                 이미지                                  |
 | :--------------: | :---------------------------------------------------------------------: |
-|   프로필 메인    |   <img src='./README_IMG/프로필정보.JPG' alt='프로필정보' width=1000>   |
-| 프로필 정보 수정 |   <img src='./README_IMG/프로필수정.JPG' alt='프로필수정' width=1000>   |
-|  비밀번호 수정   | <img src='./README_IMG/비밀번호수정.JPG' alt='비밀번호수정' width=1000> |
-|   내 정보 메인   |   <img src='./README_IMG/내정보메인.JPG' alt='내정보메인' width=1000>   |
+|   프로필 메인    |   <img src='./README_IMG/프로필정보.JPG' alt='프로필정보' width=600>   |
+| 프로필 정보 수정 |   <img src='./README_IMG/프로필수정.JPG' alt='프로필수정' width=600>   |
+|  비밀번호 수정   | <img src='./README_IMG/비밀번호수정.JPG' alt='비밀번호수정' width=600> |
+|   내 정보 메인   |   <img src='./README_IMG/내정보메인.JPG' alt='내정보메인' width=600>   |
 
 - 프로필 메인 페이지에서는 내 프로필 이미지 등 정보를 확인할 수 있습니다.
 - 또한, 가입한 예금/적금 상품의 금리를 차트를 통해 시각적으로 확인할 수 있습니다.
@@ -192,8 +206,8 @@
 
 |      내용      |                                 이미지                                  |
 | :------------: | :---------------------------------------------------------------------: |
-| 상품 추천 로딩 | <img src='./README_IMG/상품추천로딩.png' alt='상품추천로딩' width=1000> |
-| 상품 추천 결과 |     <img src='./README_IMG/상품추천.png' alt='상품추천' width=1000>     |
+| 상품 추천 로딩 | <img src='./README_IMG/상품추천로딩.png' alt='상품추천로딩' width=600> |
+| 상품 추천 결과 |     <img src='./README_IMG/상품추천.png' alt='상품추천' width=600>     |
 
 - 상품 추천을 입력하는 경우 추천 작업 진행중임을 알리기 위해 검색 중을 나타내는 그래픽을 활용하였습니다.
 - 상품 추천 결과는 예/적금 5개씩 추천 순위와 함께 제공되도록 구현하였습니다.
@@ -202,12 +216,49 @@
 
 | 내용 |                         이미지                          |
 | :--: | :-----------------------------------------------------: |
-| 챗봇 | <img src='./README_IMG/챗봇.JPG' alt='챗봇' width=1000> |
+| 챗봇 | <img src='./README_IMG/챗봇.JPG' alt='챗봇' width=600> |
+| ERD | <img src='./README_IMG/conversation_erd.png' alt='챗봇' width=600> |
+| 프롬프트 |  |
+
+
+```python
+conversations = Conversation.objects.all()
+previous_prompts = []
+
+if conversations:
+    for conversation in conversations:
+        previous_prompts.append({"role": 'user', "content": conversation.user_message})
+        previous_prompts.append({"role": 'user', "content": conversation.system_message})
+
+try:
+        response = requests.post(
+            'https://api.openai.com/v1/chat/completions',
+            headers={
+                'Authorization': f'Bearer {API_KEY_OPENAI}',
+                'Content-Type': 'application/json',
+            },
+            json={
+                'model': 'gpt-4o',
+                'messages': [
+                    {'role': "system", "content": "우리 프로젝트 이름은 금상추야. 너의 이름도 금상추라고 알고 있어줘."},
+                    {'role': "system", "content": "너는 금상추 프로젝트 서비스에 도움이 되는 유능한 조수야."},
+                    {'role': 'system', 'content': f'유저 질문에 대한 정보는 장고 모델의 내용을 참고해서 데이터를 DB에서 직접 찾아서 답변해줘. / {erd_content}'},
+                    {'role': 'system', 'content': '유저에게 절대로 장고 프로젝트 동작에 대한 얘기를 하지 마.'},
+                    {'role': 'system', 'content': '유저가 상품을 추천해달라고 했으면 장고의 예금, 적금 상품 중 fin_prdt_nm에 있는 값을 반환해줘야해.'},
+                    {'role': 'system', "content": "유저에게 장고 모델의 필드 이름을 직접적으로 말하지 않았으면 해. 필요하다면 필드 이름을 적절하게 한글로 번역해서 알려줘."}
+                ] + previous_prompts + [{'role': 'user', 'content': combined_message},
+                    {'role': 'system', 'content': '유저가 명확하게 답변을 요청하지 않았으면, 명확한 질문을 다시 요청해줘'}],
+            }
+        )
+        response.raise_for_status()
+        return response.json()        
+```
 
 - 내비게이션 바의 금상추와 대화하기를 누르면 화면 우측에 챗봇이 등장합니다.
 - 챗봇은 사용자가 특정 키워드를 입력하는 경우 DB에서 해당하는 상품들을 검색하여 알릴 수 있도록 구현하였습니다.
+- 챗봇에는 django 프로젝트의 모델 및 필드 관련 내용을 사전에 프롬프트로 주고, 유저와의 대화 내용을 전부 Conversation이라는 별도의 모델에 저장해서 다음 질문에도 이어지도록 구현했습니다.
 
 ## 기타(느낀 점, 후기 등)
 
-- 김재훈(선장) :
+- 김재훈(선장) : 단순히 언어를 배울때보다 훨씬 많은 것을 배울 수 있는 프로젝트였습니다. 정해진 정답을 맞추는 게 아닌 내가 원하는 수준의 결과물을 끌어내기 위해 많은 것을 배우고 또 경험해볼 수 있는 뜻깊은 프로젝트였습니다. 생각했던 것 만큼 거창하게 많은 기능을 구현한건 아니지만, 깊게 집중해서 많은 것을 해볼 수 있었던 것 같습니다. 앞으로도 지금처럼 좋은 팀원들과 함께 즐겁게, 열심히 개발을 하고싶습니다. 
 - 복현우(선원) : 많은 노력을 들인 만큼 많은 것을 얻을 수 있던 프로젝트였습니다. 중요 기능을 비교적 간단히 구현한 경우도 있었고, 별 거 아닌 기능에 많은 시간을 소모한 경우도 있었습니다. 이 모든 일련의 과정들을 잘 제어할 수 있도록 '초기 설계'의 중요성을 다시 한 번 실감할 수 있었습니다. 두 명의 소규모 프로젝트였지만, 진전이 더뎌 초조해지는 순간에도 재훈 형님이 발전시킨 것을 보고 많은 힘을 얻고 다시 달릴 수 있는 동력을 얻을 수 있었습니다. 짧은 시간 동안 많은 필수 요구 사항을 구현해야 하다보니 필수 요구사항에 몇몇 기능을 추가하는 데 그쳤지만, 1학기 동안 배운 것을 총망라하면서 부족했던 부분을 다시 확인하고 애플리케이션을 완성해 가는 재미를 느낄 수 있던 시간이었습니다.
