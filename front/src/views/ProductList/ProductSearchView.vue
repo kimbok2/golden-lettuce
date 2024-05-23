@@ -1,6 +1,6 @@
 <template>
   <div class="search-container">
-    <button @click="savedata" class="btn btn-primary">
+    <button v-if="store.userInfo.is_superuser" @click="savedata" class="btn btn-primary">
       DB저장하는 버튼 1회만 실행
     </button>
     <div class="container">
@@ -212,7 +212,7 @@
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-warning">제출</button>
+        <button type="submit" class="btn btn-warning">검색</button>
       </form>
     </div>
     <hr />
@@ -358,10 +358,6 @@ const selectAllBanks = () => {
   }
 };
 
-const deselectAllBanks = () => {
-  bankIds.value = [];
-};
-
 const selectSort = function () {
   if (selectedPeriods.value.length === 0) {
     selectedPeriods.value = [1, 3, 6, 12, 24, 36];
@@ -375,10 +371,11 @@ const selectSort = function () {
   searchStore.bankIds = bankIds.value;
   selectedType2.value = selectedType.value;
   const periods = selectedPeriods.value.slice();
+  console.log(periods)
   if (selectedType.value) {
     axios({
       method: "get",
-      url: `${store.API_URL}/finances/get_${selectedType.value}_products/1,3,6,12,24,36/${sorting.value}/${bankIds.value}/`,
+      url: `${store.API_URL}/finances/get_${selectedType.value}_products/${periods}/${sorting.value}/${bankIds.value}/`,
       // headers: {
       //   Authorization: `Token ${store.token}`,
       // },

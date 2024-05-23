@@ -5,44 +5,50 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { Chart, registerables } from "chart.js";
+
 Chart.register(...registerables);
 
 const props = defineProps(["join_product"]);
 const chart = ref(null);
+let chartInstance = null;
 
-const labels = props.join_product.map((product) => product.fin_prdt_nm);
-const intrRates = props.join_product.map((product) => {
-  let highestRateOption = null;
-  if (product.depositoption_set) {
-    highestRateOption = product.depositoption_set.reduce((max, option) =>
-      parseFloat(option.intr_rate2) > parseFloat(max.intr_rate2) ? option : max
-    );
-  } else if (product.savingoption_set) {
-    highestRateOption = product.savingoption_set.reduce((max, option) =>
-      parseFloat(option.intr_rate2) > parseFloat(max.intr_rate2) ? option : max
-    );
+const createChart = () => {
+  if (chartInstance) {
+    chartInstance.destroy();
   }
-  return highestRateOption ? parseFloat(highestRateOption.intr_rate) : 0;
-});
-const intrRate2s = props.join_product.map((product) => {
-  let highestRateOption = null;
-  if (product.depositoption_set) {
-    highestRateOption = product.depositoption_set.reduce((max, option) =>
-      parseFloat(option.intr_rate2) > parseFloat(max.intr_rate2) ? option : max
-    );
-  } else if (product.savingoption_set) {
-    highestRateOption = product.savingoption_set.reduce((max, option) =>
-      parseFloat(option.intr_rate2) > parseFloat(max.intr_rate2) ? option : max
-    );
-  }
-  return highestRateOption ? parseFloat(highestRateOption.intr_rate2) : 0;
-});
 
-onMounted(() => {
+  const labels = props.join_product.map((product) => product.fin_prdt_nm);
+  const intrRates = props.join_product.map((product) => {
+    let highestRateOption = null;
+    if (product.depositoption_set) {
+      highestRateOption = product.depositoption_set.reduce((max, option) =>
+        parseFloat(option.intr_rate2) > parseFloat(max.intr_rate2) ? option : max
+      );
+    } else if (product.savingoption_set) {
+      highestRateOption = product.savingoption_set.reduce((max, option) =>
+        parseFloat(option.intr_rate2) > parseFloat(max.intr_rate2) ? option : max
+      );
+    }
+    return highestRateOption ? parseFloat(highestRateOption.intr_rate) : 0;
+  });
+  const intrRate2s = props.join_product.map((product) => {
+    let highestRateOption = null;
+    if (product.depositoption_set) {
+      highestRateOption = product.depositoption_set.reduce((max, option) =>
+        parseFloat(option.intr_rate2) > parseFloat(max.intr_rate2) ? option : max
+      );
+    } else if (product.savingoption_set) {
+      highestRateOption = product.savingoption_set.reduce((max, option) =>
+        parseFloat(option.intr_rate2) > parseFloat(max.intr_rate2) ? option : max
+      );
+    }
+    return highestRateOption ? parseFloat(highestRateOption.intr_rate2) : 0;
+  });
+
   const ctx = chart.value.getContext("2d");
-  new Chart(ctx, {
+  chartInstance = new Chart(ctx, {
     type: "bar",
     data: {
       labels,
@@ -82,7 +88,19 @@ onMounted(() => {
       layout: {},
     },
   });
+};
+
+onMounted(() => {
+  createChart();
 });
+
+watch(
+  () => props.join_product,
+  (newVal) => {
+    createChart();
+  },
+  { deep: true }
+);
 </script>
 
 <style scoped>
