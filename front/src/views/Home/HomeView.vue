@@ -55,7 +55,7 @@
                   FAQ
                 </button>
               </div>
-              <table class="table">
+              <table class="table table-hover">
                 <thead>
                   <tr>
                     <th scope="col" style="width: 80%">제목</th>
