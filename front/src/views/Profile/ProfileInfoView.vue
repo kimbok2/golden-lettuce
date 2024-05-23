@@ -121,7 +121,8 @@ watch(
   () => store.userInfo,
   (newUser) => {
     user.value = newUser;
-  }
+  },
+  { immediate: true }
 );
 
 onMounted(() => {
