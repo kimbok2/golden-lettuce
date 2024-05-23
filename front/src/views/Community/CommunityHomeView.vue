@@ -8,7 +8,7 @@
           <th scope="col" class="col-title">제목</th>
           <th scope="col" class="col-user">작성자</th>
           <th scope="col" class="col-date">작성일</th>
-          <th scope="col" class="col-views">조회 수</th>
+          <!-- <th scope="col" class="col-views">조회 수</th> -->
         </tr>
       </thead>
       <tbody>
@@ -20,36 +20,10 @@
           </td>
           <th>{{ article.user.nickname }}</th>
           <td>{{ formattedDate(article.created_at) }}</td>
-          <td>not yet</td>
+          <!-- <td>not yet</td> -->
         </tr>
       </tbody>
     </table>
-    <!-- <ul class="text-center ps-0 list-group">
-      <li class="list-group border rounded-0 fw-bolder">
-        <div class="row my-3">
-          <div class="col-2">카테고리</div>
-          <div class="col-6">제목</div>
-          <div class="col-1">작성자</div>
-          <div class="col-2">작성일</div>
-          <div class="col-1">조회 수</div>
-        </div>
-      </li>
-      <template v-for="article in store.articles" :key="article.pk">
-        <li class="list-group border border-0 rounded-0">
-          <div class="row my-3">
-            <div class="col-2">{{ article.category }}</div>
-            <div class="col-6 text-start" @click="toDetail({ name: 'community-detail', params: { id: article.id } })">
-              <span> {{ article.title }}</span>
-              <span class="fw-bold text-danger"> [{{ article.comment_count }}]</span>
-            </div>
-            <div class="col-1 fw-bolder">{{ article.user.nickname }}</div>
-            <div class="col-2">{{ formattedDate(article.created_at) }}</div>
-            <div class="col-1">not yet</div>
-          </div>
-          <hr class="my-0" />
-        </li>
-      </template>
-    </ul> -->
     <br />
 
     <RouterLink v-if="userStore.isLogin" :to="{ name: 'community-create' }">

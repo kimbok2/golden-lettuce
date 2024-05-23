@@ -59,9 +59,11 @@
               </div>
             </div>
             <div class="col-12">
-              <div class="sub-col" style="height: 275px">
+              <div class="sub-col" style="height: auto;">
                 <RouterLink :to="{ name: 'exchange' }" class="text-decoration-none text-black">
-                  <h5>환율 계산기</h5></RouterLink
+                  <h5>환율 계산기</h5>
+                  <img src="@/assets/exchange_rate_chart.png" alt="#" style="width: 100%; border-radius: 25px" />
+                  </RouterLink
                 >
               </div>
             </div>
@@ -84,12 +86,20 @@ const userInfo = computed(() => store.userInfo)
 const scrollElement = ref(null)
 const scrollStyle = ref({ paddingTop: '0px' })
 const threshold = 175 // 특정 값 (원하는 임계값을 설정하세요)
+const maxScrollHeight = 500 // 페이지 최대 높이
+
+
+// const documentHeight = ref(document.documentElement.scrollHeight)
+
 
 const handleScroll = () => {
   const offsetTop = scrollElement.value.getBoundingClientRect().top
 
   if (offsetTop < threshold) {
     const paddingTop = threshold - offsetTop
+    if (paddingTop > 550) {
+      return
+    }
     scrollStyle.value = { paddingTop: `${paddingTop}px` }
   } else {
     scrollStyle.value = { paddingTop: '0px' }
@@ -129,6 +139,8 @@ onBeforeUnmount(() => {
 }
 
 .sub-col {
+
+  background-color: white;
   height: 200px;
 
   padding: 5px;
