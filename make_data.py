@@ -16,41 +16,13 @@ def random_name():
     result += random.choice(last_name_samples)
     return result + str(random.randint(1, 10000))
 
-# 금융 상품 API 정보
-DP_URL = 'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json'
-SP_URL = 'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json'
-API_KEY = 'b5c8f98021e7c5f65ecd69ba1a050e5e'
-
-deposit_products = []
-saving_products = []
-
-params = {
-    'auth': API_KEY,
-    'topFinGrpNo': '020000',
-    'pageNo': 1,
-}
-
 period_choices = [1, 3, 6, 12, 24, 36]
-
-# 정기예금 목록 저장
-response = requests.get(DP_URL, params=params).json()
-baseList = response.get('result').get('baseList')  # 상품 목록
-
-for product in baseList:
-    deposit_products.append(product['fin_prdt_cd'])
-
-# 적금 목록 저장
-response = requests.get(SP_URL, params=params).json()
-baseList = response.get('result').get('baseList')  # 상품 목록
-
-for product in baseList:
-    saving_products.append(product['fin_prdt_cd'])
 
 # JSON 파일 생성
 file = OrderedDict()
 
 username_list = []
-N = 10000
+N = 500
 i = 0
 
 while i < N:
@@ -61,7 +33,7 @@ while i < N:
     username_list.append(rn)
     i += 1
 
-save_dir = './back/goldenlettuce_back/fixtures/user_data.json'
+save_dir = './back/goldenlettuce_back/accounts/fixtures/user_data.json'
 with open(save_dir, 'w', encoding="utf-8") as f:
     f.write('[')
 
