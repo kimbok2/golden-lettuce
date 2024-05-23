@@ -85,7 +85,7 @@ const computedRate = computed(() => {
 })
 
 const computedValue = computed(() => {
-  console.log(props.handleId, computedRate.value)
+  // console.log(props.handleId, computedRate.value)
 
   const calculated = (exchangeStore.inputAmount / computedRate.value) * exchangeStore.selectedRate
   // 계산한 값이 숫자가 숫자가 아니면 null 반환, 계산 가능값이면 결과값 반환
@@ -130,7 +130,7 @@ const inputElse = ref(null)
 // v-else 상태일 때, v-else 태그의 input을 클릭하면 현재의 통화를 기준 통화로 바꾸어주기
 // 클릭과 동시에 현재 선택 상태를 현재 통화로, focus도 함께 바꿔줌
 const focusInputIf = () => {
-  inputValue.value = null
+  inputValue.value = ''
   currentSelectChange()
   exchangeStore.selectedHandle = props.handleId // 상태 변경하여 v-if를 true로 설정
   nextTick(() => {
@@ -157,6 +157,7 @@ const updateSelectedChartCurrent = function () {
 
 onMounted(() => {
   exchangeStore.inputAmount = ''
+  exchangeStore.get_exchange_rate()
 })
 </script>
 

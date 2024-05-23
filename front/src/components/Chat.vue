@@ -10,7 +10,7 @@
   >
     <div class="offcanvas-header">
       <h1 class="text-center mt-3 ms-5">
-        <div>
+        <div style="position: relative;">
           금상추 봇
           <span class="material-symbols-outlined shake" style="font-size: 50px"> robot_2 </span>
           <img class="bot-logo shake" src="@/assets/LOGO_LITE.png" alt="" />
@@ -88,9 +88,9 @@ const scrollToBottom = async () => {
 .bot-logo {
   width: 30px;
 
-  position: relative;
-  left: -25px;
-  bottom: 40px;
+  position: absolute;
+  right: -10px;
+  bottom: 45px;
 }
 
 .messages {
