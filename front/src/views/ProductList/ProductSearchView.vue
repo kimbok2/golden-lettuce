@@ -1,6 +1,6 @@
 <template>
   <div class="search-container">
-    <button v-if="store.userInfo.is_superuser" @click="savedata" class="btn btn-primary">
+    <button v-if="store.userInfo?.is_superuser" @click="savedata" class="btn btn-primary">
       DB저장하는 버튼 1회만 실행
     </button>
     <div class="container">
