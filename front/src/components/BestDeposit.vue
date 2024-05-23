@@ -34,8 +34,8 @@
                     class="custom-link">
                     <img :src="`/media/bank/${bank.bank_id}.png`" alt="이미지">
                     {{ bank.bank_name }}</RouterLink>
-                </h4>
-                  <h6 class="card-text">{{ bank.top_deposit_product.fin_prdt_nm }}</h6>
+                  </h4>
+                  <h5 class="card-text">{{ bank.top_deposit_product.fin_prdt_nm }}</h5>
                   <p class="card-text">가입자 수 : {{ bank.top_deposit_product.user_count }}명</p>
                   <p class="card-text">
                     
