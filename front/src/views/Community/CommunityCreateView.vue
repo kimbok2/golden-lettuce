@@ -61,7 +61,7 @@ import { useRouter } from 'vue-router'
 import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
 
-const apiUrl = 'http://127.0.0.1:8000'
+const apiUrl = 'https://kgarrry.pythonanywhere.com'
 
 const goBack = function () {
   router.back()
