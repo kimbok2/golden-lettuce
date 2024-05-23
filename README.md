@@ -197,6 +197,42 @@
 | 내용 |                         이미지                          |
 | :--: | :-----------------------------------------------------: |
 | 챗봇 | <img src='./README_IMG/챗봇.JPG' alt='챗봇' width=1000> |
+| ERD | <img src='./README_IMG/conversation_erd.png' alt='챗봇' width=1000> |
+| 프롬프트 |  |
+
+
+```python
+conversations = Conversation.objects.all()
+previous_prompts = []
+
+if conversations:
+    for conversation in conversations:
+        previous_prompts.append({"role": 'user', "content": conversation.user_message})
+        previous_prompts.append({"role": 'user', "content": conversation.system_message})
+
+try:
+        response = requests.post(
+            'https://api.openai.com/v1/chat/completions',
+            headers={
+                'Authorization': f'Bearer {API_KEY_OPENAI}',
+                'Content-Type': 'application/json',
+            },
+            json={
+                'model': 'gpt-4o',
+                'messages': [
+                    {'role': "system", "content": "우리 프로젝트 이름은 금상추야. 너의 이름도 금상추라고 알고 있어줘."},
+                    {'role': "system", "content": "너는 금상추 프로젝트 서비스에 도움이 되는 유능한 조수야."},
+                    # {'role': 'system', 'content': f'유저 질문에 대한 정보는 장고 모델의 내용을 참고해서 데이터를 DB에서 직접 찾아서 답변해줘. / {erd_content}'},
+                    {'role': 'system', 'content': '유저에게 절대로 장고 프로젝트 동작에 대한 얘기를 하지 마.'},
+                    {'role': 'system', 'content': '유저가 상품을 추천해달라고 했으면 장고의 예금, 적금 상품 중 fin_prdt_nm에 있는 값을 반환해줘야해.'},
+                    {'role': 'system', "content": "유저에게 장고 모델의 필드 이름을 직접적으로 말하지 않았으면 해. 필요하다면 필드 이름을 적절하게 한글로 번역해서 알려줘."}
+                ] + previous_prompts + [{'role': 'user', 'content': combined_message},
+                    {'role': 'system', 'content': '유저가 명확하게 답변을 요청하지 않았으면, 명확한 질문을 다시 요청해줘'}],
+            }
+        )
+        response.raise_for_status()
+        return response.json()        
+```
 
 - 내비게이션 바의 금상추와 대화하기를 누르면 화면 우측에 챗봇이 등장합니다.
 - 챗봇은 사용자가 특정 키워드를 입력하는 경우 DB에서 해당하는 상품들을 검색하여 알릴 수 있도록 구현하였습니다.
