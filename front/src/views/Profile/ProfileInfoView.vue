@@ -97,7 +97,7 @@ import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 import ProfileGraphItem from "@/components/Profile/ProfileGraphItem.vue";
 
-const apiUrl = "https://kgarrry.pythonanywhere.com";
+const apiUrl = "http://127.0.0:8000";
 const router = useRouter();
 const user = ref(null);
 const store = useUserStore();

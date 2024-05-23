@@ -42,7 +42,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useCommunityStore } from '@/stores/community'
 import axios from 'axios'
 
-const apiUrl = 'https://kgarrry.pythonanywhere.com'
+const apiUrl = 'http://127.0.0:8000'
 
 const title = ref(null)
 const content = ref(null)

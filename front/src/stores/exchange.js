@@ -5,7 +5,7 @@ import axios from 'axios'
 export const useExchangeStore = defineStore(
   'exchange',
   () => {
-    const API_URL = 'https://kgarrry.pythonanywhere.com'
+    const API_URL = 'http://127.0.0:8000'
     const currencies = [
       {
         pk: 1,
