@@ -54,8 +54,7 @@ SECRET_KEY = 'django-insecure-02ylunc^k-cv+b4!v7(izf=v7y7sahud50o0q07tp5b@5wbc3d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['kgarrry.pythonanywhere.com',
-                 '127.0.0.1']
+ALLOWED_HOSTS = ['kgarrry.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition
@@ -226,5 +225,5 @@ EMAIL_HOST = 'smtp.naver.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'goldenlettuce@naver.com'
-EMAIL_HOST_PASSWORD = 'rmatkdcn12!'
+EMAIL_HOST_PASSWORD = NAVER_PASSWORD
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
