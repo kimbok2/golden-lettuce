@@ -1,9 +1,9 @@
 <template>
   <div v-if="article" class="text-start m-3 p-3 rounded-0">
     <p class="text-end">
-      <button class="btn btn-secondary" @click="goBack">
-        > {{ article.category }}
-      </button>
+
+      <button class="btn btn-secondary" @click="goBack">뒤로가기</button>
+
     </p>
     <!-- 제목 바 -->
     <div>
@@ -21,7 +21,7 @@
             height="50"
             class="d-inline-block align-text-top border rounded-circle"
           />
-          <span class="ms-3 fw-bolder">{{ article.user.nickname }}</span>
+          <span class="ms-3 fw-bolder">{{ article.user?.nickname }}</span>
         </div>
         <!-- 게시글 작성일, 게시글 수정일 표시 -->
         <div class="text-end">
@@ -82,6 +82,7 @@ import Comment from "@/components/Comment.vue";
 
 const apiUrl = "http://127.0.0.1:8000";
 
+
 const route = useRoute();
 const router = useRouter();
 const store = useCommunityStore();
@@ -91,6 +92,16 @@ const articleId = ref(null);
 const article = ref(null);
 const username = ref(null);
 const user = ref(null);
+
+const categoryTranslations = {
+  'free': '자유게시판',
+  'faq': 'FAQ',
+  'notice': '공지사항',
+};
+
+function translateCategory(category) {
+  return categoryTranslations[category] || category;
+}
 
 const goBack = function () {
   router.back();
@@ -120,10 +131,13 @@ const deleteArticle = function () {
 };
 
 onMounted(() => {
-  articleId.value = route.params.id;
-  article.value = store.getArticle(articleId.value);
-  username.value = userStore.name;
-});
+
+  articleId.value = route.params.id
+  article.value = store.getArticle(route.params.id)
+  console.log(article.value)
+  username.value = userStore.name
+})
+
 
 // store.article의 변화를 감지하며, 변화가 있는 경우 반응형 변수 article의 값을 바뀐 새 article(newArticle)의 값으로 바꿔줌
 watch(

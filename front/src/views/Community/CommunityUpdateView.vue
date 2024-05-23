@@ -64,6 +64,7 @@ import axios from "axios";
 
 const apiUrl = "http://127.0.0.1:8000";
 
+
 const title = ref(null);
 const content = ref(null);
 const category = ref(null);
@@ -82,6 +83,17 @@ const comment_count = computed(() => {
 const goBack = function () {
   router.back();
 };
+
+const categoryTranslations = {
+  'free': '자유게시판',
+  'faq': 'FAQ',
+  'notice': '공지사항',
+};
+
+function translateCategory(category) {
+  return categoryTranslations[category] || category;
+}
+
 
 const updateArticle = function () {
   if (confirm("게시글을 수정하시겠습니까?")) {
@@ -122,10 +134,11 @@ const deleteArticle = function () {
 };
 
 onMounted(() => {
-  (title.value = store.article.title),
-    (category.value = store.article.category),
-    (content.value = store.article.content);
-});
+
+  ;(title.value = store.article.title),
+    (category.value = translateCategory(store.article.category)),
+    (content.value = store.article.content)
+})
 </script>
 <style scoped>
 textarea {

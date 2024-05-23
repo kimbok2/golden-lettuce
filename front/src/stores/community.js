@@ -8,6 +8,7 @@ export const useCommunityStore = defineStore(
   () => {
     const API_URL = "http://127.0.0.1:8000";
 
+
     const router = useRouter();
 
     const categoryOptions = {
@@ -16,8 +17,11 @@ export const useCommunityStore = defineStore(
       free: "자유게시판",
     };
 
+
     const article = ref([]);
     const articles = ref([]);
+
+    const mainArticles = ref([])
     const article_count = computed(() => {
       return articles.value.length;
     });
@@ -36,28 +40,37 @@ export const useCommunityStore = defineStore(
         });
     };
 
+
+    const getFiveArticleList = function (category) {
+      axios({
+        method: 'get',
+        url: `${API_URL}/communities/main_article/${category}/`,
+      })
+        .then((response) => {
+          mainArticles.value = response.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+
     const getArticle = function (articleId) {
       axios({
         method: "get",
         url: `${API_URL}/communities/${articleId}`,
       })
         .then((response) => {
-          article.value = response.data;
+
+          console.log(response)
+          article.value = response.data
         })
         .catch((error) => {
           console.log(error);
         });
     };
 
-    return {
-      article,
-      articles,
-      article_count,
-      API_URL,
-      categoryOptions,
-      getArticle,
-      getArticleList,
-    };
+
+    return { article, mainArticles, articles, article_count, API_URL, categoryOptions, getFiveArticleList, getArticle, getArticleList }
   },
   { persist: true }
 );

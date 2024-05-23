@@ -14,7 +14,7 @@
       <tbody>
         <tr v-for="article in store.articles" :key="article.pk"
         @click="toDetail({ name: 'community-detail', params: { id: article.id } })">
-          <th scope="row">{{ article.category }}</th>
+          <th scope="row">{{ translateCategory(article.category) }}</th>
           <td class="text-start">
             <span> {{ article.title }}</span> <span class="fw-bold text-danger"> [{{ article.comment_count }}]</span>
           </td>
@@ -50,6 +50,17 @@ const selectedCategory = ref(null)
 
 const formattedDate = function (date) {
   return date.substring(0, 10)
+}
+
+
+const categoryTranslations = {
+  'free': '자유게시판',
+  'faq': 'FAQ',
+  'notice': '공지사항',
+};
+
+function translateCategory(category) {
+  return categoryTranslations[category] || category;
 }
 
 // toDetail 함수
