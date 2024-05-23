@@ -69,54 +69,54 @@
 
 ## 서비스 대표 기능들에 대한 설명
 ### 1️⃣ 메인 페이지
-<img src='./README_IMG/메인페이지.jpg' alt='메인페이지' width=1000> 
-<img src='./README_IMG/메인페이지입력후.jpg' alt='메인페이지입력후' width=1000> 
+<img src='./README_IMG/메인페이지.JPG' alt='메인페이지' width=1000> 
+<img src='./README_IMG/메인페이지입력후.JPG' alt='메인페이지입력후' width=1000> 
 
 
 ### 2️⃣ 회원 커스터마이징
-<img src='./README_IMG/회원가입.jpg' alt='회원가입' width=1000> 
-<img src='./README_IMG/로그인.jpg' alt='로그인' width=1000> 
+<img src='./README_IMG/회원가입.JPG' alt='회원가입' width=1000> 
+<img src='./README_IMG/로그인.JPG' alt='로그인' width=1000> 
 
 ### 3️⃣ 예적금 금리 조회
-<img src='./README_IMG/예금상품검색.jpg' alt='예금상품검색' width=1000> 
-<img src='./README_IMG/적금상품검색.jpg' alt='적금상품검색' width=1000> 
-<img src='./README_IMG/예금상세1.jpg' alt='예금상세1' width=1000> 
-<img src='./README_IMG/예금상세2.jpg' alt='예금상세2' width=1000> 
-<img src='./README_IMG/예적금수정.jpg' alt='예적금수정' width=1000> 
-<img src='./README_IMG/예적금수정이메일.jpg' alt='예적금수정이메일' width=1000> 
-<img src='./README_IMG/적금상세1.jpg' alt='적금상세1' width=1000> 
-<img src='./README_IMG/적금상세2.jpg' alt='적금상세2' width=1000> 
-<img src='./README_IMG/예금비교.jpg' alt='예금비교' width=1000> 
+<img src='./README_IMG/예금상품검색.JPG' alt='예금상품검색' width=1000> 
+<img src='./README_IMG/적금상품검색.JPG' alt='적금상품검색' width=1000> 
+<img src='./README_IMG/예금상세1.JPG' alt='예금상세1' width=1000> 
+<img src='./README_IMG/예금상세2.JPG' alt='예금상세2' width=1000> 
+<img src='./README_IMG/예적금수정.JPG' alt='예적금수정' width=1000> 
+<img src='./README_IMG/예적금수정이메일.JPG' alt='예적금수정이메일' width=1000> 
+<img src='./README_IMG/적금상세1.JPG' alt='적금상세1' width=1000> 
+<img src='./README_IMG/적금상세2.JPG' alt='적금상세2' width=1000> 
+<img src='./README_IMG/예금비교.JPG' alt='예금비교' width=1000> 
 <img src='./README_IMG/적금비교.png' alt='적금비교' width=1000> 
-<img src='./README_IMG/은행.jpg' alt='은행' width=1000> 
+<img src='./README_IMG/은행.JPG' alt='은행' width=1000> 
 
 
 ### 4️⃣ 환율 계산기
-<img src='./README_IMG/환율계산.jpg' alt='환율계산' width=1000> 
-<img src='./README_IMG/환율계산2.jpg' alt='환율계산2' width=1000> 
+<img src='./README_IMG/환율계산.JPG' alt='환율계산' width=1000> 
+<img src='./README_IMG/환율계산2.JPG' alt='환율계산2' width=1000> 
 
 ### 5️⃣ 근처 은행 검색
-<img src='./README_IMG/주변은행.jpg' alt='주변은행' width=1000> 
-<img src='./README_IMG/주변은행상품.jpg' alt='주변은행상품' width=1000> 
+<img src='./README_IMG/주변은행.JPG' alt='주변은행' width=1000> 
+<img src='./README_IMG/주변은행상품.JPG' alt='주변은행상품' width=1000> 
 
 ### 6️⃣ 커뮤니티
-<img src='./README_IMG/커뮤니티.jpg' alt='커뮤니티' width=1000> 
-<img src='./README_IMG/커뮤니티생성.jpg' alt='커뮤니티생성' width=1000> 
-<img src='./README_IMG/커뮤니티댓댓글.jpg' alt='커뮤니티댓댓글' width=1000> 
-<img src='./README_IMG/커뮤니티관리자.jpg' alt='커뮤니티관리자' width=1000> 
+<img src='./README_IMG/커뮤니티.JPG' alt='커뮤니티' width=1000> 
+<img src='./README_IMG/커뮤니티생성.JPG' alt='커뮤니티생성' width=1000> 
+<img src='./README_IMG/커뮤니티댓댓글.JPG' alt='커뮤니티댓댓글' width=1000> 
+<img src='./README_IMG/커뮤니티관리자.JPG' alt='커뮤니티관리자' width=1000> 
 
 
 ### 7️⃣ 프로필 페이지
-<img src='./README_IMG/프로필정보.jpg' alt='프로필정보' width=1000> 
-<img src='./README_IMG/프로필수정.jpg' alt='프로필수정' width=1000> 
-<img src='./README_IMG/내정보메인.jpg' alt='내정보메인' width=1000> 
+<img src='./README_IMG/프로필정보.JPG' alt='프로필정보' width=1000> 
+<img src='./README_IMG/프로필수정.JPG' alt='프로필수정' width=1000> 
+<img src='./README_IMG/내정보메인.JPG' alt='내정보메인' width=1000> 
 
 ### 8️⃣ 금융 상품 추천
 <img src='./README_IMG/상품추천로딩.png' alt='상품추천로딩' width=1000> 
 <img src='./README_IMG/상품추천.png' alt='상품추천' width=1000> 
 
 ### 9️⃣ 챗봇
-<img src='./README_IMG/챗봇.jpg' alt='챗봇' width=1000> 
+<img src='./README_IMG/챗봇.JPG' alt='챗봇' width=1000> 
 ![Alt text](image.png)
 ### 🔟
 
