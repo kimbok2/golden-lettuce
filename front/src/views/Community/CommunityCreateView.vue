@@ -24,13 +24,22 @@
             height="50"
             class="d-inline-block align-text-top border rounded-circle"
           />
-          <div style="display: inline-flex;">
+          <div style="display: inline-flex">
             <span class="ms-3 fw-bolder">{{ userStore.userInfo.nickname }}</span>
-            <select class="ms-3" v-model="category" id="category">
-              <option value="free">자유게시판</option>
-              <option value="faq">FAQ</option>
-              <option value="notice">공지사항</option>
-            </select>
+            <template v-if="userStore.userInfo?.is_superuser"
+              ><select class="ms-3" v-model="category" id="category">
+                <option value="free">자유게시판</option>
+                <option value="faq">FAQ</option>
+                <option value="notice">공지사항</option>
+              </select>
+            </template>
+            <template v-else
+              ><select class="ms-3" v-model="category" id="category">
+                <option value="free">자유게시판</option>
+                <!-- <option value="faq">FAQ</option>
+                <option value="notice">공지사항</option> -->
+              </select></template
+            >
           </div>
         </div>
       </div>
@@ -61,7 +70,7 @@ import { useRouter } from 'vue-router'
 import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
 
-const apiUrl = 'http://127.0.0:8000'
+const apiUrl = 'http://127.0.0.1:8000'
 
 const goBack = function () {
   router.back()

@@ -11,6 +11,7 @@ from pprint import pprint
 from communities.models import Article, Comment
 from exchanges.models import Current, ExchangeRate
 from finances.models import Bank, DepositProduct, SavingProduct, DepositOption, SavingOption
+from .models import Conversation
 
 # ERD.md 파일 경로 설정
 ERD_FILE_PATH = os.path.join(settings.BASE_DIR, 'docs', 'ERD.md')
@@ -105,6 +106,19 @@ def chat(request):
         
         try:
             response = send_request_to_openai(combined_message)
+            chat_response = response['choices'][0]['message']['content']
+            
+            # user_message = '{"role": "user", "content": ' + message + '}'
+            # system_message = '{"role": "system", "content": ' + chat_response + '}'
+            
+            # print('유저': )
+            
+            # conversation = Conversation(
+            #     user_message=message,
+            #     system_message=chat_response,
+            #     bot_response={"role": "system", "content": "우리 프로젝트 이름은 금상추야. 너의 이름도 금상추라고 알고 있어줘."},
+            # )
+            # conversation.save()
             
             print('#######', response, '#######')
             

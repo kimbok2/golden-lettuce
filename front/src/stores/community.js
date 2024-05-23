@@ -6,7 +6,7 @@ import axios from 'axios'
 export const useCommunityStore = defineStore(
   'community',
   () => {
-    const API_URL = 'http://127.0.0:8000'
+    const API_URL = 'http://127.0.0.1:8000'
 
     const router = useRouter()
 
@@ -18,6 +18,7 @@ export const useCommunityStore = defineStore(
 
     const article = ref([])
     const articles = ref([])
+    const mainArticles = ref([])
     const article_count = computed(() => {
       return articles.value.length
     })
@@ -36,12 +37,27 @@ export const useCommunityStore = defineStore(
         })
     }
 
+
+    const getFiveArticleList = function (category) {
+      axios({
+        method: 'get',
+        url: `${API_URL}/communities/main_article/${category}/`,
+      })
+        .then((response) => {
+          mainArticles.value = response.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+
     const getArticle = function (articleId) {
       axios({
         method: 'get',
         url: `${API_URL}/communities/${articleId}`,
       })
         .then((response) => {
+          console.log(response)
           article.value = response.data
         })
         .catch((error) => {
@@ -49,7 +65,7 @@ export const useCommunityStore = defineStore(
         })
     }
 
-    return { article, articles, article_count, API_URL, categoryOptions, getArticle, getArticleList }
+    return { article, mainArticles, articles, article_count, API_URL, categoryOptions, getFiveArticleList, getArticle, getArticleList }
   },
   { persist: true }
 )
