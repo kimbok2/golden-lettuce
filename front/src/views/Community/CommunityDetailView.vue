@@ -54,7 +54,7 @@ import { useUserStore } from '@/stores/user'
 import axios from 'axios'
 import Comment from '@/components/Comment.vue'
 
-const apiUrl = 'http://127.0.0.1:8000'
+const apiUrl = 'https://kgarrry.pythonanywhere.com'
 
 const route = useRoute()
 const router = useRouter()

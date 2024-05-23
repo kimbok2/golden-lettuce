@@ -151,7 +151,7 @@ import { useCommunityStore } from '@/stores/community'
 import { useUserStore } from '@/stores/user'
 import axios from 'axios'
 
-const apiUrl = 'http://127.0.0.1:8000'
+const apiUrl = 'https://kgarrry.pythonanywhere.com'
 const route = useRoute()
 const router = useRouter()
 const store = useCommunityStore()
