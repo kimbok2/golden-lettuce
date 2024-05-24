@@ -70,6 +70,10 @@
   - 커뮤니티(대댓글)
   - 챗봇 이용
 
+### 프로젝트 일정
+
+<img src='./README_IMG/일정.png' alt='일정'>
+
 ## 데이터베이스 모델링(ERD)
 
 <img src='./README_IMG/golden_lettuce_erd.png' alt='erd'>
