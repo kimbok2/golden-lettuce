@@ -350,7 +350,6 @@ def compare_saving(request, saving_id):
 
 # 예금 추천 알고리즘
 @api_view(['GET'])
-@permission_classes(['IsAuthenticated'])
 def recommend_deposit(request):
     dp_cnt = 37
     me = get_object_or_404(get_user_model(), username=request.user.username)

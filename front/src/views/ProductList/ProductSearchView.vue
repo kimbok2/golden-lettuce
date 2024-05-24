@@ -1,7 +1,7 @@
 <template>
   <div class="search-container">
     <button v-if="store.userInfo?.is_superuser" @click="savedata" class="btn btn-primary">
-      DB저장하는 버튼 1회만 실행
+      관리자 DB 저장
     </button>
     <div class="container">
       <form @submit.prevent="selectSort">

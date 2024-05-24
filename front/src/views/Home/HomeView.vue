@@ -69,7 +69,7 @@
                     @click="toDetail({ name: 'community-detail', params: { id: article.id } })"
                   >
                     <td scope="col" style="width: 80%" class="text-start ps-5">
-                      {{ article.content }}
+                      {{ article.title }}
                     </td>
                     <td scope="col" style="width: 80%">{{ article.user.nickname }}</td>
                   </tr>
